@@ -427,12 +427,13 @@ export const HomeScreen = ({route}: any) => {
             </View >
             <View style={{height: 1, backgroundColor: 'black', marginTop: 15}} />
             <View style={{flex: 1}} >
-              {orderList.map((order) => {
+              {orderList.map((order, index) => {
                 return (
-                  <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 10}} >
+                  <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 10}}
+                        key={index.toString()} >
                     <Text style={{flex: 0.5, fontSize: 16, fontWeight: '300'}} >{order[0]}</Text >
                     <Text style={{flex: 0.2, fontSize: 16, fontWeight: '300'}} >{order[1]}</Text >
-                    <Text style={{flex: 0.3, fontSize: 16, fontWeight: '300'}} >{order[2]}</Text >
+                    <Text style={{flex: 0.3, fontSize: 16, fontWeight: '300', textAlign: 'right'}} >{order[2]}</Text >
                   </View >
                 )
               })}
@@ -449,10 +450,7 @@ export const HomeScreen = ({route}: any) => {
                 Power by
               </Text >
               <Image source={require('../bitmap.png')} style={{
-                height: 30,
-                width: 30,
-                marginLeft: 10,
-                marginRight: 10
+                height: 30, width: 30, marginLeft: 10, marginRight: 10
               }} />
               <Text style={{fontWeight: '500', textAlign: 'right', fontSize: 18, marginTop: 5}} >
                 Tibb
@@ -460,7 +458,7 @@ export const HomeScreen = ({route}: any) => {
             </View >
           </View >
         </ScrollView >
-        <View style={{height: 30}} />
+        <View style={{height: 40}} />
       </View >
       <Loading loading={loading} />
     </ScrollView >
