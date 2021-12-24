@@ -15,7 +15,11 @@
 <br /> <br />
 <div style="display: flex; flex-direction: row; align-self: center; align-items: center">
 <img src="image/invoice.jpg" alt="bill" width="270" height="580"/>
+<<<<<<< HEAD
 <img src="image/screenshot.png" alt="screenshot" width="270" height="580"/>
+=======
+<img src="image/screenshot.jpg" alt="screenshot" width="270" height="580"/>
+>>>>>>> 2a8db66bb585b75190086b898553d60552e6396f
 <img src="image/screenshot_1.png" alt="screenshot" width="270" height="580"/>
 </div>
 
