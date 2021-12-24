@@ -91,4 +91,12 @@ public class RNUSBPrinterModule extends ReactContextBaseJavaModule implements RN
     public String getName() {
         return "RNUSBPrinter";
     }
+
+    @ReactMethod
+    public void addListener(String eventName) {
+    }
+
+    @ReactMethod
+    public void removeListeners(Integer count) {
+    }
 }

@@ -86,4 +86,12 @@ public class RNNetPrinterModule extends ReactContextBaseJavaModule implements RN
     public String getName() {
         return "RNNetPrinter";
     }
+
+    @ReactMethod
+    public void addListener(String eventName) {
+    }
+
+    @ReactMethod
+    public void removeListeners(Integer count) {
+    }
 }
