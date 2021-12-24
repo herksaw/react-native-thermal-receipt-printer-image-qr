@@ -9,7 +9,7 @@ import {
   Alert,
   TouchableOpacity,
   Dimensions,
-  TextInput,
+  TextInput, ScrollView, Image,
 } from 'react-native';
 import {
   BLEPrinter,
@@ -26,8 +26,10 @@ import {DeviceType} from './FindPrinter';
 import {navigate} from './App';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import QRCode from 'react-native-qrcode-svg';
-import {useRef} from 'react';
+import {useRef, useState} from 'react';
 import {Buffer} from 'buffer';
+import {captureRef} from 'react-native-view-shot';
+
 
 const printerList: Record<string, any> = {
   ble: BLEPrinter,
@@ -54,11 +56,19 @@ const EscPosEncoder = require('esc-pos-encoder')
 export const HomeScreen = ({route}: any) => {
   const [selectedValue, setSelectedValue] = React.useState<keyof typeof printerList>(DevicesEnum.net);
   const [devices, setDevices] = React.useState([]);
+  const _shareViewContainer = React.useRef<ScrollView | null>(null);
   // const [connected, setConnected] = React.useState(false);
   const [loading, setLoading] = React.useState<boolean>(false);
   const [selectedPrinter, setSelectedPrinter] = React.useState<SelectedPrinter>(
     {},
   );
+  const [orderList] = useState([
+    ["1. Skirt Palas Labuh Muslimah Fashion", "x2", "500$"],
+    ["2. BLOUSE ROPOL VIRAL MUSLIMAH FASHION", "x4222", "500$"],
+    ["3. Women Crew Neck Button Down Ruffle Collar Loose Blouse", "x1", "30000000000000$"],
+    ["4. Retro Buttons Up Full Sleeve Loose", "x10", "200$"],
+    ["5. Retro Buttons Up", "x10", "200$"],
+  ]);
   let QrRef = useRef<any>(null);
   const [selectedNetPrinter, setSelectedNetPrinter] =
     React.useState<DeviceType>({
@@ -199,13 +209,6 @@ export const HomeScreen = ({route}: any) => {
           Printer.printText(`Date : 15- 09 - 2021 /15 : 29 : 57 / Admin`);
           Printer.printText(`Product : Total - 4 / No. (1,2,3,4)\n`);
           Printer.printText(`${CENTER}${COMMANDS.HORIZONTAL_LINE.HR_80MM}${CENTER}`);
-          let orderList = [
-            ["1. Skirt Palas Labuh Muslimah Fashion", "x2", "500$"],
-            ["2. BLOUSE ROPOL VIRAL MUSLIMAH FASHION", "x4222", "500$"],
-            ["3. Women Crew Neck Button Down Ruffle Collar Loose Blouse", "x1", "30000000000000$"],
-            ["4. Retro Buttons Up Full Sleeve Loose", "x10", "200$"],
-            ["5. Retro Buttons Up", "x10", "200$"],
-          ];
           let columnAliment = [ColumnAliment.LEFT, ColumnAliment.CENTER, ColumnAliment.RIGHT];
           let columnWidth = [46 - (7 + 12), 7, 12]
           const header = ['Product list', 'Qty', 'Price']
@@ -239,6 +242,33 @@ export const HomeScreen = ({route}: any) => {
     } catch (err) {
       console.warn(err);
     }
+  };
+
+  const handleCaptureAndPrint = () => {
+    setTimeout(() => {
+      const result = Platform.OS === "android" ? "zip-base64" : "base64";
+      // @ts-ignore
+      captureRef(_shareViewContainer.current, {
+        snapshotContentContainer: true,
+        result,
+        width: 1200
+      }).then(
+        data => {
+          const CENTER = COMMANDS.TEXT_FORMAT.TXT_ALIGN_CT;
+          const resolution = /^(\d+):(\d+)\|/g.exec(data);
+          const base64 = data.substr((resolution || [""])[0].length || 0);
+          const Printer: typeof NetPrinter = printerList[selectedValue];
+          const base64Processed = base64.replace(/(\r\n|\n|\r)/gm, "");
+          Printer.printText(`${CENTER}`);
+          Printer.printImageBase64(base64Processed, {
+            // ios
+            imageWidth: 1200
+          });
+          Printer.printBill(`${CENTER}Thank you\n`, {beep: false});
+        },
+        error => console.error('Oops, snapshot failed', error)
+      );
+    }, 1000)
   };
 
   const gotoSunmi = async () => {
@@ -304,7 +334,8 @@ export const HomeScreen = ({route}: any) => {
           <Picker.Item
             label={item.device_name}
             value={item}
-            key={`printer-item-${index}`}
+            key={`
+          printer - item -${index}`}
           />
         ))}
       </Picker >
@@ -312,7 +343,7 @@ export const HomeScreen = ({route}: any) => {
   );
 
   return (
-    <View style={styles.container} >
+    <ScrollView style={styles.container} >
       {/* Printers option */}
       <View style={styles.section} >
         <Text style={styles.title} >Select printer type: </Text >
@@ -324,13 +355,14 @@ export const HomeScreen = ({route}: any) => {
             <Picker.Item
               label={item.toUpperCase()}
               value={item}
-              key={`printer-type-item-${index}`}
+              key={`
+          printer - type - item -${index}`}
             />
           ))}
         </Picker >
       </View >
       {/* Printers List */}
-      <View style={styles.section} >
+      <View >
         {selectedValue === 'net' ? _renderNet() : _renderOther()}
         {/* Buttons */}
         <View
@@ -370,19 +402,70 @@ export const HomeScreen = ({route}: any) => {
           <TouchableOpacity
             style={[styles.button, {backgroundColor: 'blue'}]}
             // disabled={!selectedPrinter?.device_name}
+            onPress={handleCaptureAndPrint} >
+            <AntIcon name={'camerao'} color={'white'} size={18} />
+            <Text style={styles.text} >Capture and print</Text >
+          </TouchableOpacity >
+        </View >
+        <View style={styles.buttonContainer} >
+          <TouchableOpacity
+            style={[styles.button, {backgroundColor: 'blue'}]}
+            // disabled={!selectedPrinter?.device_name}
             onPress={gotoSunmi} >
             <AntIcon name={'printer'} color={'white'} size={18} />
             <Text style={styles.text} >Sunmi print</Text >
           </TouchableOpacity >
         </View >
-        <View style={styles.qr} >
-          <QRCode value="hey" getRef={(el: any) => (QrRef = el)} />
-        </View >
+        <ScrollView ref={component => _shareViewContainer.current = component} scrollEnabled={false}
+                    style={{marginTop: 20}} >
+          <View style={styles.captureSection} >
+            <Text style={{fontWeight: 'bold', fontSize: 25, textAlign: 'center'}} >주문</Text >
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 20}} >
+              <Text style={{fontWeight: '500', fontSize: 19}} >No.</Text >
+              <Text style={{fontWeight: '500', fontSize: 19}} > 이름 </Text >
+              <Text style={{fontWeight: '500', fontSize: 19}} >수량</Text >
+            </View >
+            <View style={{height: 1, backgroundColor: 'black', marginTop: 15}} />
+            <View style={{flex: 1}} >
+              {orderList.map((order) => {
+                return (
+                  <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 10}} >
+                    <Text style={{flex: 0.5, fontSize: 16, fontWeight: '300'}} >{order[0]}</Text >
+                    <Text style={{flex: 0.2, fontSize: 16, fontWeight: '300'}} >{order[1]}</Text >
+                    <Text style={{flex: 0.3, fontSize: 16, fontWeight: '300'}} >{order[2]}</Text >
+                  </View >
+                )
+              })}
+            </View >
+            <View style={{height: 1, backgroundColor: 'black', marginTop: 20}} />
+            <Text style={{fontWeight: '500', textAlign: 'right', marginTop: 20, fontSize: 20}} >
+              전체 : 100,000,000$
+            </Text >
+            <View style={styles.qr} >
+              <QRCode value="hey" getRef={(el: any) => (QrRef = el)} />
+            </View >
+            <View style={{flexDirection: 'row', justifyContent: 'center', marginTop: 18}} >
+              <Text style={{textAlign: 'right', fontSize: 18, marginTop: 5}} >
+                Power by
+              </Text >
+              <Image source={require('../bitmap.png')} style={{
+                height: 30,
+                width: 30,
+                marginLeft: 10,
+                marginRight: 10
+              }} />
+              <Text style={{fontWeight: '500', textAlign: 'right', fontSize: 18, marginTop: 5}} >
+                Tibb
+              </Text >
+            </View >
+          </View >
+        </ScrollView >
+        <View style={{height: 30}} />
       </View >
       <Loading loading={loading} />
-    </View >
+    </ScrollView >
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -390,6 +473,9 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   section: {},
+  captureSection: {
+    paddingVertical: 10
+  },
   rowDirection: {
     flexDirection: 'row',
   },
@@ -421,6 +507,6 @@ const styles = StyleSheet.create({
   qr: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 20
+    marginTop: 30
   }
-});
+})
