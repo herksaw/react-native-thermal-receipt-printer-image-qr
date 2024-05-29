@@ -6,12 +6,13 @@ import {
   TouchableOpacity,
   DeviceEventEmitter,
   ScrollView,
-  Alert,
+  Linking, Alert,
 } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 // @ts-ignore
 import SunmiV2Printer from 'react-native-sunmi-v2-printer';
-// @ts-ignore
+import QRCodeScanner from 'react-native-qrcode-scanner';
+import {RNCamera} from 'react-native-camera';
 import {SunmiScannerView} from 'react-native-sunmi-inner-scanner';
 
 const SunmiScreen = () => {
@@ -68,7 +69,7 @@ const SunmiScreen = () => {
         ['Some item x 1', '', ''],
         ['', '', '$100'],
       ];
-      let columnAlignment = [0, 1, 2];
+      let columnAliment = [0, 1, 2];
       let columnWidth = [25, 1, 5];
       try {
         //set aligment: 0-left,1-center,2-right
@@ -93,11 +94,11 @@ const SunmiScreen = () => {
         // for (var i in orderList) {
         //   console.log(orderList[i]);
         //   console.log(columnWidth);
-        //   console.log(columnAlignment);
+        //   console.log(columnAliment);
         //   await SunmiV2Printer.printColumnsText(
         //     orderList[i],
         //     columnWidth,
-        //     columnAlignment,
+        //     columnAliment,
         //   );
         // }
         // await SunmiV2Printer.setFontSize(20);
@@ -135,14 +136,14 @@ const SunmiScreen = () => {
     <ScrollView
       style={{
         flex: 1,
-      }}>
-      <View style={styles.container}>
-        <Text>{`Printer Status: ${status}`}</Text>
-        <TouchableOpacity style={styles.button} onPress={() => print()}>
-          <Text style={styles.buttonText}>Print</Text>
-        </TouchableOpacity>
+      }} >
+      <View style={styles.container} >
+        <Text >{`Printer Status: ${status}`}</Text >
+        <TouchableOpacity style={styles.button} onPress={() => print()} >
+          <Text style={styles.buttonText} >Print</Text >
+        </TouchableOpacity >
         <QRCode value="hey" getRef={(el: React.ReactElement) => (QrRef = el)} />
-      </View>
+      </View >
       {/*<QRCodeScanner*/}
       {/*  onRead={onSuccess}*/}
       {/*  flashMode={RNCamera.Constants.FlashMode.auto as any}*/}
@@ -166,7 +167,7 @@ const SunmiScreen = () => {
           Alert.alert(JSON.stringify(data));
         }}
       />
-    </ScrollView>
+    </ScrollView >
   );
 };
 
@@ -195,6 +196,10 @@ const styles = StyleSheet.create({
   textBold: {
     fontWeight: '500',
     color: '#000',
+  },
+  buttonText: {
+    fontSize: 21,
+    color: 'rgb(0,122,255)',
   },
   buttonTouchable: {
     padding: 16,

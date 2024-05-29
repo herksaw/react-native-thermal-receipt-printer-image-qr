@@ -18,8 +18,8 @@ import {
   IUSBPrinter,
   IBLEPrinter,
   INetPrinter,
-  ColumnAlignment,
-  COMMANDS,
+  ColumnAliment,
+  COMMANDS
 } from 'react-native-thermal-receipt-printer-image-qr';
 import Loading from '../Loading';
 import {DeviceType} from './FindPrinter';
@@ -49,12 +49,10 @@ export enum DevicesEnum {
 }
 
 const deviceWidth = Dimensions.get('window').width;
-const EscPosEncoder = require('esc-pos-encoder');
+const EscPosEncoder = require('esc-pos-encoder')
 
 export const HomeScreen = ({route}: any) => {
-  const [selectedValue, setSelectedValue] = React.useState<
-    keyof typeof printerList
-  >(DevicesEnum.net);
+  const [selectedValue, setSelectedValue] = React.useState<keyof typeof printerList>(DevicesEnum.net);
   const [devices, setDevices] = React.useState([]);
   // const [connected, setConnected] = React.useState(false);
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -65,7 +63,7 @@ export const HomeScreen = ({route}: any) => {
   const [selectedNetPrinter, setSelectedNetPrinter] =
     React.useState<DeviceType>({
       device_name: 'My Net Printer',
-      host: '192.168.0.101', // your host
+      host: '192.168.0.200', // your host
       port: PORT, // your port
       printerType: DevicesEnum.net,
     });
@@ -118,7 +116,7 @@ export const HomeScreen = ({route}: any) => {
           selectedValue === DevicesEnum.net
             ? selectedNetPrinter.printerType
             : selectedPrinter.printerType
-        ) {
+          ) {
           case 'ble':
             if (selectedPrinter?.inner_mac_address) {
               await BLEPrinter.connectPrinter(
@@ -135,10 +133,7 @@ export const HomeScreen = ({route}: any) => {
               // await NetPrinter.closeConn();
               // setConnected(!connected);
               // }
-              const status = await NetPrinter.connectPrinter(
-                selectedNetPrinter?.host || '',
-                9100,
-              );
+              const status = await NetPrinter.connectPrinter(selectedNetPrinter?.host || '', 9100);
               setLoading(false);
               console.log('connect -> status', status);
               Alert.alert(
@@ -173,11 +168,9 @@ export const HomeScreen = ({route}: any) => {
     try {
       const Printer = printerList[selectedValue];
       Printer.printText('<C>sample text</C>', {
-        cut: false,
+        cut: false
       });
-      Printer.printImage(
-        'https://sportshub.cbsistatic.com/i/2021/04/09/9df74632-fde2-421e-bc6f-d4bf631bf8e5/one-piece-trafalgar-law-wano-anime-1246430.jpg',
-      );
+      Printer.printImage('https://sportshub.cbsistatic.com/i/2021/04/09/9df74632-fde2-421e-bc6f-d4bf631bf8e5/one-piece-trafalgar-law-wano-anime-1246430.jpg');
       Printer.printBill('<C>sample text</C>');
     } catch (err) {
       console.warn(err);
@@ -185,7 +178,7 @@ export const HomeScreen = ({route}: any) => {
   };
 
   const handlePrintBill = async () => {
-    let address = '2700 S123 Grand Ave, Los Angeles, CA 90007223, USA.';
+    let address = "2700 S123 Grand Ave, Los Angeles, CA 90007223, USA."
     const BOLD_ON = COMMANDS.TEXT_FORMAT.TXT_BOLD_ON;
     const BOLD_OFF = COMMANDS.TEXT_FORMAT.TXT_BOLD_OFF;
     const CENTER = COMMANDS.TEXT_FORMAT.TXT_ALIGN_CT;
@@ -195,64 +188,37 @@ export const HomeScreen = ({route}: any) => {
         (QrRef as any).toDataURL(callback);
       };
       const callback = async (dataURL: string) => {
-        let qrProcessed = dataURL.replace(/(\r\n|\n|\r)/gm, '');
+        let qrProcessed = dataURL.replace(/(\r\n|\n|\r)/gm, "");
         // Can print android and ios with the same type or with encoder for android
         if (Platform.OS === 'android' || Platform.OS === 'ios') {
           const Printer: typeof NetPrinter = printerList[selectedValue];
-          Printer.printImage(
-            `https://sportshub.cbsistatic.com/i/2021/04/09/9df74632-fde2-421e-bc6f-d4bf631bf8e5/one-piece-trafalgar-law-wano-anime-1246430.jpg`,
-            {
-              imageWidth: 300,
-              imageHeight: 300,
-            },
-          );
+          Printer.printImage(`https://sportshub.cbsistatic.com/i/2021/04/09/9df74632-fde2-421e-bc6f-d4bf631bf8e5/one-piece-trafalgar-law-wano-anime-1246430.jpg`);
           Printer.printText(`${CENTER}${BOLD_ON} BILLING ${BOLD_OFF}\n`);
           Printer.printText(`${CENTER}${address}${OFF_CENTER}`);
           Printer.printText('090 3399 031 555\n');
           Printer.printText(`Date : 15- 09 - 2021 /15 : 29 : 57 / Admin`);
           Printer.printText(`Product : Total - 4 / No. (1,2,3,4)\n`);
-          Printer.printText(
-            `${CENTER}${COMMANDS.HORIZONTAL_LINE.HR_80MM}${CENTER}`,
-          );
+          Printer.printText(`${CENTER}${COMMANDS.HORIZONTAL_LINE.HR_80MM}${CENTER}`);
           let orderList = [
-            ['1. Skirt Palas Labuh Muslimah Fashion', 'x2', '500$'],
-            ['2. BLOUSE ROPOL VIRAL MUSLIMAH FASHION', 'x4222', '500$'],
-            [
-              '3. Women Crew Neck Button Down Ruffle Collar Loose Blouse',
-              'x1',
-              '30000000000000$',
-            ],
-            ['4. Retro Buttons Up Full Sleeve Loose', 'x10', '200$'],
-            ['5. Retro Buttons Up', 'x10', '200$'],
+            ["1. Skirt Palas Labuh Muslimah Fashion", "x2", "500$"],
+            ["2. BLOUSE ROPOL VIRAL MUSLIMAH FASHION", "x4222", "500$"],
+            ["3. Women Crew Neck Button Down Ruffle Collar Loose Blouse", "x1", "30000000000000$"],
+            ["4. Retro Buttons Up Full Sleeve Loose", "x10", "200$"],
+            ["5. Retro Buttons Up", "x10", "200$"],
           ];
-          let columnAlignment = [
-            ColumnAlignment.LEFT,
-            ColumnAlignment.CENTER,
-            ColumnAlignment.RIGHT,
-          ];
-          let columnWidth = [46 - (7 + 12), 7, 12];
-          const header = ['Product list', 'Qty', 'Price'];
-          Printer.printColumnsText(header, columnWidth, columnAlignment, [
-            `${BOLD_ON}`,
-            '',
-            '',
-          ]);
-          Printer.printText(
-            `${CENTER}${COMMANDS.HORIZONTAL_LINE.HR3_80MM}${CENTER}`,
-          );
+          let columnAliment = [ColumnAliment.LEFT, ColumnAliment.CENTER, ColumnAliment.RIGHT];
+          let columnWidth = [46 - (7 + 12), 7, 12]
+          const header = ['Product list', 'Qty', 'Price']
+          Printer.printColumnsText(header, columnWidth, columnAliment, [`${BOLD_ON}`, '', '']);
+          Printer.printText(`${CENTER}${COMMANDS.HORIZONTAL_LINE.HR3_80MM}${CENTER}`);
           for (let i in orderList) {
-            Printer.printColumnsText(
-              orderList[i],
-              columnWidth,
-              columnAlignment,
-              [`${BOLD_OFF}`, '', ''],
-            );
+            Printer.printColumnsText(orderList[i], columnWidth, columnAliment, [`${BOLD_OFF}`, '', '']);
           }
           Printer.printText(`\n`);
           Printer.printImageBase64(qrProcessed, {
-            imageWidth: 50,
-            imageHeight: 50,
-          });
+            // ios
+            imageWidth: 100
+          })
           Printer.printBill(`${CENTER}Thank you\n`, {beep: false});
         } else {
           // optional for android
@@ -264,28 +230,23 @@ export const HomeScreen = ({route}: any) => {
             .align('center')
             .line('BILLING')
             .qrcode('https://nielsleenheer.com')
-            .encode();
+            .encode()
           let base64String = Buffer.from(_encoder).toString('base64');
           Printer.printRaw(base64String);
         }
-      };
+      }
       getDataURL();
     } catch (err) {
       console.warn(err);
     }
   };
 
-  const handlePrintBillWithImage = async () => {
-    const Printer: typeof NetPrinter = printerList[selectedValue];
-    Printer.printImage(
-      'https://media-cdn.tripadvisor.com/media/photo-m/1280/1b/3a/bd/b5/the-food-bill.jpg',
-      {
-        imageWidth: 575,
-        // imageHeight: 1000,
-        // paddingX: 100
-      },
-    );
-    Printer.printBill('', {beep: false});
+  const gotoSunmi = async () => {
+    if (Platform.OS === 'ios') {
+      Alert.alert('this feature just support for sunmi devices');
+    } else {
+      navigate('Sunmi');
+    }
   };
 
   const handleChangePrinterType = async (type: keyof typeof printerList) => {
@@ -306,13 +267,11 @@ export const HomeScreen = ({route}: any) => {
 
   const _renderNet = () => (
     <>
-      <Text style={[styles.text, {color: 'black', marginLeft: 0}]}>
-        Your printer ip....
-      </Text>
+      <Text style={[styles.text, {color: 'black', marginLeft: 0}]} >Your printer ip....</Text >
       <TextInput
         style={{
           borderBottomWidth: 1,
-          height: 45,
+          height: 45
         }}
         placeholder={'Your printer port...'}
         value={selectedNetPrinter?.host}
@@ -321,46 +280,46 @@ export const HomeScreen = ({route}: any) => {
       <View
         style={{
           marginTop: 10,
-        }}>
+        }} >
         <TouchableOpacity
           style={[styles.button, {backgroundColor: 'grey', height: 30}]}
           // disabled={!selectedPrinter?.device_name}
-          onPress={findPrinter}>
+          onPress={findPrinter} >
           <AntIcon name={'search1'} color={'white'} size={18} />
-          <Text style={styles.text}>Find your printers</Text>
-        </TouchableOpacity>
-      </View>
+          <Text style={styles.text} >Find your printers</Text >
+        </TouchableOpacity >
+      </View >
     </>
   );
 
   const _renderOther = () => (
     <>
-      <Text>Select printer: </Text>
+      <Text >Select printer: </Text >
       <Picker
         selectedValue={selectedPrinter}
-        onValueChange={setSelectedPrinter}>
+        onValueChange={setSelectedPrinter} >
         {devices !== undefined &&
-          devices?.length > 0 &&
-          devices?.map((item: any, index) => (
-            <Picker.Item
-              label={item.device_name}
-              value={item}
-              key={`printer-item-${index}`}
-            />
-          ))}
-      </Picker>
+        devices?.length > 0 &&
+        devices?.map((item: any, index) => (
+          <Picker.Item
+            label={item.device_name}
+            value={item}
+            key={`printer-item-${index}`}
+          />
+        ))}
+      </Picker >
     </>
   );
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} >
       {/* Printers option */}
-      <View style={styles.section}>
-        <Text style={styles.title}>Select printer type: </Text>
+      <View style={styles.section} >
+        <Text style={styles.title} >Select printer type: </Text >
         <Picker
           selectedValue={selectedValue}
           mode="dropdown"
-          onValueChange={handleChangePrinterType}>
+          onValueChange={handleChangePrinterType} >
           {Object.keys(printerList).map((item, index) => (
             <Picker.Item
               label={item.toUpperCase()}
@@ -368,59 +327,60 @@ export const HomeScreen = ({route}: any) => {
               key={`printer-type-item-${index}`}
             />
           ))}
-        </Picker>
-      </View>
+        </Picker >
+      </View >
       {/* Printers List */}
-      <View style={styles.section}>
+      <View style={styles.section} >
         {selectedValue === 'net' ? _renderNet() : _renderOther()}
-        {/* Buttons Connect */}
+        {/* Buttons */}
         <View
           style={[
             styles.buttonContainer,
             {
               marginTop: 50,
             },
-          ]}>
+          ]} >
           <TouchableOpacity
             style={styles.button}
-            onPress={handleConnectSelectedPrinter}>
+            // disabled={!selectedPrinter?.device_name}
+            onPress={handleConnectSelectedPrinter} >
             <AntIcon name={'disconnect'} color={'white'} size={18} />
-            <Text style={styles.text}>Connect</Text>
-          </TouchableOpacity>
-        </View>
-        {/* Button Print sample */}
-        <View style={styles.buttonContainer}>
+            <Text style={styles.text} >Connect</Text >
+          </TouchableOpacity >
+        </View >
+        <View style={styles.buttonContainer} >
           <TouchableOpacity
             style={[styles.button, {backgroundColor: 'blue'}]}
-            onPress={handlePrint}>
+            // disabled={!selectedPrinter?.device_name}
+            onPress={handlePrint} >
             <AntIcon name={'printer'} color={'white'} size={18} />
-            <Text style={styles.text}>Print sample</Text>
-          </TouchableOpacity>
-        </View>
-        {/* Button Print bill */}
-        <View style={styles.buttonContainer}>
+            <Text style={styles.text} >Print sample</Text >
+          </TouchableOpacity >
+        </View >
+        <View style={styles.buttonContainer} >
           <TouchableOpacity
             style={[styles.button, {backgroundColor: 'blue'}]}
-            onPress={handlePrintBill}>
+            // disabled={!selectedPrinter?.device_name}
+            onPress={handlePrintBill} >
             <AntIcon name={'profile'} color={'white'} size={18} />
-            <Text style={styles.text}>Print bill</Text>
-          </TouchableOpacity>
-        </View>
-        {/* Button Print bill With Image */}
-        <View style={styles.buttonContainer}>
+            <Text style={styles.text} >Print bill</Text >
+          </TouchableOpacity >
+        </View >
+        <View style={styles.buttonContainer} >
           <TouchableOpacity
             style={[styles.button, {backgroundColor: 'blue'}]}
-            onPress={handlePrintBillWithImage}>
-            <AntIcon name={'profile'} color={'white'} size={18} />
-            <Text style={styles.text}>Print bill With Image</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.qr}>
+            // disabled={!selectedPrinter?.device_name}
+            onPress={gotoSunmi} >
+            <AntIcon name={'printer'} color={'white'} size={18} />
+            <Text style={styles.text} >Sunmi print</Text >
+          </TouchableOpacity >
+        </View >
+        <View style={styles.qr} >
           <QRCode value="hey" getRef={(el: any) => (QrRef = el)} />
-        </View>
-      </View>
+        </View >
+      </View >
       <Loading loading={loading} />
-    </View>
+    </View >
   );
 };
 
@@ -461,6 +421,6 @@ const styles = StyleSheet.create({
   qr: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 20,
-  },
+    marginTop: 20
+  }
 });

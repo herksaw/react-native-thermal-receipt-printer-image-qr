@@ -1,6 +1,5 @@
 package com.pinmi.react.printer.adapter;
-import static com.pinmi.react.printer.adapter.UtilsImage.getPixelsSlow;
-import static com.pinmi.react.printer.adapter.UtilsImage.recollectSlice;
+
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -99,10 +98,6 @@ public class BLEPrinterAdapter implements PrinterAdapter{
             printerDevices.add(new BLEPrinterDevice(device));
         }
         return printerDevices;
-    }
-
-    @Override
-    public void getDeviceListCallback(Callback successCallback, Callback errorCallback) {
     }
 
     @Override
@@ -218,7 +213,7 @@ public class BLEPrinterAdapter implements PrinterAdapter{
     }
 
     @Override
-    public void printImageData(String imageUrl, int  imageWidth, int imageHeight, Callback errorCallback) {
+    public void printImageData(String imageUrl, Callback errorCallback) {
         final Bitmap bitmapImage = getBitmapFromURL(imageUrl);
 
         if(bitmapImage == null) {
@@ -234,7 +229,7 @@ public class BLEPrinterAdapter implements PrinterAdapter{
         final BluetoothSocket socket = this.mBluetoothSocket;
 
         try {
-            int[][] pixels = getPixelsSlow(bitmapImage, imageWidth, imageHeight);
+            int[][] pixels = getPixelsSlow(bitmapImage);
 
             OutputStream printerOutputStream = socket.getOutputStream();
 
@@ -267,7 +262,7 @@ public class BLEPrinterAdapter implements PrinterAdapter{
     }
 
     @Override
-    public void printImageBase64(final Bitmap bitmapImage, int imageWidth, int imageHeight,Callback errorCallback) {
+    public void printImageBase64(final Bitmap bitmapImage, Callback errorCallback) {
         if(bitmapImage == null) {
             errorCallback.invoke("image not found");
             return;
@@ -281,7 +276,7 @@ public class BLEPrinterAdapter implements PrinterAdapter{
         final BluetoothSocket socket = this.mBluetoothSocket;
 
         try {
-            int[][] pixels = getPixelsSlow(bitmapImage, imageWidth, imageHeight);
+            int[][] pixels = getPixelsSlow(bitmapImage);
 
             OutputStream printerOutputStream = socket.getOutputStream();
 
@@ -311,5 +306,86 @@ public class BLEPrinterAdapter implements PrinterAdapter{
             Log.e(LOG_TAG, "failed to print data");
             e.printStackTrace();
         }
+    }
+
+    private byte[] recollectSlice(int y, int x, int[][] img) {
+        byte[] slices = new byte[] { 0, 0, 0 };
+        for (int yy = y, i = 0; yy < y + 24 && i < 3; yy += 8, i++) {
+            byte slice = 0;
+            for (int b = 0; b < 8; b++) {
+                int yyy = yy + b;
+                if (yyy >= img.length) {
+                    continue;
+                }
+                int col = img[yyy][x];
+                boolean v = shouldPrintColor(col);
+                slice |= (byte) ((v ? 1 : 0) << (7 - b));
+            }
+            slices[i] = slice;
+        }
+        return slices;
+    }
+
+    private boolean shouldPrintColor(int col) {
+        final int threshold = 127;
+        int a, r, g, b, luminance;
+        a = (col >> 24) & 0xff;
+        if (a != 0xff) {// Ignore transparencies
+            return false;
+        }
+        r = (col >> 16) & 0xff;
+        g = (col >> 8) & 0xff;
+        b = col & 0xff;
+
+        luminance = (int) (0.299 * r + 0.587 * g + 0.114 * b);
+
+        return luminance < threshold;
+    }
+
+    public static Bitmap resizeTheImageForPrinting(Bitmap image) {
+        // making logo size 150 or less pixels
+        int width = image.getWidth();
+        int height = image.getHeight();
+        if (width > 200 || height > 200) {
+            if (width > height) {
+                float decreaseSizeBy = (200.0f / width);
+                return getBitmapResized(image, decreaseSizeBy);
+            } else {
+                float decreaseSizeBy = (200.0f / height);
+                return getBitmapResized(image, decreaseSizeBy);
+            }
+        }
+        return image;
+    }
+
+    public static int getRGB(Bitmap bmpOriginal, int col, int row) {
+        // get one pixel color
+        int pixel = bmpOriginal.getPixel(col, row);
+        // retrieve color of all channels
+        int R = Color.red(pixel);
+        int G = Color.green(pixel);
+        int B = Color.blue(pixel);
+        return Color.rgb(R, G, B);
+    }
+
+    public static Bitmap getBitmapResized(Bitmap image, float decreaseSizeBy) {
+        Bitmap resized = Bitmap.createScaledBitmap(image, (int) (image.getWidth() * decreaseSizeBy),
+                (int) (image.getHeight() * decreaseSizeBy), true);
+        return resized;
+    }
+
+    public static int[][] getPixelsSlow(Bitmap image2) {
+
+        Bitmap image = resizeTheImageForPrinting(image2);
+
+        int width = image.getWidth();
+        int height = image.getHeight();
+        int[][] result = new int[height][width];
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
+                result[row][col] = getRGB(image, col, row);
+            }
+        }
+        return result;
     }
 }

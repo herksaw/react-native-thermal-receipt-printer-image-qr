@@ -149,10 +149,10 @@ RCT_EXPORT_METHOD(printImageBase64:(NSString *)base64Qr
             NSData *imageData = [NSData dataWithContentsOfURL:url];
             NSString* printerWidthType = [options valueForKey:@"printerWidthType"];
 
-            NSInteger printerWidth = 576;
+            NSInteger printerWidth = 400;
 
             if(printerWidthType != nil && [printerWidthType isEqualToString:@"58"]) {
-                printerWidth = 384;
+                printerWidth = 300;
             }
 
             if(imageData != nil){
@@ -170,40 +170,36 @@ RCT_EXPORT_METHOD(printImageBase64:(NSString *)base64Qr
 
 -(UIImage *)getPrintImage:(UIImage *)image
            printerOptions:(NSDictionary *)options {
-   NSNumber* nWidth = [options valueForKey:@"imageWidth"];
-   NSNumber* nHeight = [options valueForKey:@"imageHeight"];
-   NSNumber* nPaddingX = [options valueForKey:@"paddingX"];
 
-   CGFloat newWidth = 150;
-   if(nWidth != nil) {
-       newWidth = [nWidth floatValue];
-   }
+    NSNumber* nWidth = [options valueForKey:@"imageWidth"];
+    NSNumber* nPaddingX = [options valueForKey:@"paddingX"];
 
-   CGFloat newHeight = image.size.height;
-   if(nHeight != nil) {
-       newHeight = [nHeight floatValue];
-   }
+    CGFloat newWidth = 150;
+    if(nWidth != nil) {
+        newWidth = [nWidth floatValue];
+    }
 
-   CGFloat paddingX = 250;
-   if(nPaddingX != nil) {
-       paddingX = [nPaddingX floatValue];
-   }
+    CGFloat paddingX = 250;
+    if(nPaddingX != nil) {
+        paddingX = [nPaddingX floatValue];
+    }
 
-   CGFloat _newHeight = newHeight;
-   CGSize newSize = CGSizeMake(newWidth, _newHeight);
-   UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0);
-   CGContextRef context = UIGraphicsGetCurrentContext();
-   CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
-   CGImageRef immageRef = image.CGImage;
-   CGContextDrawImage(context, CGRectMake(0, 0, newWidth, newHeight), immageRef);
-   CGImageRef newImageRef = CGBitmapContextCreateImage(context);
-   UIImage* newImage = [UIImage imageWithCGImage:newImageRef];
+    CGFloat newHeight = (newWidth / image.size.width) * image.size.height;
+    CGSize newSize = CGSizeMake(newWidth, newHeight);
+    UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
+    CGImageRef immageRef = image.CGImage;
+    CGContextDrawImage(context, CGRectMake(0, 0, newWidth, newHeight), immageRef);
+    CGImageRef newImageRef = CGBitmapContextCreateImage(context);
+    UIImage* newImage = [UIImage imageWithCGImage:newImageRef];
 
-   CGImageRelease(newImageRef);
-   UIGraphicsEndImageContext();
+    CGImageRelease(newImageRef);
+    UIGraphicsEndImageContext();
 
-   UIImage* paddedImage = [self addImagePadding:newImage paddingX:paddingX paddingY:0];
-   return paddedImage;
+    UIImage* paddedImage = [self addImagePadding:newImage paddingX:paddingX paddingY:0];
+    return paddedImage;
+
 }
 
 -(UIImage *)addImagePadding:(UIImage * )image
