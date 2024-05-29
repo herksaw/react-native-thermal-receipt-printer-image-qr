@@ -8,12 +8,22 @@ import android.os.Build;
 import android.util.Base64;
 import android.util.Log;
 
+import com.facebook.common.internal.ImmutableMap;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.google.zxing.qrcode.QRCodeWriter;
+import com.google.zxing.qrcode.encoder.ByteMatrix;
+import com.pinmi.react.printer.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -24,6 +34,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import android.graphics.BitmapFactory;
@@ -77,16 +88,20 @@ public class NetPrinterAdapter implements PrinterAdapter {
     }
 
     @Override
-    public List<PrinterDevice> getDeviceList(Callback errorCallback) {
+    public void getDeviceListCallback(Callback successCallback, Callback errorCallback) {
         // errorCallback.invoke("do not need to invoke get device list for net
         // printer");
         // Use emitter instancee get devicelist to non block main thread
-        this.scan();
+        this.scan(successCallback, errorCallback);
+    }
+
+    @Override
+    public List<PrinterDevice> getDeviceList(Callback errorCallback) {
         List<PrinterDevice> printerDevices = new ArrayList<>();
         return printerDevices;
     }
 
-    private void scan() {
+    private void scan(final Callback successCallback, final Callback errorCallback) {
         if (isRunning)
             return;
         new Thread(new Runnable() {
@@ -122,8 +137,11 @@ public class NetPrinterAdapter implements PrinterAdapter {
 
                     emitEvent(EVENT_SCANNER_RESOLVED, array);
 
+                    successCallback.invoke(array);
                 } catch (NullPointerException ex) {
                     Log.i(LOG_TAG, "No connection");
+
+                    errorCallback.invoke(ex.getMessage());
                 } finally {
                     isRunning = false;
                     emitEvent(EVENT_SCANNER_RUNNING, isRunning);
@@ -436,4 +454,78 @@ public class NetPrinterAdapter implements PrinterAdapter {
         return resized;
     }
 
+    @Override
+    public void printQrCode(String qrCode, Callback errorCallback) {
+        final Bitmap bitmapImage = TextToQrImageEncode(qrCode);
+
+        if (bitmapImage == null) {
+            errorCallback.invoke("image not found");
+            return;
+        }
+
+        if (this.mSocket == null) {
+            errorCallback.invoke("bluetooth connection is not built, may be you forgot to connectPrinter");
+            return;
+        }
+
+        final Socket socket = this.mSocket;
+
+        try {
+            int[][] pixels = getPixelsSlow(bitmapImage);
+
+            OutputStream printerOutputStream = socket.getOutputStream();
+
+            printerOutputStream.write(SET_LINE_SPACE_24);
+            printerOutputStream.write(CENTER_ALIGN);
+
+            for (int y = 0; y < pixels.length; y += 24) {
+                // Like I said before, when done sending data,
+                // the printer will resume to normal text printing
+                printerOutputStream.write(SELECT_BIT_IMAGE_MODE);
+                // Set nL and nH based on the width of the image
+                printerOutputStream.write(
+                        new byte[] { (byte) (0x00ff & pixels[y].length), (byte) ((0xff00 & pixels[y].length) >> 8) });
+                for (int x = 0; x < pixels[y].length; x++) {
+                    // for each stripe, recollect 3 bytes (3 bytes = 24 bits)
+                    printerOutputStream.write(recollectSlice(y, x, pixels));
+                }
+
+                // Do a line feed, if not the printing will resume on the same line
+                printerOutputStream.write(LINE_FEED);
+            }
+            printerOutputStream.write(SET_LINE_SPACE_32);
+            printerOutputStream.write(LINE_FEED);
+
+            printerOutputStream.flush();
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "failed to print data");
+            e.printStackTrace();
+        }
+    }
+
+    private Bitmap TextToQrImageEncode(String Value) {
+
+        com.google.zxing.Writer writer = new QRCodeWriter();
+
+        BitMatrix bitMatrix = null;
+        try {
+            bitMatrix = writer.encode(Value, com.google.zxing.BarcodeFormat.QR_CODE, 250, 250,
+                    ImmutableMap.of(EncodeHintType.MARGIN, 1));
+            int width = 250;
+            int height = 250;
+            Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+
+            for (int i = 0; i < width; i++) {
+                for (int j = 0; j < height; j++) {
+                    bmp.setPixel(i, j, bitMatrix.get(i, j) ? Color.BLACK : Color.WHITE);
+                }
+            }
+            return bmp;
+        } catch (WriterException e) {
+            // Log.e("QR ERROR", ""+e);
+
+        }
+
+        return null;
+    }
 }

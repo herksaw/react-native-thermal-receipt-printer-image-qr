@@ -124,6 +124,10 @@ public class USBPrinterAdapter implements PrinterAdapter {
         }
     }
 
+    @Override
+    public void getDeviceListCallback(Callback successCallback, Callback errorCallback) {
+    }
+
     public List<PrinterDevice> getDeviceList(Callback errorCallback) {
         List<PrinterDevice> lists = new ArrayList<>();
         if (mUSBManager == null) {
@@ -136,7 +140,6 @@ public class USBPrinterAdapter implements PrinterAdapter {
         }
         return lists;
     }
-
 
     @Override
     public void selectDevice(PrinterDeviceId printerDeviceId, Callback successCallback, Callback errorCallback) {
@@ -436,5 +439,10 @@ public class USBPrinterAdapter implements PrinterAdapter {
         Bitmap resized = Bitmap.createScaledBitmap(image, (int) (image.getWidth() * decreaseSizeBy),
                 (int) (image.getHeight() * decreaseSizeBy), true);
         return resized;
+    }
+
+    @Override
+    public void printQrCode(String qrCode, Callback errorCallback) {
+
     }
 }

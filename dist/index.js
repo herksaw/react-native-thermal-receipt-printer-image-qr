@@ -432,6 +432,17 @@ var NetPrinter = {
             });
         }
     },
+    printQrCode: function (qrCode, opts) {
+        if (opts === void 0) { opts = {}; }
+        if (Platform.OS === "ios") {
+            RNNetPrinter.printQrCode(qrCode, opts, function (error) { return console.warn(error); });            
+        }
+         else {
+             RNNetPrinter.printQrCode(qrCode, opts, function (error) {
+                 return console.warn(error);
+             });
+         }
+    },
 };
 var NetPrinterEventEmitter = new NativeEventEmitter(RNNetPrinter);
 export { COMMANDS, NetPrinter, BLEPrinter, USBPrinter, NetPrinterEventEmitter };

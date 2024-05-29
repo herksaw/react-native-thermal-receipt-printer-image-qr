@@ -82,6 +82,10 @@ public class BLEPrinterAdapter implements PrinterAdapter{
     }
 
     @Override
+    public void getDeviceListCallback(Callback successCallback, Callback errorCallback) {
+    }
+
+    @Override
     public List<PrinterDevice> getDeviceList(Callback errorCallback) {
         BluetoothAdapter bluetoothAdapter = getBTAdapter();
         List<PrinterDevice> printerDevices = new ArrayList<>();
@@ -387,5 +391,10 @@ public class BLEPrinterAdapter implements PrinterAdapter{
             }
         }
         return result;
+    }
+
+    @Override
+    public void printQrCode(String qrCode, Callback errorCallback) {
+
     }
 }

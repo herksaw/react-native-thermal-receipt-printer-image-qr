@@ -1,5 +1,7 @@
 package com.pinmi.react.printer;
 
+import android.util.Log;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
@@ -46,12 +48,10 @@ public class RNNetPrinterModule extends ReactContextBaseJavaModule implements RN
     @Override
     public void getDeviceList(Callback successCallback, Callback errorCallback) {
         try {
-            this.adapter.getDeviceList(errorCallback);
-            successCallback.invoke();
+            this.adapter.getDeviceListCallback(successCallback, errorCallback);
         } catch (Exception ex) {
             errorCallback.invoke(ex.getMessage());
         }
-        // this.adapter.getDeviceList(errorCallback);
     }
 
     @ReactMethod
@@ -80,6 +80,13 @@ public class RNNetPrinterModule extends ReactContextBaseJavaModule implements RN
         byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         adapter.printImageBase64(decodedByte, errorCallback);
+    }
+
+    @ReactMethod
+    @Override
+    public void printQrCode(String qrCode, Callback errorCallback) {
+        Log.v("qrCode", qrCode);
+        adapter.printQrCode(qrCode, errorCallback);
     }
 
     @Override

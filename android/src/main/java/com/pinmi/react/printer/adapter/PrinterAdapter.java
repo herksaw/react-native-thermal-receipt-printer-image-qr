@@ -21,6 +21,8 @@ public interface PrinterAdapter {
 
     public List<PrinterDevice> getDeviceList(Callback errorCallback);
 
+    public void getDeviceListCallback(Callback successCallback, Callback errorCallback);
+
     public void selectDevice(PrinterDeviceId printerDeviceId, Callback successCallback, Callback errorCallback);
 
     public void closeConnectionIfExists();
@@ -30,4 +32,6 @@ public interface PrinterAdapter {
     public void printImageData(String imageUrl, Callback errorCallback);
 
     public void printImageBase64(Bitmap imageUrl, Callback errorCallback);
+
+    public void printQrCode(String qrCode, Callback errorCallback);
 }
