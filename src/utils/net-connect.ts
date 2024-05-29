@@ -1,5 +1,5 @@
 // @ts-ignore
-import Ping from 'react-native-ping';
+import Ping from '@charles-johnson/react-native-ping';
 
 export const connectToHost = (ipAddress: string, timeout = 4000) => {
   return new Promise(async (resolve, reject) => {
