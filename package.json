@@ -56,7 +56,7 @@
     "typescript": "^4.0.2"
   },
   "peerDependencies": {
-    "@charles-johnson/react-native-ping": "1.2.13"
+    "@charles-johnson/react-native-ping": "1.2.15"
   },
   "author": "herksaw",
   "homepage": "https://github.com/herksaw/react-native-thermal-receipt-printer-image-qr#readme",
