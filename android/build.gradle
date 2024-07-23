@@ -21,6 +21,10 @@ android {
     }
 }
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
@@ -29,4 +33,6 @@ dependencies {
     api 'androidx.appcompat:appcompat:1.0.0'
     api "com.facebook.react:react-native:+"
     testImplementation 'junit:junit:4.12'
+
+    implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
 }
