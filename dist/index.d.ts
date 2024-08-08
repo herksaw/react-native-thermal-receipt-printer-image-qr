@@ -65,7 +65,6 @@ declare const USBPrinter: {
      * 58mm => 30 character
      */
     printColumnsText: (texts: string[], columnWidth: number[], columnAliment: (ColumnAliment)[], columnStyle: string[], opts?: PrinterOptions) => void;
-    printQrCode: (qrCode: string, opts?: {}) => void;
 };
 declare const BLEPrinter: {
     init: () => Promise<void>;
@@ -97,14 +96,15 @@ declare const BLEPrinter: {
      * 58mm => 30 character
      */
     printColumnsText: (texts: string[], columnWidth: number[], columnAliment: (ColumnAliment)[], columnStyle: string[], opts?: PrinterOptions) => void;
-    printQrCode: (qrCode: string, opts?: {}) => void;
 };
 declare const NetPrinter: {
     init: () => Promise<void>;
     getDeviceList: () => Promise<INetPrinter[]>;
     connectPrinter: (host: string, port: number, timeout?: number | undefined) => Promise<INetPrinter>;
     closeConn: () => Promise<void>;
-    printText: (text: string, opts?: {}) => void;
+    printText: (text: string, opts?: {
+        encoding: string;
+    }) => void;
     printBill: (text: string, opts?: PrinterOptions) => void;
     /**
      * image url
@@ -129,7 +129,6 @@ declare const NetPrinter: {
      * 58mm => 30 character
      */
     printColumnsText: (texts: string[], columnWidth: number[], columnAliment: (ColumnAliment)[], columnStyle?: string[], opts?: PrinterOptions) => void;
-    printQrCode: (qrCode: string, opts?: {}) => void;
 };
 declare const NetPrinterEventEmitter: NativeEventEmitter;
 export { COMMANDS, NetPrinter, BLEPrinter, USBPrinter, NetPrinterEventEmitter };

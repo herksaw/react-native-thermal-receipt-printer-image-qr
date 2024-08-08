@@ -1,4 +1,4 @@
-import {Buffer} from "buffer";
+import { Buffer } from "buffer";
 import * as iconv from "iconv-lite";
 // import * as Jimp from "jimp";
 
@@ -32,10 +32,26 @@ const cut_bytes = Buffer.from([27, 105]);
 const beep_bytes = Buffer.from([27, 66, 3, 2]);
 const line_bytes = Buffer.from([10, 10, 10, 10, 10]);
 
+const encoding_mappings_bytes = {
+  // single byte encodings
+  "CP437": Buffer.from([27, 116, 0]),
+  "CP949": Buffer.from([27, 116, 253]), // korean
+  // multiple bit encodings
+  "GB18030": Buffer.from([28, 38, 28, 67, 0]), // chinese (default)
+  // "GB18030": Buffer.from([]),
+  "BIG5": Buffer.from([28, 38, 28, 67, 1]),
+  "UTF8": Buffer.from([28, 38, 28, 67, 255]),
+
+  "tis620": Buffer.from([]), // thai
+  "EUC-KR": Buffer.from([]), // korean
+  "Big5-HKSCS": Buffer.from([]),
+};
+
 const options_controller = {
   cut: cut_bytes,
   beep: beep_bytes,
   tailingLine: line_bytes,
+  encoding: encoding_mappings_bytes,
 };
 
 const controller = {
@@ -78,6 +94,12 @@ export function exchange_text(text: string, options: IOptions): Buffer {
 
   let bytes = new BufferHelper();
   bytes.concat(init_printer_bytes);
+  
+  // set encoding
+  if (m_options["encoding"] && options_controller["encoding"][m_options["encoding"]]) {
+    bytes.concat(options_controller["encoding"][m_options["encoding"]]);
+  }
+
   bytes.concat(default_space_bytes);
   let temp = "";
   for (let i = 0; i < text.length; i++) {
@@ -108,9 +130,9 @@ export function exchange_text(text: string, options: IOptions): Buffer {
   temp.length && bytes.concat(iconv.encode(temp, m_options.encoding));
 
   // check for "encoding" flag
-  if (typeof m_options["encoding"] === "boolean" && options_controller["encoding"]) {
-    bytes.concat(options_controller["encoding"]);
-  }
+  // if (typeof m_options["encoding"] === "boolean" && options_controller["encoding"]) {
+  //   bytes.concat(options_controller["encoding"]);
+  // }
 
   // check for "tailingLine" flag
   if (typeof m_options["tailingLine"] === "boolean" && m_options["tailingLine"] && options_controller["tailingLine"]) {
@@ -128,6 +150,71 @@ export function exchange_text(text: string, options: IOptions): Buffer {
   }
 
   return bytes.toBuffer();
+}
+
+export function exchange_text_ios(text: string, options: IOptions): string {
+  const m_options = options || default_options;
+
+  let bytes = new BufferHelper();
+  bytes.concat(init_printer_bytes);
+
+  // set encoding
+  if (m_options["encoding"] && options_controller["encoding"][m_options["encoding"]]) {
+    bytes.concat(options_controller["encoding"][m_options["encoding"]]);
+  }
+
+  bytes.concat(default_space_bytes);
+
+  let temp = "";
+  for (let i = 0; i < text.length; i++) {
+    let ch = text[i];
+    switch (ch) {
+      case "<":
+        bytes.concat(iconv.encode(temp, m_options.encoding));
+        temp = "";
+        // add bytes for changing font and justifying text
+        for (const tag in controller) {
+          if (text.substring(i, i + tag.length) === tag) {
+            bytes.concat(controller[tag]);
+            i += tag.length - 1;
+          }
+        }
+        break;
+      case "\n":
+        temp = `${temp}${ch}`;
+        bytes.concat(iconv.encode(temp, m_options.encoding));
+        bytes.concat(reset_bytes);
+        temp = "";
+        break;
+      default:
+        temp = `${temp}${ch}`;
+        break;
+    }
+  }
+  temp.length && bytes.concat(iconv.encode(temp, m_options.encoding));
+
+  // check for "encoding" flag
+  // if (typeof m_options["encoding"] === "boolean" && options_controller["encoding"]) {
+  //   bytes.concat(options_controller["encoding"]);
+  // }
+
+  // check for "tailingLine" flag
+  if (typeof m_options["tailingLine"] === "boolean" && m_options["tailingLine"] && options_controller["tailingLine"]) {
+    bytes.concat(options_controller["tailingLine"]);
+  }
+
+  // check for "cut" flag
+  if (typeof m_options["cut"] === "boolean" && m_options["cut"] && options_controller["cut"]) {
+    bytes.concat(options_controller["cut"]);
+  }
+
+  // check for "beep" flag
+  if (typeof m_options["beep"] === "boolean" && m_options["beep"] && options_controller["beep"]) {
+    bytes.concat(options_controller["beep"]);
+  }
+
+  // return bytes.toBuffer();
+  return bytes.toString('hex');
 }
 
 // export async function exchange_image(

@@ -82,24 +82,43 @@ var billTo64Buffer = function (text, opts) {
     var buffer = EPToolkit.exchange_text(text, options);
     return buffer.toString("base64");
 };
-var textPreprocessingIOS = function (text, canCut, beep) {
+var textPreprocessingIOS = function (text, canCut, beep, encoding, tailingLine) {
     if (canCut === void 0) { canCut = true; }
     if (beep === void 0) { beep = true; }
+    if (encoding === void 0) { encoding = ''; }
+    if (tailingLine === void 0) { tailingLine = true; }
     var options = {
         beep: beep,
         cut: canCut,
+        encoding: encoding ? encoding : '',
+        tailingLine: tailingLine ? tailingLine : true,
     };
-    return {
-        text: text
-            .replace(/<\/?CB>/g, "")
-            .replace(/<\/?CM>/g, "")
-            .replace(/<\/?CD>/g, "")
-            .replace(/<\/?C>/g, "")
-            .replace(/<\/?D>/g, "")
-            .replace(/<\/?B>/g, "")
-            .replace(/<\/?M>/g, ""),
-        opts: options,
-    };
+    if (encoding) {
+        return {
+            text: EPToolkit.exchange_text_ios(text
+                .replace(/<\/?CB>/g, "")
+                .replace(/<\/?CM>/g, "")
+                .replace(/<\/?CD>/g, "")
+                .replace(/<\/?C>/g, "")
+                .replace(/<\/?D>/g, "")
+                .replace(/<\/?B>/g, "")
+                .replace(/<\/?M>/g, ""), __assign(__assign({}, options), { encoding: encoding, tailingLine: tailingLine })),
+            opts: options,
+        };
+    }
+    else {
+        return {
+            text: text
+                .replace(/<\/?CB>/g, "")
+                .replace(/<\/?CM>/g, "")
+                .replace(/<\/?CD>/g, "")
+                .replace(/<\/?C>/g, "")
+                .replace(/<\/?D>/g, "")
+                .replace(/<\/?B>/g, "")
+                .replace(/<\/?M>/g, ""),
+            opts: options,
+        };
+    }
 };
 // const imageToBuffer = async (imagePath: string, threshold: number = 60) => {
 //   const buffer = await EPToolkit.exchange_image(imagePath, threshold);
@@ -348,10 +367,17 @@ var NetPrinter = {
         });
     },
     printText: function (text, opts) {
-        if (opts === void 0) { opts = {}; }
+        if (opts === void 0) { opts = { encoding: '' }; }
         if (Platform.OS === "ios") {
-            var processedText = textPreprocessingIOS(text, false, false);
-            RNNetPrinter.printRawData(processedText.text, processedText.opts, function (error) { return console.warn(error); });
+            var processedText = textPreprocessingIOS(text, false, false, opts.encoding ? opts.encoding : '');
+            if (processedText.opts.encoding) {
+                // use custom code
+                RNNetPrinter.printHex(processedText.text, processedText.opts, function (error) { return console.warn(error); });
+            }
+            else {
+                // use original code
+                RNNetPrinter.printRawData(processedText.text, processedText.opts, function (error) { return console.warn(error); });
+            }
         }
         else {
             RNNetPrinter.printRawData(textTo64Buffer(text, opts), function (error) {
@@ -431,17 +457,6 @@ var NetPrinter = {
                 return console.warn(error);
             });
         }
-    },
-    printQrCode: function (qrCode, opts) {
-        if (opts === void 0) { opts = {}; }
-        if (Platform.OS === "ios") {
-            RNNetPrinter.printQrCode(qrCode, opts, function (error) { return console.warn(error); });            
-        }
-         else {
-             RNNetPrinter.printQrCode(qrCode, opts, function (error) {
-                 return console.warn(error);
-             });
-         }
     },
 };
 var NetPrinterEventEmitter = new NativeEventEmitter(RNNetPrinter);

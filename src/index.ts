@@ -83,22 +83,46 @@ const billTo64Buffer = (text: string, opts: PrinterOptions) => {
   return buffer.toString("base64");
 };
 
-const textPreprocessingIOS = (text: string, canCut = true, beep = true) => {
+const textPreprocessingIOS = (text: string, canCut = true, beep = true, encoding = '', tailingLine = true) => {
   let options = {
     beep: beep,
     cut: canCut,
+    encoding: encoding ? encoding : '',
+    tailingLine: tailingLine ? tailingLine : true,
   };
-  return {
-    text: text
-      .replace(/<\/?CB>/g, "")
-      .replace(/<\/?CM>/g, "")
-      .replace(/<\/?CD>/g, "")
-      .replace(/<\/?C>/g, "")
-      .replace(/<\/?D>/g, "")
-      .replace(/<\/?B>/g, "")
-      .replace(/<\/?M>/g, ""),
-    opts: options,
+  if (encoding) {
+    return {
+      text: EPToolkit.exchange_text_ios(
+          text
+              .replace(/<\/?CB>/g, "")
+              .replace(/<\/?CM>/g, "")
+              .replace(/<\/?CD>/g, "")
+              .replace(/<\/?C>/g, "")
+              .replace(/<\/?D>/g, "")
+              .replace(/<\/?B>/g, "")
+              .replace(/<\/?M>/g, ""),
+          {
+              ...options,
+              encoding: encoding,
+              tailingLine: tailingLine,
+          }
+      ),
+      opts: options,
   };
+  }
+  else {
+    return {
+      text: text
+        .replace(/<\/?CB>/g, "")
+        .replace(/<\/?CM>/g, "")
+        .replace(/<\/?CD>/g, "")
+        .replace(/<\/?C>/g, "")
+        .replace(/<\/?D>/g, "")
+        .replace(/<\/?B>/g, "")
+        .replace(/<\/?M>/g, ""),
+      opts: options,
+    };
+  }
 };
 
 // const imageToBuffer = async (imagePath: string, threshold: number = 60) => {
@@ -364,14 +388,29 @@ const NetPrinter = {
       resolve();
     }),
 
-  printText: (text: string, opts = {}): void => {
+  printText: (text: string, opts = { encoding: '' }): void => {
     if (Platform.OS === "ios") {
-      const processedText = textPreprocessingIOS(text, false, false);
-      RNNetPrinter.printRawData(
-        processedText.text,
-        processedText.opts,
-        (error: Error) => console.warn(error)
-      );
+      const processedText = textPreprocessingIOS(text, false, false, opts.encoding ? opts.encoding : '');
+      
+
+      if (processedText.opts.encoding) {
+        // use custom code
+
+        RNNetPrinter.printHex(
+          processedText.text,
+          processedText.opts,
+          (error: Error) => console.warn(error)
+        );
+    }
+    else {
+        // use original code
+
+        RNNetPrinter.printRawData(
+          processedText.text,
+          processedText.opts,
+          (error: Error) => console.warn(error)
+        );
+    }
     } else {
       RNNetPrinter.printRawData(textTo64Buffer(text, opts), (error: Error) =>
         console.warn(error)

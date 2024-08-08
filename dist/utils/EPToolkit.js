@@ -26,10 +26,24 @@ var d_end_bytes = Buffer.from([27, 33, 0, 28, 33, 0]);
 var cut_bytes = Buffer.from([27, 105]);
 var beep_bytes = Buffer.from([27, 66, 3, 2]);
 var line_bytes = Buffer.from([10, 10, 10, 10, 10]);
+var encoding_mappings_bytes = {
+    // single byte encodings
+    "CP437": Buffer.from([27, 116, 0]),
+    "CP949": Buffer.from([27, 116, 253]),
+    // multiple bit encodings
+    "GB18030": Buffer.from([28, 38, 28, 67, 0]),
+    // "GB18030": Buffer.from([]),
+    "BIG5": Buffer.from([28, 38, 28, 67, 1]),
+    "UTF8": Buffer.from([28, 38, 28, 67, 255]),
+    "tis620": Buffer.from([]),
+    "EUC-KR": Buffer.from([]),
+    "Big5-HKSCS": Buffer.from([]),
+};
 var options_controller = {
     cut: cut_bytes,
     beep: beep_bytes,
     tailingLine: line_bytes,
+    encoding: encoding_mappings_bytes,
 };
 var controller = {
     "<M>": m_start_bytes,
@@ -61,6 +75,10 @@ export function exchange_text(text, options) {
     var m_options = options || default_options;
     var bytes = new BufferHelper();
     bytes.concat(init_printer_bytes);
+    // set encoding
+    if (m_options["encoding"] && options_controller["encoding"][m_options["encoding"]]) {
+        bytes.concat(options_controller["encoding"][m_options["encoding"]]);
+    }
     bytes.concat(default_space_bytes);
     var temp = "";
     for (var i = 0; i < text.length; i++) {
@@ -90,9 +108,9 @@ export function exchange_text(text, options) {
     }
     temp.length && bytes.concat(iconv.encode(temp, m_options.encoding));
     // check for "encoding" flag
-    if (typeof m_options["encoding"] === "boolean" && options_controller["encoding"]) {
-        bytes.concat(options_controller["encoding"]);
-    }
+    // if (typeof m_options["encoding"] === "boolean" && options_controller["encoding"]) {
+    //   bytes.concat(options_controller["encoding"]);
+    // }
     // check for "tailingLine" flag
     if (typeof m_options["tailingLine"] === "boolean" && m_options["tailingLine"] && options_controller["tailingLine"]) {
         bytes.concat(options_controller["tailingLine"]);
@@ -106,6 +124,61 @@ export function exchange_text(text, options) {
         bytes.concat(options_controller["beep"]);
     }
     return bytes.toBuffer();
+}
+export function exchange_text_ios(text, options) {
+    var m_options = options || default_options;
+    var bytes = new BufferHelper();
+    bytes.concat(init_printer_bytes);
+    // set encoding
+    if (m_options["encoding"] && options_controller["encoding"][m_options["encoding"]]) {
+        bytes.concat(options_controller["encoding"][m_options["encoding"]]);
+    }
+    bytes.concat(default_space_bytes);
+    var temp = "";
+    for (var i = 0; i < text.length; i++) {
+        var ch = text[i];
+        switch (ch) {
+            case "<":
+                bytes.concat(iconv.encode(temp, m_options.encoding));
+                temp = "";
+                // add bytes for changing font and justifying text
+                for (var tag in controller) {
+                    if (text.substring(i, i + tag.length) === tag) {
+                        bytes.concat(controller[tag]);
+                        i += tag.length - 1;
+                    }
+                }
+                break;
+            case "\n":
+                temp = "".concat(temp).concat(ch);
+                bytes.concat(iconv.encode(temp, m_options.encoding));
+                bytes.concat(reset_bytes);
+                temp = "";
+                break;
+            default:
+                temp = "".concat(temp).concat(ch);
+                break;
+        }
+    }
+    temp.length && bytes.concat(iconv.encode(temp, m_options.encoding));
+    // check for "encoding" flag
+    // if (typeof m_options["encoding"] === "boolean" && options_controller["encoding"]) {
+    //   bytes.concat(options_controller["encoding"]);
+    // }
+    // check for "tailingLine" flag
+    if (typeof m_options["tailingLine"] === "boolean" && m_options["tailingLine"] && options_controller["tailingLine"]) {
+        bytes.concat(options_controller["tailingLine"]);
+    }
+    // check for "cut" flag
+    if (typeof m_options["cut"] === "boolean" && m_options["cut"] && options_controller["cut"]) {
+        bytes.concat(options_controller["cut"]);
+    }
+    // check for "beep" flag
+    if (typeof m_options["beep"] === "boolean" && m_options["beep"] && options_controller["beep"]) {
+        bytes.concat(options_controller["beep"]);
+    }
+    // return bytes.toBuffer();
+    return bytes.toString('hex');
 }
 // export async function exchange_image(
 //   imagePath: string,
