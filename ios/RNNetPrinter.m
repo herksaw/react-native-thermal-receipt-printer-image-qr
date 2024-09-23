@@ -136,108 +136,177 @@ RCT_EXPORT_METHOD(connectPrinter:(NSString *)host
                   withPort:(nonnull NSNumber *)port
                   success:(RCTResponseSenderBlock)successCallback
                   fail:(RCTResponseSenderBlock)errorCallback) {
-    @try {
-        BOOL isConnectSuccess = [[PrinterSDK defaultPrinterSDK] connectIP:host];
-        !isConnectSuccess ? [NSException raise:@"Invalid connection" format:@"Can't connect to printer %@", host] : nil;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        @try {
 
-        connected_ip = host;
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"NetPrinterConnected" object:nil];
-        successCallback(@[[NSString stringWithFormat:@"Connecting to printer %@", host]]);
+            BOOL isConnectSuccess = [[PrinterSDK defaultPrinterSDK] connectIP:host];
 
-    } @catch (NSException *exception) {
-        errorCallback(@[exception.reason]);
-    }
+            if (!isConnectSuccess) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    errorCallback(@[@"Can't connect to printer"]);
+                });
+                return;
+            }
+
+            connected_ip = host;
+            // [[NSNotificationCenter defaultCenter] postNotificationName:@"NetPrinterConnected" object:nil];
+            // successCallback(@[[NSString stringWithFormat:@"Connecting to printer %@", host]]);
+
+            dispatch_async(dispatch_get_main_queue(), ^{
+                successCallback(@[@"Connecting to printer"]);
+            });
+        } @catch (NSException *exception) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                errorCallback(@[exception.reason]);
+            });
+        }
+    });
+
+    // @try {
+    //     BOOL isConnectSuccess = [[PrinterSDK defaultPrinterSDK] connectIP:host];
+    //     !isConnectSuccess ? [NSException raise:@"Invalid connection" format:@"Can't connect to printer %@", host] : nil;
+
+    //     connected_ip = host;
+    //     [[NSNotificationCenter defaultCenter] postNotificationName:@"NetPrinterConnected" object:nil];
+    //     successCallback(@[[NSString stringWithFormat:@"Connecting to printer %@", host]]);
+
+    // } @catch (NSException *exception) {
+    //     errorCallback(@[exception.reason]);
+    // }
 }
 
 RCT_EXPORT_METHOD(printRawData:(NSString *)text
                   printerOptions:(NSDictionary *)options
                   fail:(RCTResponseSenderBlock)errorCallback) {
-    @try {
-        NSNumber* beepPtr = [options valueForKey:@"beep"];
-        NSNumber* cutPtr = [options valueForKey:@"cut"];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        @try {
+            NSNumber* beepPtr = [options valueForKey:@"beep"];
+            NSNumber* cutPtr = [options valueForKey:@"cut"];
 
-        BOOL beep = (BOOL)[beepPtr intValue];
-        BOOL cut = (BOOL)[cutPtr intValue];
+            BOOL beep = (BOOL)[beepPtr intValue];
+            BOOL cut = (BOOL)[cutPtr intValue];
 
-        !connected_ip ? [NSException raise:@"Invalid connection" format:@"Can't connect to printer"] : nil;
+            if (!connected_ip) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    errorCallback(@[@"Can't connect to printer"]);
+                });
+                return;
+            }
 
-        // [[PrinterSDK defaultPrinterSDK] printTestPaper];
-        [[PrinterSDK defaultPrinterSDK] printText:text];
-        beep ? [[PrinterSDK defaultPrinterSDK] beep] : nil;
-        cut ? [[PrinterSDK defaultPrinterSDK] cutPaper] : nil;
-    } @catch (NSException *exception) {
-        errorCallback(@[exception.reason]);
-    }
+            [[PrinterSDK defaultPrinterSDK] printText:text];
+            if (beep) {
+                [[PrinterSDK defaultPrinterSDK] beep];
+            }
+            if (cut) {
+                [[PrinterSDK defaultPrinterSDK] cutPaper];
+            }
+
+            // dispatch_async(dispatch_get_main_queue(), ^{
+            //     successCallback(@[@"Printing completed successfully"]);
+            // });
+        } @catch (NSException *exception) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                errorCallback(@[exception.reason]);
+            });
+        }
+    });
+
+    // @try {
+    //     NSNumber* beepPtr = [options valueForKey:@"beep"];
+    //     NSNumber* cutPtr = [options valueForKey:@"cut"];
+
+    //     BOOL beep = (BOOL)[beepPtr intValue];
+    //     BOOL cut = (BOOL)[cutPtr intValue];
+
+    //     !connected_ip ? [NSException raise:@"Invalid connection" format:@"Can't connect to printer"] : nil;
+
+    //     // [[PrinterSDK defaultPrinterSDK] printTestPaper];
+    //     [[PrinterSDK defaultPrinterSDK] printText:text];
+    //     beep ? [[PrinterSDK defaultPrinterSDK] beep] : nil;
+    //     cut ? [[PrinterSDK defaultPrinterSDK] cutPaper] : nil;
+    // } @catch (NSException *exception) {
+    //     errorCallback(@[exception.reason]);
+    // }
 }
 
 RCT_EXPORT_METHOD(printHex:(NSString *)text
                   printerOptions:(NSDictionary *)options
                   fail:(RCTResponseSenderBlock)errorCallback) {
-    @try {
-        NSNumber* beepPtr = [options valueForKey:@"beep"];
-        NSNumber* cutPtr = [options valueForKey:@"cut"];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        @try {
+            NSNumber* beepPtr = [options valueForKey:@"beep"];
+            NSNumber* cutPtr = [options valueForKey:@"cut"];
 
-        BOOL beep = (BOOL)[beepPtr intValue];
-        BOOL cut = (BOOL)[cutPtr intValue];
+            BOOL beep = (BOOL)[beepPtr intValue];
+            BOOL cut = (BOOL)[cutPtr intValue];
 
-        !connected_ip ? [NSException raise:@"Invalid connection" format:@"Can't connect to printer"] : nil;
+            if (!connected_ip) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    errorCallback(@[@"Can't connect to printer"]);
+                });
+                return;
+            }
 
-        // [[PrinterSDK defaultPrinterSDK] printTestPaper];
-        [[PrinterSDK defaultPrinterSDK] sendHex:text];
-        // [[PrinterSDK defaultPrinterSDK] printData:text];
-        beep ? [[PrinterSDK defaultPrinterSDK] beep] : nil;
-        cut ? [[PrinterSDK defaultPrinterSDK] cutPaper] : nil;
-    } @catch (NSException *exception) {
-        errorCallback(@[exception.reason]);
-    }
+            [[PrinterSDK defaultPrinterSDK] sendHex:text];
+            if (beep) {
+                [[PrinterSDK defaultPrinterSDK] beep];
+            }
+            if (cut) {
+                [[PrinterSDK defaultPrinterSDK] cutPaper];
+            }
+
+            // dispatch_async(dispatch_get_main_queue(), ^{
+            //     successCallback(@[@"Printing completed successfully"]);
+            // });
+        } @catch (NSException *exception) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                errorCallback(@[exception.reason]);
+            });
+        }
+    });
+
+    // @try {
+    //     NSNumber* beepPtr = [options valueForKey:@"beep"];
+    //     NSNumber* cutPtr = [options valueForKey:@"cut"];
+
+    //     BOOL beep = (BOOL)[beepPtr intValue];
+    //     BOOL cut = (BOOL)[cutPtr intValue];
+
+    //     !connected_ip ? [NSException raise:@"Invalid connection" format:@"Can't connect to printer"] : nil;
+
+    //     // [[PrinterSDK defaultPrinterSDK] printTestPaper];
+    //     [[PrinterSDK defaultPrinterSDK] sendHex:text];
+    //     // [[PrinterSDK defaultPrinterSDK] printData:text];
+    //     beep ? [[PrinterSDK defaultPrinterSDK] beep] : nil;
+    //     cut ? [[PrinterSDK defaultPrinterSDK] cutPaper] : nil;
+    // } @catch (NSException *exception) {
+    //     errorCallback(@[exception.reason]);
+    // }
 }
 
 RCT_EXPORT_METHOD(printImageData:(NSString *)imgUrl
                   printerOptions:(NSDictionary *)options
                   fail:(RCTResponseSenderBlock)errorCallback) {
-    @try {
 
-        !connected_ip ? [NSException raise:@"Invalid connection" format:@"Can't connect to printer"] : nil;
-        NSURL* url = [NSURL URLWithString:imgUrl];
-        NSData* imageData = [NSData dataWithContentsOfURL:url];
+     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        @try {
+            if (!connected_ip) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    errorCallback(@[@"Can't connect to printer"]);
+                });
+                return;
+            }
 
-        NSString* printerWidthType = [options valueForKey:@"printerWidthType"];
+            NSURL* url = [NSURL URLWithString:imgUrl];
+            NSData* imageData = [NSData dataWithContentsOfURL:url];
 
-        NSInteger printerWidth = 576;
-
-        if(printerWidthType != nil && [printerWidthType isEqualToString:@"58"]) {
-            printerWidth = 384;
-        }
-
-        if(imageData != nil){
-            UIImage* image = [UIImage imageWithData:imageData];
-            UIImage* printImage = [self getPrintImage:image printerOptions:options];
-
-            [[PrinterSDK defaultPrinterSDK] setPrintWidth:printerWidth];
-            [[PrinterSDK defaultPrinterSDK] printImage:printImage ];
-        }
-
-    } @catch (NSException *exception) {
-        errorCallback(@[exception.reason]);
-    }
-}
-
-RCT_EXPORT_METHOD(printImageBase64:(NSString *)base64Qr
-                  printerOptions:(NSDictionary *)options
-                  fail:(RCTResponseSenderBlock)errorCallback) {
-    @try {
-
-        !connected_ip ? [NSException raise:@"Invalid connection" format:@"Can't connect to printer"] : nil;
-        if(![base64Qr  isEqual: @""]){
-            NSString *result = [@"data:image/png;base64," stringByAppendingString:base64Qr];
-            NSURL *url = [NSURL URLWithString:result];
-            NSData *imageData = [NSData dataWithContentsOfURL:url];
             NSString* printerWidthType = [options valueForKey:@"printerWidthType"];
 
-            NSInteger printerWidth = 400;
+            NSInteger printerWidth = 576;
 
             if(printerWidthType != nil && [printerWidthType isEqualToString:@"58"]) {
-                printerWidth = 300;
+                printerWidth = 384;
             }
 
             if(imageData != nil){
@@ -247,10 +316,114 @@ RCT_EXPORT_METHOD(printImageBase64:(NSString *)base64Qr
                 [[PrinterSDK defaultPrinterSDK] setPrintWidth:printerWidth];
                 [[PrinterSDK defaultPrinterSDK] printImage:printImage ];
             }
+
+            // dispatch_async(dispatch_get_main_queue(), ^{
+            //     successCallback(@[@"Printing completed successfully"]);
+            // });
+        } @catch (NSException *exception) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                errorCallback(@[exception.reason]);
+            });
         }
-    } @catch (NSException *exception) {
-        errorCallback(@[exception.reason]);
-    }
+    });
+
+    // @try {
+
+    //     !connected_ip ? [NSException raise:@"Invalid connection" format:@"Can't connect to printer"] : nil;
+    //     NSURL* url = [NSURL URLWithString:imgUrl];
+    //     NSData* imageData = [NSData dataWithContentsOfURL:url];
+
+    //     NSString* printerWidthType = [options valueForKey:@"printerWidthType"];
+
+    //     NSInteger printerWidth = 576;
+
+    //     if(printerWidthType != nil && [printerWidthType isEqualToString:@"58"]) {
+    //         printerWidth = 384;
+    //     }
+
+    //     if(imageData != nil){
+    //         UIImage* image = [UIImage imageWithData:imageData];
+    //         UIImage* printImage = [self getPrintImage:image printerOptions:options];
+
+    //         [[PrinterSDK defaultPrinterSDK] setPrintWidth:printerWidth];
+    //         [[PrinterSDK defaultPrinterSDK] printImage:printImage ];
+    //     }
+
+    // } @catch (NSException *exception) {
+    //     errorCallback(@[exception.reason]);
+    // }
+}
+
+RCT_EXPORT_METHOD(printImageBase64:(NSString *)base64Qr
+                  printerOptions:(NSDictionary *)options
+                  fail:(RCTResponseSenderBlock)errorCallback) {
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        @try {
+            if (!connected_ip) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    errorCallback(@[@"Can't connect to printer"]);
+                });
+                return;
+            }
+
+            if(![base64Qr  isEqual: @""]){
+                NSString *result = [@"data:image/png;base64," stringByAppendingString:base64Qr];
+                NSURL *url = [NSURL URLWithString:result];
+                NSData *imageData = [NSData dataWithContentsOfURL:url];
+                NSString* printerWidthType = [options valueForKey:@"printerWidthType"];
+
+                NSInteger printerWidth = 400;
+
+                if(printerWidthType != nil && [printerWidthType isEqualToString:@"58"]) {
+                    printerWidth = 300;
+                }
+
+                if(imageData != nil){
+                    UIImage* image = [UIImage imageWithData:imageData];
+                    UIImage* printImage = [self getPrintImage:image printerOptions:options];
+
+                    [[PrinterSDK defaultPrinterSDK] setPrintWidth:printerWidth];
+                    [[PrinterSDK defaultPrinterSDK] printImage:printImage ];
+                }
+            }
+
+            // dispatch_async(dispatch_get_main_queue(), ^{
+            //     successCallback(@[@"Printing completed successfully"]);
+            // });
+        } @catch (NSException *exception) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                errorCallback(@[exception.reason]);
+            });
+        }
+    });
+
+    // @try {
+        
+    //     !connected_ip ? [NSException raise:@"Invalid connection" format:@"Can't connect to printer"] : nil;
+    //     if(![base64Qr  isEqual: @""]){
+    //         NSString *result = [@"data:image/png;base64," stringByAppendingString:base64Qr];
+    //         NSURL *url = [NSURL URLWithString:result];
+    //         NSData *imageData = [NSData dataWithContentsOfURL:url];
+    //         NSString* printerWidthType = [options valueForKey:@"printerWidthType"];
+
+    //         NSInteger printerWidth = 400;
+
+    //         if(printerWidthType != nil && [printerWidthType isEqualToString:@"58"]) {
+    //             printerWidth = 300;
+    //         }
+
+    //         if(imageData != nil){
+    //             UIImage* image = [UIImage imageWithData:imageData];
+    //             UIImage* printImage = [self getPrintImage:image printerOptions:options];
+
+    //             [[PrinterSDK defaultPrinterSDK] setPrintWidth:printerWidth];
+    //             [[PrinterSDK defaultPrinterSDK] printImage:printImage ];
+    //         }
+    //     }
+    // } @catch (NSException *exception) {
+    //     errorCallback(@[exception.reason]);
+    // }
 }
 
 -(UIImage *)getPrintImage:(UIImage *)image
@@ -313,13 +486,35 @@ RCT_EXPORT_METHOD(printImageBase64:(NSString *)base64Qr
 }
 
 RCT_EXPORT_METHOD(closeConn) {
-    @try {
-        !connected_ip ? [NSException raise:@"Invalid connection" format:@"Can't connect to printer"] : nil;
-        [[PrinterSDK defaultPrinterSDK] disconnect];
-        connected_ip = nil;
-    } @catch (NSException *exception) {
-        NSLog(@"%@", exception.reason);
-    }
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        @try {
+            if (!connected_ip) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    errorCallback(@[@"Can't connect to printer"]);
+                });
+                return;
+            }
+
+            [[PrinterSDK defaultPrinterSDK] disconnect];
+            connected_ip = nil;
+
+            // dispatch_async(dispatch_get_main_queue(), ^{
+            //     successCallback(@[@"Printing completed successfully"]);
+            // });
+        } @catch (NSException *exception) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                errorCallback(@[exception.reason]);
+            });
+        }
+    });
+
+    // @try {
+    //     !connected_ip ? [NSException raise:@"Invalid connection" format:@"Can't connect to printer"] : nil;
+    //     [[PrinterSDK defaultPrinterSDK] disconnect];
+    //     connected_ip = nil;
+    // } @catch (NSException *exception) {
+    //     NSLog(@"%@", exception.reason);
+    // }
 }
 
 RCT_EXPORT_METHOD(printQrCode:(NSString *)qrCode
