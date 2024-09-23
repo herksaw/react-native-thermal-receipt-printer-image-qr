@@ -199,52 +199,52 @@ public class NetPrinterAdapter implements PrinterAdapter {
             return;
         }
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    final Socket socket = new Socket(netPrinterDeviceId.getHost(), netPrinterDeviceId.getPort());
-                    if (socket.isConnected()) {
-                        closeConnectionIfExists();
-                        mSocket = socket;
-                        mNetDevice = new NetPrinterDevice(netPrinterDeviceId.getHost(), netPrinterDeviceId.getPort());
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run() {
-                                successCallback.invoke(mNetDevice.toRNWritableMap());
-                            }
-                        });
-                    } else {
-                        throw new IOException("Unable to connect");
-                    }
-                } catch (final IOException e) {
-                    e.printStackTrace();
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            errorCallback.invoke("failed to connect printer: " + e.getMessage());
-                        }
-                    });
-                }
-            }
-        }).start();
-
-        // try {
-        //     Socket socket = new Socket(netPrinterDeviceId.getHost(), netPrinterDeviceId.getPort());
-        //     if (socket.isConnected()) {
-        //         closeConnectionIfExists();
-        //         this.mSocket = socket;
-        //         this.mNetDevice = new NetPrinterDevice(netPrinterDeviceId.getHost(), netPrinterDeviceId.getPort());
-        //         sucessCallback.invoke(this.mNetDevice.toRNWritableMap());
-        //     } else {
-        //         errorCallback.invoke("unable to build connection with host: " + netPrinterDeviceId.getHost()
-        //                 + ", port: " + netPrinterDeviceId.getPort());
-        //         return;
+        // new Thread(new Runnable() {
+        //     @Override
+        //     public void run() {
+        //         try {
+        //             final Socket socket = new Socket(netPrinterDeviceId.getHost(), netPrinterDeviceId.getPort());
+        //             if (socket.isConnected()) {
+        //                 closeConnectionIfExists();
+        //                 mSocket = socket;
+        //                 mNetDevice = new NetPrinterDevice(netPrinterDeviceId.getHost(), netPrinterDeviceId.getPort());
+        //                 new Handler(Looper.getMainLooper()).post(new Runnable() {
+        //                     @Override
+        //                     public void run() {
+        //                         successCallback.invoke(mNetDevice.toRNWritableMap());
+        //                     }
+        //                 });
+        //             } else {
+        //                 throw new IOException("Unable to connect");
+        //             }
+        //         } catch (final IOException e) {
+        //             e.printStackTrace();
+        //             new Handler(Looper.getMainLooper()).post(new Runnable() {
+        //                 @Override
+        //                 public void run() {
+        //                     errorCallback.invoke("failed to connect printer: " + e.getMessage());
+        //                 }
+        //             });
+        //         }
         //     }
-        // } catch (IOException e) {
-        //     e.printStackTrace();
-        //     errorCallback.invoke("failed to connect printer: " + e.getMessage());
-        // }
+        // }).start();
+
+        try {
+            Socket socket = new Socket(netPrinterDeviceId.getHost(), netPrinterDeviceId.getPort());
+            if (socket.isConnected()) {
+                closeConnectionIfExists();
+                this.mSocket = socket;
+                this.mNetDevice = new NetPrinterDevice(netPrinterDeviceId.getHost(), netPrinterDeviceId.getPort());
+                sucessCallback.invoke(this.mNetDevice.toRNWritableMap());
+            } else {
+                errorCallback.invoke("unable to build connection with host: " + netPrinterDeviceId.getHost()
+                        + ", port: " + netPrinterDeviceId.getPort());
+                return;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            errorCallback.invoke("failed to connect printer: " + e.getMessage());
+        }
     }
 
     @Override
@@ -516,7 +516,36 @@ public class NetPrinterAdapter implements PrinterAdapter {
             @Override
             public void run() {
                 try {
-                    is
+                    int[][] pixels = getPixelsSlow(bitmapImage);
+
+                    OutputStream printerOutputStream = socket.getOutputStream();
+
+                    printerOutputStream.write(SET_LINE_SPACE_24);
+                    printerOutputStream.write(CENTER_ALIGN);
+
+                    for (int y = 0; y < pixels.length; y += 24) {
+                        // Like I said before, when done sending data,
+                        // the printer will resume to normal text printing
+                        printerOutputStream.write(SELECT_BIT_IMAGE_MODE);
+                        // Set nL and nH based on the width of the image
+                        printerOutputStream.write(
+                                new byte[] { (byte) (0x00ff & pixels[y].length), (byte) ((0xff00 & pixels[y].length) >> 8) });
+                        for (int x = 0; x < pixels[y].length; x++) {
+                            // for each stripe, recollect 3 bytes (3 bytes = 24 bits)
+                            printerOutputStream.write(recollectSlice(y, x, pixels));
+                        }
+
+                        // Do a line feed, if not the printing will resume on the same line
+                        printerOutputStream.write(LINE_FEED);
+                    }
+                    printerOutputStream.write(SET_LINE_SPACE_32);
+                    printerOutputStream.write(LINE_FEED);
+
+                    printerOutputStream.flush();
+                } catch (IOException e) {
+                    Log.e(LOG_TAG, "failed to print data");
+                    e.printStackTrace();
+                }
             }
         }).start();
     }
