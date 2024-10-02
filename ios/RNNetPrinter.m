@@ -489,9 +489,12 @@ RCT_EXPORT_METHOD(closeConn) {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         @try {
             if (!connected_ip) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    errorCallback(@[@"Can't connect to printer"]);
-                });
+                // dispatch_async(dispatch_get_main_queue(), ^{
+                //     errorCallback(@[@"Can't connect to printer"]);
+                // });
+
+                NSLog(@"Can't connect to printer: No active connection");
+
                 return;
             }
 
@@ -502,9 +505,11 @@ RCT_EXPORT_METHOD(closeConn) {
             //     successCallback(@[@"Printing completed successfully"]);
             // });
         } @catch (NSException *exception) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                errorCallback(@[exception.reason]);
-            });
+            // dispatch_async(dispatch_get_main_queue(), ^{
+            //     errorCallback(@[exception.reason]);
+            // });
+
+            NSLog(@"%@", exception.reason);
         }
     });
 
