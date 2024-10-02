@@ -38,6 +38,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import android.graphics.BitmapFactory;
 
@@ -123,27 +126,49 @@ public class NetPrinterAdapter implements PrinterAdapter {
                     int suffix = Integer
                             .parseInt(ipAddress.substring(ipAddress.lastIndexOf('.') + 1, ipAddress.length()));
 
+                    // Use ExecutorService for concurrent scanning
+                    ExecutorService executor = Executors.newFixedThreadPool(10); // Adjust the number of threads as needed
+
                     for (int i = 0; i <= 255; i++) {
                         if (i == suffix)
                             continue;
-                        ArrayList<Integer> ports = getAvailablePorts(prefix + i);
-                        if (!ports.isEmpty()) {
-                            WritableMap payload = Arguments.createMap();
 
-                            payload.putString("host", prefix + i);
-                            payload.putInt("port", 9100);
+                        final String host = prefix + i;
+                        executor.submit(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    ArrayList<Integer> ports = getAvailablePorts(host);
+                                    if (!ports.isEmpty()) {
+                                        WritableMap payload = Arguments.createMap();
+                                        payload.putString("host", host);
+                                        payload.putInt("port", 9100);
+                                        // Use a thread-safe collection
+                                        synchronized (array) {
+                                            array.pushMap(payload);
+                                        }
+                                    }
+                                } catch (Exception e) {
+                                    Log.e(LOG_TAG, "Error getting available ports for " + host, e);
+                                }
+                            }
+                        });
+                    }
 
-                            array.pushMap(payload);
-                        }
+                    // Shutdown the executor and wait for tasks to finish
+                    executor.shutdown();
+                    if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
+                        executor.shutdownNow(); // Force shutdown if tasks do not finish
                     }
 
                     emitEvent(EVENT_SCANNER_RESOLVED, array);
-
                     successCallback.invoke(array);
                 } catch (NullPointerException ex) {
                     Log.i(LOG_TAG, "No connection");
-
                     errorCallback.invoke(ex.getMessage());
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    errorCallback.invoke(e.getMessage());
                 } finally {
                     isRunning = false;
                     emitEvent(EVENT_SCANNER_RUNNING, isRunning);
