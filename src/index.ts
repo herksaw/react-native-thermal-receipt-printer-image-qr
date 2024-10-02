@@ -1,9 +1,9 @@
-import {NativeModules, NativeEventEmitter, Platform} from "react-native";
+import { NativeModules, NativeEventEmitter, Platform } from "react-native";
 
 import * as EPToolkit from "./utils/EPToolkit";
-import {processColumnText} from './utils/print-column';
-import {COMMANDS} from './utils/printer-commands';
-import {connectToHost} from './utils/net-connect';
+import { processColumnText } from './utils/print-column';
+import { COMMANDS } from './utils/printer-commands';
+import { connectToHost } from './utils/net-connect';
 
 const RNUSBPrinter = NativeModules.RNUSBPrinter;
 const RNBLEPrinter = NativeModules.RNBLEPrinter;
@@ -93,22 +93,22 @@ const textPreprocessingIOS = (text: string, canCut = true, beep = true, encoding
   if (encoding) {
     return {
       text: EPToolkit.exchange_text_ios(
-          text
-              .replace(/<\/?CB>/g, "")
-              .replace(/<\/?CM>/g, "")
-              .replace(/<\/?CD>/g, "")
-              .replace(/<\/?C>/g, "")
-              .replace(/<\/?D>/g, "")
-              .replace(/<\/?B>/g, "")
-              .replace(/<\/?M>/g, ""),
-          {
-              ...options,
-              encoding: encoding,
-              tailingLine: tailingLine,
-          }
+        text
+          .replace(/<\/?CB>/g, "")
+          .replace(/<\/?CM>/g, "")
+          .replace(/<\/?CD>/g, "")
+          .replace(/<\/?C>/g, "")
+          .replace(/<\/?D>/g, "")
+          .replace(/<\/?B>/g, "")
+          .replace(/<\/?M>/g, ""),
+        {
+          ...options,
+          encoding: encoding,
+          tailingLine: tailingLine,
+        }
       ),
       opts: options,
-  };
+    };
   }
   else {
     return {
@@ -366,20 +366,23 @@ const NetPrinter = {
       )
     ),
 
-  connectPrinter: (host: string, port: number, timeout?: number): Promise<INetPrinter> =>
+  connectPrinter: (host: string, port: number, timeout?: number, preConnect?: false): Promise<INetPrinter> =>
     new Promise(async (resolve, reject) => {
-        try {
+      try {
+        if (preConnect) {
           await connectToHost(host, timeout)
-          RNNetPrinter.connectPrinter(
-            host,
-            port,
-            (printer: INetPrinter) => resolve(printer),
-            (error: Error) => reject(error)
-          )
-        } catch (error) {
-          reject(error?.message || `Connect to ${host} fail`)
         }
+
+        RNNetPrinter.connectPrinter(
+          host,
+          port,
+          (printer: INetPrinter) => resolve(printer),
+          (error: Error) => reject(error)
+        )
+      } catch (error) {
+        reject(error?.message || `Connect to ${host} fail`)
       }
+    }
     ),
 
   closeConn: (): Promise<void> =>
@@ -388,10 +391,9 @@ const NetPrinter = {
       resolve();
     }),
 
-  printText: (text: string, opts = { encoding: '' }): void => {
+  printText: (text: string, opts = { encoding: '' }, defaultHex?: false): void => {
     if (Platform.OS === "ios") {
       const processedText = textPreprocessingIOS(text, false, false, opts.encoding ? opts.encoding : '');
-      
 
       if (processedText.opts.encoding) {
         // use custom code
@@ -401,16 +403,25 @@ const NetPrinter = {
           processedText.opts,
           (error: Error) => console.warn(error)
         );
-    }
-    else {
+      }
+      else {
         // use original code
 
-        RNNetPrinter.printRawData(
-          processedText.text,
-          processedText.opts,
-          (error: Error) => console.warn(error)
-        );
-    }
+        if (defaultHex) {
+          RNNetPrinter.printHex(
+            processedText.text,
+            processedText.opts,
+            (error: Error) => console.warn(error)
+          );
+        }
+        else {
+          RNNetPrinter.printRawData(
+            processedText.text,
+            processedText.opts,
+            (error: Error) => console.warn(error)
+          );
+        }
+      }
     } else {
       RNNetPrinter.printRawData(textTo64Buffer(text, opts), (error: Error) =>
         console.warn(error)

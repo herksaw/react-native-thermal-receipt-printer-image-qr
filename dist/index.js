@@ -339,23 +339,26 @@ var NetPrinter = {
             return RNNetPrinter.getDeviceList(function (printers) { return resolve(printers); }, function (error) { return reject(error); });
         });
     },
-    connectPrinter: function (host, port, timeout) {
+    connectPrinter: function (host, port, timeout, preConnect) {
         return new Promise(function (resolve, reject) { return __awaiter(void 0, void 0, void 0, function () {
             var error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
+                        _a.trys.push([0, 3, , 4]);
+                        if (!preConnect) return [3 /*break*/, 2];
                         return [4 /*yield*/, connectToHost(host, timeout)];
                     case 1:
                         _a.sent();
-                        RNNetPrinter.connectPrinter(host, port, function (printer) { return resolve(printer); }, function (error) { return reject(error); });
-                        return [3 /*break*/, 3];
+                        _a.label = 2;
                     case 2:
+                        RNNetPrinter.connectPrinter(host, port, function (printer) { return resolve(printer); }, function (error) { return reject(error); });
+                        return [3 /*break*/, 4];
+                    case 3:
                         error_1 = _a.sent();
                         reject((error_1 === null || error_1 === void 0 ? void 0 : error_1.message) || "Connect to ".concat(host, " fail"));
-                        return [3 /*break*/, 3];
-                    case 3: return [2 /*return*/];
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/];
                 }
             });
         }); });
@@ -366,7 +369,7 @@ var NetPrinter = {
             resolve();
         });
     },
-    printText: function (text, opts) {
+    printText: function (text, opts, defaultHex) {
         if (opts === void 0) { opts = { encoding: '' }; }
         if (Platform.OS === "ios") {
             var processedText = textPreprocessingIOS(text, false, false, opts.encoding ? opts.encoding : '');
@@ -376,7 +379,12 @@ var NetPrinter = {
             }
             else {
                 // use original code
-                RNNetPrinter.printRawData(processedText.text, processedText.opts, function (error) { return console.warn(error); });
+                if (defaultHex) {
+                    RNNetPrinter.printHex(processedText.text, processedText.opts, function (error) { return console.warn(error); });
+                }
+                else {
+                    RNNetPrinter.printRawData(processedText.text, processedText.opts, function (error) { return console.warn(error); });
+                }
             }
         }
         else {
