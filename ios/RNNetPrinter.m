@@ -96,7 +96,9 @@ RCT_EXPORT_METHOD(getDeviceList:(RCTResponseSenderBlock)successCallback
         NSString *localIP = [privateIP getIPAddress];
         is_scanning = YES;
         [self sendEventWithName:EVENT_SCANNER_RUNNING body:@YES];
-        _printerArray = [NSMutableArray new];
+        
+        // Use a local array to collect results
+        NSMutableArray *localPrinterArray = [NSMutableArray new];
 
         NSString *prefix = [localIP substringToIndex:([localIP rangeOfString:@"." options:NSBackwardsSearch].location)];
         NSInteger suffix = [[localIP substringFromIndex:([localIP rangeOfString:@"." options:NSBackwardsSearch].location)] intValue];
@@ -114,8 +116,8 @@ RCT_EXPORT_METHOD(getDeviceList:(RCTResponseSenderBlock)successCallback
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 // Attempt to connect and handle success/failure
                 if ([[PrinterSDK defaultPrinterSDK] connectIP:testIP]) {
-                    @synchronized (_printerArray) {
-                        [_printerArray addObject:testIP]; // Add discovered printer
+                    @synchronized (localPrinterArray) {
+                        [localPrinterArray addObject:testIP]; // Add discovered printer to local array
                     }
                 } else {
                     NSLog(@"Failed to connect to %@", testIP);
@@ -129,9 +131,9 @@ RCT_EXPORT_METHOD(getDeviceList:(RCTResponseSenderBlock)successCallback
 
         // Wait for all connections to finish
         dispatch_group_notify(group, dispatch_get_main_queue(), ^{
-            NSOrderedSet *orderedSet = [NSOrderedSet orderedSetWithArray:_printerArray];
+            NSOrderedSet *orderedSet = [NSOrderedSet orderedSetWithArray:localPrinterArray];
             NSArray *arrayWithoutDuplicates = [orderedSet array];
-            _printerArray = (NSMutableArray *)arrayWithoutDuplicates;
+            _printerArray = (NSMutableArray *)arrayWithoutDuplicates; // Update the main array after all connections
 
             [self sendEventWithName:EVENT_SCANNER_RESOLVED body:_printerArray];
             successCallback(@[_printerArray]);

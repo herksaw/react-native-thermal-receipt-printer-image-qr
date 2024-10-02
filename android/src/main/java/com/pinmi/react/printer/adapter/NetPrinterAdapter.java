@@ -37,6 +37,7 @@ import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -107,8 +108,9 @@ public class NetPrinterAdapter implements PrinterAdapter {
     }
 
     private void scan(final Callback successCallback, final Callback errorCallback) {
-        if (isRunning)
-            return;
+    if (isRunning)
+        return;
+
         new Thread(new Runnable() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
@@ -120,7 +122,6 @@ public class NetPrinterAdapter implements PrinterAdapter {
                     WifiManager wifiManager = (WifiManager) mContext.getApplicationContext()
                             .getSystemService(Context.WIFI_SERVICE);
                     String ipAddress = ipToString(wifiManager.getConnectionInfo().getIpAddress());
-                    WritableArray array = Arguments.createArray();
 
                     String prefix = ipAddress.substring(0, ipAddress.lastIndexOf('.') + 1);
                     int suffix = Integer
@@ -128,6 +129,7 @@ public class NetPrinterAdapter implements PrinterAdapter {
 
                     // Use ExecutorService for concurrent scanning
                     ExecutorService executor = Executors.newFixedThreadPool(10); // Adjust the number of threads as needed
+                    List<WritableMap> results = Collections.synchronizedList(new ArrayList<>()); // Thread-safe list to collect results
 
                     for (int i = 0; i <= 255; i++) {
                         if (i == suffix)
@@ -143,10 +145,7 @@ public class NetPrinterAdapter implements PrinterAdapter {
                                         WritableMap payload = Arguments.createMap();
                                         payload.putString("host", host);
                                         payload.putInt("port", 9100);
-                                        // Use a thread-safe collection
-                                        synchronized (array) {
-                                            array.pushMap(payload);
-                                        }
+                                        results.add(payload); // Add to the thread-safe list
                                     }
                                 } catch (Exception e) {
                                     Log.e(LOG_TAG, "Error getting available ports for " + host, e);
@@ -159,6 +158,12 @@ public class NetPrinterAdapter implements PrinterAdapter {
                     executor.shutdown();
                     if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
                         executor.shutdownNow(); // Force shutdown if tasks do not finish
+                    }
+
+                    // Create a single WritableArray to return
+                    WritableArray array = Arguments.createArray();
+                    for (WritableMap result : results) {
+                        array.pushMap(result); // Add each result to the array
                     }
 
                     emitEvent(EVENT_SCANNER_RESOLVED, array);
