@@ -100,11 +100,11 @@ declare const BLEPrinter: {
 declare const NetPrinter: {
     init: () => Promise<void>;
     getDeviceList: () => Promise<INetPrinter[]>;
-    connectPrinter: (host: string, port: number, timeout?: number | undefined, preConnect?: false | undefined) => Promise<INetPrinter>;
+    connectPrinter: (host: string, port: number, timeout?: number | undefined, skipPreConnect?: false | undefined) => Promise<INetPrinter>;
     closeConn: () => Promise<void>;
     printText: (text: string, opts?: {
         encoding: string;
-    }, defaultHex?: false | undefined) => void;
+    }, defaultHex?: true | undefined) => void;
     printBill: (text: string, opts?: PrinterOptions) => void;
     /**
      * image url

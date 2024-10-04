@@ -366,11 +366,14 @@ const NetPrinter = {
       )
     ),
 
-  connectPrinter: (host: string, port: number, timeout?: number, preConnect?: false): Promise<INetPrinter> =>
+  connectPrinter: (host: string, port: number, timeout?: number, skipPreConnect?: false): Promise<INetPrinter> =>
     new Promise(async (resolve, reject) => {
       try {
-        if (preConnect) {
-          await connectToHost(host, timeout)
+        if (skipPreConnect) {
+          // do nothing here
+        }
+        else {
+          await connectToHost(host, timeout); 
         }
 
         RNNetPrinter.connectPrinter(
@@ -378,7 +381,7 @@ const NetPrinter = {
           port,
           (printer: INetPrinter) => resolve(printer),
           (error: Error) => reject(error)
-        )
+        );
       } catch (error) {
         reject(error?.message || `Connect to ${host} fail`)
       }
@@ -391,7 +394,7 @@ const NetPrinter = {
       resolve();
     }),
 
-  printText: (text: string, opts = { encoding: '' }, defaultHex?: false): void => {
+  printText: (text: string, opts = { encoding: '' }, defaultHex?: true): void => {
     if (Platform.OS === "ios") {
       const processedText = textPreprocessingIOS(text, false, false, opts.encoding ? opts.encoding : '');
 

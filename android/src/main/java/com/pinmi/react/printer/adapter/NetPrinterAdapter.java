@@ -107,10 +107,85 @@ public class NetPrinterAdapter implements PrinterAdapter {
         return printerDevices;
     }
 
-    private void scan(final Callback successCallback, final Callback errorCallback) {
-    if (isRunning)
-        return;
+    // concurrency
+    // private void scan(final Callback successCallback, final Callback errorCallback) {
+    // if (isRunning)
+    //     return;
 
+    //     new Thread(new Runnable() {
+    //         @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    //         @Override
+    //         public void run() {
+    //             try {
+    //                 isRunning = true;
+    //                 emitEvent(EVENT_SCANNER_RUNNING, isRunning);
+
+    //                 WifiManager wifiManager = (WifiManager) mContext.getApplicationContext()
+    //                         .getSystemService(Context.WIFI_SERVICE);
+    //                 String ipAddress = ipToString(wifiManager.getConnectionInfo().getIpAddress());
+
+    //                 String prefix = ipAddress.substring(0, ipAddress.lastIndexOf('.') + 1);
+    //                 int suffix = Integer
+    //                         .parseInt(ipAddress.substring(ipAddress.lastIndexOf('.') + 1, ipAddress.length()));
+
+    //                 // Use ExecutorService for concurrent scanning
+    //                 ExecutorService executor = Executors.newFixedThreadPool(10); // Adjust the number of threads as needed
+    //                 List<WritableMap> results = Collections.synchronizedList(new ArrayList<>()); // Thread-safe list to collect results
+
+    //                 for (int i = 0; i <= 255; i++) {
+    //                     if (i == suffix)
+    //                         continue;
+
+    //                     final String host = prefix + i;
+    //                     executor.submit(new Runnable() {
+    //                         @Override
+    //                         public void run() {
+    //                             try {
+    //                                 ArrayList<Integer> ports = getAvailablePorts(host);
+    //                                 if (!ports.isEmpty()) {
+    //                                     WritableMap payload = Arguments.createMap();
+    //                                     payload.putString("host", host);
+    //                                     payload.putInt("port", 9100);
+    //                                     results.add(payload); // Add to the thread-safe list
+    //                                 }
+    //                             } catch (Exception e) {
+    //                                 Log.e(LOG_TAG, "Error getting available ports for " + host, e);
+    //                             }
+    //                         }
+    //                     });
+    //                 }
+
+    //                 // Shutdown the executor and wait for tasks to finish
+    //                 executor.shutdown();
+    //                 if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
+    //                     executor.shutdownNow(); // Force shutdown if tasks do not finish
+    //                 }
+
+    //                 // Create a single WritableArray to return
+    //                 WritableArray array = Arguments.createArray();
+    //                 for (WritableMap result : results) {
+    //                     array.pushMap(result); // Add each result to the array
+    //                 }
+
+    //                 emitEvent(EVENT_SCANNER_RESOLVED, array);
+    //                 successCallback.invoke(array);
+    //             } catch (NullPointerException ex) {
+    //                 Log.i(LOG_TAG, "No connection");
+    //                 errorCallback.invoke(ex.getMessage());
+    //             } catch (InterruptedException e) {
+    //                 Thread.currentThread().interrupt();
+    //                 errorCallback.invoke(e.getMessage());
+    //             } finally {
+    //                 isRunning = false;
+    //                 emitEvent(EVENT_SCANNER_RUNNING, isRunning);
+    //             }
+    //         }
+    //     }).start();
+    // }
+
+    private void scan(final Callback successCallback, final Callback errorCallback) {
+        if (isRunning)
+            return;
         new Thread(new Runnable() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
@@ -122,58 +197,33 @@ public class NetPrinterAdapter implements PrinterAdapter {
                     WifiManager wifiManager = (WifiManager) mContext.getApplicationContext()
                             .getSystemService(Context.WIFI_SERVICE);
                     String ipAddress = ipToString(wifiManager.getConnectionInfo().getIpAddress());
+                    WritableArray array = Arguments.createArray();
 
                     String prefix = ipAddress.substring(0, ipAddress.lastIndexOf('.') + 1);
                     int suffix = Integer
                             .parseInt(ipAddress.substring(ipAddress.lastIndexOf('.') + 1, ipAddress.length()));
 
-                    // Use ExecutorService for concurrent scanning
-                    ExecutorService executor = Executors.newFixedThreadPool(10); // Adjust the number of threads as needed
-                    List<WritableMap> results = Collections.synchronizedList(new ArrayList<>()); // Thread-safe list to collect results
-
                     for (int i = 0; i <= 255; i++) {
                         if (i == suffix)
                             continue;
+                        ArrayList<Integer> ports = getAvailablePorts(prefix + i);
+                        if (!ports.isEmpty()) {
+                            WritableMap payload = Arguments.createMap();
 
-                        final String host = prefix + i;
-                        executor.submit(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    ArrayList<Integer> ports = getAvailablePorts(host);
-                                    if (!ports.isEmpty()) {
-                                        WritableMap payload = Arguments.createMap();
-                                        payload.putString("host", host);
-                                        payload.putInt("port", 9100);
-                                        results.add(payload); // Add to the thread-safe list
-                                    }
-                                } catch (Exception e) {
-                                    Log.e(LOG_TAG, "Error getting available ports for " + host, e);
-                                }
-                            }
-                        });
-                    }
+                            payload.putString("host", prefix + i);
+                            payload.putInt("port", 9100);
 
-                    // Shutdown the executor and wait for tasks to finish
-                    executor.shutdown();
-                    if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
-                        executor.shutdownNow(); // Force shutdown if tasks do not finish
-                    }
-
-                    // Create a single WritableArray to return
-                    WritableArray array = Arguments.createArray();
-                    for (WritableMap result : results) {
-                        array.pushMap(result); // Add each result to the array
+                            array.pushMap(payload);
+                        }
                     }
 
                     emitEvent(EVENT_SCANNER_RESOLVED, array);
+
                     successCallback.invoke(array);
                 } catch (NullPointerException ex) {
                     Log.i(LOG_TAG, "No connection");
+
                     errorCallback.invoke(ex.getMessage());
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    errorCallback.invoke(e.getMessage());
                 } finally {
                     isRunning = false;
                     emitEvent(EVENT_SCANNER_RUNNING, isRunning);

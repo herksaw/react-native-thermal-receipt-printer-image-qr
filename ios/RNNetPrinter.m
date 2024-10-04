@@ -90,61 +90,96 @@ RCT_EXPORT_METHOD(getDeviceList:(RCTResponseSenderBlock)successCallback
     });
 }
 
+// concurrency
+// - (void) scan: (RCTResponseSenderBlock)successCallback {
+//     @try {
+//         PrivateIP *privateIP = [[PrivateIP alloc]init];
+//         NSString *localIP = [privateIP getIPAddress];
+//         is_scanning = YES;
+//         [self sendEventWithName:EVENT_SCANNER_RUNNING body:@YES];
+        
+//         // Use a local array to collect results
+//         NSMutableArray *localPrinterArray = [NSMutableArray new];
+
+//         NSString *prefix = [localIP substringToIndex:([localIP rangeOfString:@"." options:NSBackwardsSearch].location)];
+//         NSInteger suffix = [[localIP substringFromIndex:([localIP rangeOfString:@"." options:NSBackwardsSearch].location)] intValue];
+
+//         // Create a dispatch group to manage concurrent connections
+//         dispatch_group_t group = dispatch_group_create();
+
+//         for (NSInteger i = 1; i < 255; i++) {
+//             if (i == suffix) continue;
+//             NSString *testIP = [NSString stringWithFormat:@"%@.%ld", prefix, (long)i];
+//             current_scan_ip = testIP;
+
+//             // Enter the group before starting the connection
+//             dispatch_group_enter(group);
+//             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//                 // Attempt to connect and handle success/failure
+//                 if ([[PrinterSDK defaultPrinterSDK] connectIP:testIP]) {
+//                     @synchronized (localPrinterArray) {
+//                         [localPrinterArray addObject:testIP]; // Add discovered printer to local array
+//                     }
+//                 } else {
+//                     NSLog(@"Failed to connect to %@", testIP);
+//                 }
+//                 // Use a delay if necessary, but consider alternatives
+//                 [NSThread sleepForTimeInterval:0.5];
+//                 // Leave the group after the connection attempt
+//                 dispatch_group_leave(group);
+//             });
+//         }
+
+//         // Wait for all connections to finish
+//         dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+//             NSOrderedSet *orderedSet = [NSOrderedSet orderedSetWithArray:localPrinterArray];
+//             NSArray *arrayWithoutDuplicates = [orderedSet array];
+//             _printerArray = (NSMutableArray *)arrayWithoutDuplicates; // Update the main array after all connections
+
+//             [self sendEventWithName:EVENT_SCANNER_RESOLVED body:_printerArray];
+//             successCallback(@[_printerArray]);
+//             [[PrinterSDK defaultPrinterSDK] disconnect]; // Move disconnect here
+//             is_scanning = NO;
+//             [self sendEventWithName:EVENT_SCANNER_RUNNING body:@NO];
+//         });
+
+//     } @catch (NSException *exception) {
+//         NSLog(@"No connection: %@", exception);
+//     }
+// }
+
 - (void) scan: (RCTResponseSenderBlock)successCallback {
     @try {
         PrivateIP *privateIP = [[PrivateIP alloc]init];
         NSString *localIP = [privateIP getIPAddress];
         is_scanning = YES;
         [self sendEventWithName:EVENT_SCANNER_RUNNING body:@YES];
-        
-        // Use a local array to collect results
-        NSMutableArray *localPrinterArray = [NSMutableArray new];
+        _printerArray = [NSMutableArray new];
 
         NSString *prefix = [localIP substringToIndex:([localIP rangeOfString:@"." options:NSBackwardsSearch].location)];
         NSInteger suffix = [[localIP substringFromIndex:([localIP rangeOfString:@"." options:NSBackwardsSearch].location)] intValue];
-
-        // Create a dispatch group to manage concurrent connections
-        dispatch_group_t group = dispatch_group_create();
 
         for (NSInteger i = 1; i < 255; i++) {
             if (i == suffix) continue;
             NSString *testIP = [NSString stringWithFormat:@"%@.%ld", prefix, (long)i];
             current_scan_ip = testIP;
-
-            // Enter the group before starting the connection
-            dispatch_group_enter(group);
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                // Attempt to connect and handle success/failure
-                if ([[PrinterSDK defaultPrinterSDK] connectIP:testIP]) {
-                    @synchronized (localPrinterArray) {
-                        [localPrinterArray addObject:testIP]; // Add discovered printer to local array
-                    }
-                } else {
-                    NSLog(@"Failed to connect to %@", testIP);
-                }
-                // Use a delay if necessary, but consider alternatives
-                [NSThread sleepForTimeInterval:0.5];
-                // Leave the group after the connection attempt
-                dispatch_group_leave(group);
-            });
+            [[PrinterSDK defaultPrinterSDK] connectIP:testIP];
+            [NSThread sleepForTimeInterval:0.5];
         }
 
-        // Wait for all connections to finish
-        dispatch_group_notify(group, dispatch_get_main_queue(), ^{
-            NSOrderedSet *orderedSet = [NSOrderedSet orderedSetWithArray:localPrinterArray];
-            NSArray *arrayWithoutDuplicates = [orderedSet array];
-            _printerArray = (NSMutableArray *)arrayWithoutDuplicates; // Update the main array after all connections
+        NSOrderedSet *orderedSet = [NSOrderedSet orderedSetWithArray:_printerArray];
+        NSArray *arrayWithoutDuplicates = [orderedSet array];
+        _printerArray = (NSMutableArray *)arrayWithoutDuplicates;
 
-            [self sendEventWithName:EVENT_SCANNER_RESOLVED body:_printerArray];
-            successCallback(@[_printerArray]);
-            [[PrinterSDK defaultPrinterSDK] disconnect]; // Move disconnect here
-            is_scanning = NO;
-            [self sendEventWithName:EVENT_SCANNER_RUNNING body:@NO];
-        });
+        [self sendEventWithName:EVENT_SCANNER_RESOLVED body:_printerArray];
 
+        successCallback(@[_printerArray]);
     } @catch (NSException *exception) {
-        NSLog(@"No connection: %@", exception);
+        NSLog(@"No connection");
     }
+    [[PrinterSDK defaultPrinterSDK] disconnect];
+    is_scanning = NO;
+    [self sendEventWithName:EVENT_SCANNER_RUNNING body:@NO];
 }
 
 - (void)handlePrinterConnectedNotification:(NSNotification*)notification
