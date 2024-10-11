@@ -198,43 +198,43 @@ RCT_EXPORT_METHOD(connectPrinter:(NSString *)host
                   withPort:(nonnull NSNumber *)port
                   success:(RCTResponseSenderBlock)successCallback
                   fail:(RCTResponseSenderBlock)errorCallback) {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        @try {
+    // dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    //     @try {
 
-            BOOL isConnectSuccess = [[PrinterSDK defaultPrinterSDK] connectIP:host];
+    //         BOOL isConnectSuccess = [[PrinterSDK defaultPrinterSDK] connectIP:host];
 
-            if (!isConnectSuccess) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    errorCallback(@[@"Can't connect to printer"]);
-                });
-                return;
-            }
+    //         if (!isConnectSuccess) {
+    //             dispatch_async(dispatch_get_main_queue(), ^{
+    //                 errorCallback(@[@"Can't connect to printer"]);
+    //             });
+    //             return;
+    //         }
 
-            connected_ip = host;
-            // [[NSNotificationCenter defaultCenter] postNotificationName:@"NetPrinterConnected" object:nil];
-            // successCallback(@[[NSString stringWithFormat:@"Connecting to printer %@", host]]);
+    //         connected_ip = host;
+    //         // [[NSNotificationCenter defaultCenter] postNotificationName:@"NetPrinterConnected" object:nil];
+    //         // successCallback(@[[NSString stringWithFormat:@"Connecting to printer %@", host]]);
 
-            dispatch_async(dispatch_get_main_queue(), ^{
-                successCallback(@[@"Connecting to printer"]);
-            });
-        } @catch (NSException *exception) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                errorCallback(@[exception.reason]);
-            });
-        }
-    });
+    //         dispatch_async(dispatch_get_main_queue(), ^{
+    //             successCallback(@[@"Connecting to printer"]);
+    //         });
+    //     } @catch (NSException *exception) {
+    //         dispatch_async(dispatch_get_main_queue(), ^{
+    //             errorCallback(@[exception.reason]);
+    //         });
+    //     }
+    // });
 
-    // @try {
-    //     BOOL isConnectSuccess = [[PrinterSDK defaultPrinterSDK] connectIP:host];
-    //     !isConnectSuccess ? [NSException raise:@"Invalid connection" format:@"Can't connect to printer %@", host] : nil;
+    @try {
+        BOOL isConnectSuccess = [[PrinterSDK defaultPrinterSDK] connectIP:host];
+        !isConnectSuccess ? [NSException raise:@"Invalid connection" format:@"Can't connect to printer %@", host] : nil;
 
-    //     connected_ip = host;
-    //     [[NSNotificationCenter defaultCenter] postNotificationName:@"NetPrinterConnected" object:nil];
-    //     successCallback(@[[NSString stringWithFormat:@"Connecting to printer %@", host]]);
+        connected_ip = host;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"NetPrinterConnected" object:nil];
+        successCallback(@[[NSString stringWithFormat:@"Connecting to printer %@", host]]);
 
-    // } @catch (NSException *exception) {
-    //     errorCallback(@[exception.reason]);
-    // }
+    } @catch (NSException *exception) {
+        errorCallback(@[exception.reason]);
+    }
 }
 
 RCT_EXPORT_METHOD(printRawData:(NSString *)text

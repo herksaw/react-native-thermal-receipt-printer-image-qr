@@ -373,7 +373,7 @@ const NetPrinter = {
           // do nothing here
         }
         else {
-          await connectToHost(host, timeout); 
+          await connectToHost(host, timeout);
         }
 
         RNNetPrinter.connectPrinter(
@@ -394,31 +394,40 @@ const NetPrinter = {
       resolve();
     }),
 
-  printText: (text: string, opts = { encoding: '' }, defaultHex?: true): void => {
+  printText: (text: string, opts = { encoding: '', noHex: false }): void => {
     if (Platform.OS === "ios") {
       const processedText = textPreprocessingIOS(text, false, false, opts.encoding ? opts.encoding : '');
 
       if (processedText.opts.encoding) {
         // use custom code
 
-        RNNetPrinter.printHex(
-          processedText.text,
-          processedText.opts,
-          (error: Error) => console.warn(error)
-        );
-      }
-      else {
-        // use original code
-
-        if (defaultHex) {
-          RNNetPrinter.printHex(
+        if (opts.noHex) {
+          RNNetPrinter.printRawData(
             processedText.text,
             processedText.opts,
             (error: Error) => console.warn(error)
           );
         }
         else {
+          RNNetPrinter.printHex(
+            processedText.text,
+            processedText.opts,
+            (error: Error) => console.warn(error)
+          );
+        }
+      }
+      else {
+        // use original code
+
+        if (opts.noHex) {
           RNNetPrinter.printRawData(
+            processedText.text,
+            processedText.opts,
+            (error: Error) => console.warn(error)
+          );
+        }
+        else {
+          RNNetPrinter.printHex(
             processedText.text,
             processedText.opts,
             (error: Error) => console.warn(error)

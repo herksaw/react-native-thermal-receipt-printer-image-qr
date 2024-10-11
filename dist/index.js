@@ -370,21 +370,26 @@ var NetPrinter = {
             resolve();
         });
     },
-    printText: function (text, opts, defaultHex) {
-        if (opts === void 0) { opts = { encoding: '' }; }
+    printText: function (text, opts) {
+        if (opts === void 0) { opts = { encoding: '', noHex: false }; }
         if (Platform.OS === "ios") {
             var processedText = textPreprocessingIOS(text, false, false, opts.encoding ? opts.encoding : '');
             if (processedText.opts.encoding) {
                 // use custom code
-                RNNetPrinter.printHex(processedText.text, processedText.opts, function (error) { return console.warn(error); });
+                if (opts.noHex) {
+                    RNNetPrinter.printRawData(processedText.text, processedText.opts, function (error) { return console.warn(error); });
+                }
+                else {
+                    RNNetPrinter.printHex(processedText.text, processedText.opts, function (error) { return console.warn(error); });
+                }
             }
             else {
                 // use original code
-                if (defaultHex) {
-                    RNNetPrinter.printHex(processedText.text, processedText.opts, function (error) { return console.warn(error); });
+                if (opts.noHex) {
+                    RNNetPrinter.printRawData(processedText.text, processedText.opts, function (error) { return console.warn(error); });
                 }
                 else {
-                    RNNetPrinter.printRawData(processedText.text, processedText.opts, function (error) { return console.warn(error); });
+                    RNNetPrinter.printHex(processedText.text, processedText.opts, function (error) { return console.warn(error); });
                 }
             }
         }

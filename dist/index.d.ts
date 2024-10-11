@@ -104,7 +104,8 @@ declare const NetPrinter: {
     closeConn: () => Promise<void>;
     printText: (text: string, opts?: {
         encoding: string;
-    }, defaultHex?: true | undefined) => void;
+        noHex: boolean;
+    }) => void;
     printBill: (text: string, opts?: PrinterOptions) => void;
     /**
      * image url
