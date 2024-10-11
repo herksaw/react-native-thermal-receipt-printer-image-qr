@@ -419,20 +419,26 @@ const NetPrinter = {
       else {
         // use original code
 
-        if (opts.noHex) {
-          RNNetPrinter.printRawData(
-            processedText.text,
-            processedText.opts,
-            (error: Error) => console.warn(error)
-          );
-        }
-        else {
-          RNNetPrinter.printHex(
-            processedText.text,
-            processedText.opts,
-            (error: Error) => console.warn(error)
-          );
-        }
+        RNNetPrinter.printRawData(
+          processedText.text,
+          processedText.opts,
+          (error: Error) => console.warn(error)
+        );
+
+        // if (opts.noHex) {
+        //   RNNetPrinter.printRawData(
+        //     processedText.text,
+        //     processedText.opts,
+        //     (error: Error) => console.warn(error)
+        //   );
+        // }
+        // else {
+        //   RNNetPrinter.printHex(
+        //     processedText.text,
+        //     processedText.opts,
+        //     (error: Error) => console.warn(error)
+        //   );
+        // }
       }
     } else {
       RNNetPrinter.printRawData(textTo64Buffer(text, opts), (error: Error) =>
