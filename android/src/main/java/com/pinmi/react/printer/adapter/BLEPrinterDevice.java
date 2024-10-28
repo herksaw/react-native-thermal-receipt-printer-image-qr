@@ -27,7 +27,16 @@ public class BLEPrinterDevice implements PrinterDevice {
     public WritableMap toRNWritableMap() {
         WritableMap deviceMap = Arguments.createMap();
         deviceMap.putString("inner_mac_address", this.mPrinterDeviceId.getInnerMacAddress());
-        deviceMap.putString("device_name", this.mBluetoothDevice.getName());
+        
+        // Safely get device name with null check
+        String deviceName = null;
+        try {
+            deviceName = this.mBluetoothDevice.getName();
+        } catch (SecurityException e) {
+            deviceName = "Unknown Device";
+        }
+        deviceMap.putString("device_name", deviceName != null ? deviceName : "Unknown Device");
+        
         return deviceMap;
     }
 }

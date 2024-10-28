@@ -100,15 +100,26 @@ public class USBPrinterAdapter implements PrinterAdapter {
         }
     };
 
-    public void init(ReactApplicationContext reactContext, Callback successCallback, Callback errorCallback) {
+        public void init(ReactApplicationContext reactContext, Callback successCallback, Callback errorCallback) {
         this.mContext = reactContext;
         this.mUSBManager = (UsbManager) this.mContext.getSystemService(Context.USB_SERVICE);
-        this.mPermissionIndent = PendingIntent.getBroadcast(mContext, 0, new Intent(ACTION_USB_PERMISSION), 0);
+        // this.mPermissionIndent = PendingIntent.getBroadcast(mContext, 0, new Intent(ACTION_USB_PERMISSION), 0);
+        this.mPermissionIndent = PendingIntent.getBroadcast(mContext, 0, new Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_IMMUTABLE);
         IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
         filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
         filter.addAction(UsbManager.ACTION_USB_ACCESSORY_ATTACHED);
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
-        mContext.registerReceiver(mUsbDeviceReceiver, filter);
+        
+        // Use Context.RECEIVER_NOT_EXPORTED since this is an internal receiver
+        // mContext.registerReceiver(mUsbDeviceReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+        
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            mContext.registerReceiver(mUsbDeviceReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            // @SuppressWarnings({"UnspecifiedRegisterReceiverFlag", "deprecation"})
+            mContext.registerReceiver(mUsbDeviceReceiver, filter);
+        }
+
         Log.v(LOG_TAG, "RNUSBPrinter initialized");
         successCallback.invoke();
     }

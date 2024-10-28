@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
+import android.content.pm.PackageManager;
 
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -97,6 +98,13 @@ public class BLEPrinterAdapter implements PrinterAdapter{
             errorCallback.invoke("bluetooth is not enabled");
             return printerDevices;
         }
+        
+        // Check for Bluetooth permission
+        if (mContext.checkSelfPermission(android.Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED) {
+            errorCallback.invoke("Bluetooth permission is not granted");
+            return printerDevices;
+        }
+
         Set<BluetoothDevice> pairedDevices = getBTAdapter().getBondedDevices();
         for (BluetoothDevice device : pairedDevices) {
             printerDevices.add(new BLEPrinterDevice(device));
@@ -104,7 +112,7 @@ public class BLEPrinterAdapter implements PrinterAdapter{
         return printerDevices;
     }
 
-    @Override
+        @Override
     public void selectDevice(PrinterDeviceId printerDeviceId, Callback successCallback, Callback errorCallback) {
         BluetoothAdapter bluetoothAdapter = getBTAdapter();
         if(bluetoothAdapter == null) {
@@ -115,6 +123,13 @@ public class BLEPrinterAdapter implements PrinterAdapter{
             errorCallback.invoke("bluetooth is not enabled");
             return;
         }
+
+        // Check for Bluetooth permission
+        if (mContext.checkSelfPermission(android.Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED) {
+            errorCallback.invoke("Bluetooth permission is not granted");
+            return;
+        }
+
         BLEPrinterDeviceId blePrinterDeviceId = (BLEPrinterDeviceId)printerDeviceId;
         if(this.mBluetoothDevice != null){
             if(this.mBluetoothDevice.getAddress().equals(blePrinterDeviceId.getInnerMacAddress()) && this.mBluetoothSocket != null){
@@ -148,11 +163,15 @@ public class BLEPrinterAdapter implements PrinterAdapter{
     }
 
     private void connectBluetoothDevice(BluetoothDevice device) throws IOException{
+        // Check for Bluetooth permission
+        if (mContext.checkSelfPermission(android.Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED) {
+            throw new IOException("Bluetooth permission is not granted");
+        }
+
         UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
         this.mBluetoothSocket = device.createRfcommSocketToServiceRecord(uuid);
         this.mBluetoothSocket.connect();
-        this.mBluetoothDevice = device;//最后一步执行
-
+        this.mBluetoothDevice = device;
     }
 
     @Override
