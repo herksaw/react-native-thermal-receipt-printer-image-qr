@@ -408,6 +408,44 @@ var NetPrinter = {
             });
         }
     },
+    printTextAsync: function (text, opts) {
+        if (opts === void 0) { opts = { encoding: '', noHex: false }; }
+        if (Platform.OS === "ios") {
+            var processedText = textPreprocessingIOS(text, false, false, opts.encoding ? opts.encoding : '');
+            if (processedText.opts.encoding) {
+                // use custom code
+                if (opts.noHex) {
+                    RNNetPrinter.printRawDataAsync(processedText.text, processedText.opts, function (error) { return console.warn(error); });
+                }
+                else {
+                    RNNetPrinter.printHexAsync(processedText.text, processedText.opts, function (error) { return console.warn(error); });
+                }
+            }
+            else {
+                // use original code
+                RNNetPrinter.printRawDatAsync(processedText.text, processedText.opts, function (error) { return console.warn(error); });
+                // if (opts.noHex) {
+                //   RNNetPrinter.printRawData(
+                //     processedText.text,
+                //     processedText.opts,
+                //     (error: Error) => console.warn(error)
+                //   );
+                // }
+                // else {
+                //   RNNetPrinter.printHex(
+                //     processedText.text,
+                //     processedText.opts,
+                //     (error: Error) => console.warn(error)
+                //   );
+                // }
+            }
+        }
+        else {
+            RNNetPrinter.printRawData(textTo64Buffer(text, opts), function (error) {
+                return console.warn(error);
+            });
+        }
+    },
     printBill: function (text, opts) {
         var _a, _b;
         if (opts === void 0) { opts = {}; }

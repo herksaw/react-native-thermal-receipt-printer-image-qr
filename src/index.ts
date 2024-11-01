@@ -447,6 +447,59 @@ const NetPrinter = {
     }
   },
 
+  printTextAsync: (text: string, opts = { encoding: '', noHex: false }): void => {
+    if (Platform.OS === "ios") {
+      const processedText = textPreprocessingIOS(text, false, false, opts.encoding ? opts.encoding : '');
+
+      if (processedText.opts.encoding) {
+        // use custom code
+
+        if (opts.noHex) {
+          RNNetPrinter.printRawDataAsync(
+            processedText.text,
+            processedText.opts,
+            (error: Error) => console.warn(error)
+          );
+        }
+        else {
+          RNNetPrinter.printHexAsync(
+            processedText.text,
+            processedText.opts,
+            (error: Error) => console.warn(error)
+          );
+        }
+      }
+      else {
+        // use original code
+
+        RNNetPrinter.printRawDatAsync(
+          processedText.text,
+          processedText.opts,
+          (error: Error) => console.warn(error)
+        );
+
+        // if (opts.noHex) {
+        //   RNNetPrinter.printRawData(
+        //     processedText.text,
+        //     processedText.opts,
+        //     (error: Error) => console.warn(error)
+        //   );
+        // }
+        // else {
+        //   RNNetPrinter.printHex(
+        //     processedText.text,
+        //     processedText.opts,
+        //     (error: Error) => console.warn(error)
+        //   );
+        // }
+      }
+    } else {
+      RNNetPrinter.printRawData(textTo64Buffer(text, opts), (error: Error) =>
+        console.warn(error)
+      );
+    }
+  },
+
   printBill: (text: string, opts: PrinterOptions = {}): void => {
     if (Platform.OS === "ios") {
       const processedText = textPreprocessingIOS(text, opts?.cut ?? true, opts.beep ?? true);

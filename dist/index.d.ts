@@ -106,6 +106,10 @@ declare const NetPrinter: {
         encoding: string;
         noHex: boolean;
     }) => void;
+    printTextAsync: (text: string, opts?: {
+        encoding: string;
+        noHex: boolean;
+    }) => void;
     printBill: (text: string, opts?: PrinterOptions) => void;
     /**
      * image url

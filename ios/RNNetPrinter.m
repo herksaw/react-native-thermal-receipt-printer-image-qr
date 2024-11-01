@@ -347,6 +347,116 @@ RCT_EXPORT_METHOD(printHex:(NSString *)text
     }
 }
 
+RCT_EXPORT_METHOD(printRawDataAsync:(NSString *)text
+                  printerOptions:(NSDictionary *)options
+                  fail:(RCTResponseSenderBlock)errorCallback) {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        @try {
+            NSNumber* beepPtr = [options valueForKey:@"beep"];
+            NSNumber* cutPtr = [options valueForKey:@"cut"];
+
+            BOOL beep = (BOOL)[beepPtr intValue];
+            BOOL cut = (BOOL)[cutPtr intValue];
+
+            if (!connected_ip) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    errorCallback(@[@"Can't connect to printer"]);
+                });
+                return;
+            }
+
+            [[PrinterSDK defaultPrinterSDK] printText:text];
+            if (beep) {
+                [[PrinterSDK defaultPrinterSDK] beep];
+            }
+            if (cut) {
+                [[PrinterSDK defaultPrinterSDK] cutPaper];
+            }
+
+            // dispatch_async(dispatch_get_main_queue(), ^{
+            //     successCallback(@[@"Printing completed successfully"]);
+            // });
+        } @catch (NSException *exception) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                errorCallback(@[exception.reason]);
+            });
+        }
+    });
+
+    // @try {
+    //     NSNumber* beepPtr = [options valueForKey:@"beep"];
+    //     NSNumber* cutPtr = [options valueForKey:@"cut"];
+
+    //     BOOL beep = (BOOL)[beepPtr intValue];
+    //     BOOL cut = (BOOL)[cutPtr intValue];
+
+    //     !connected_ip ? [NSException raise:@"Invalid connection" format:@"Can't connect to printer"] : nil;
+
+    //     // [[PrinterSDK defaultPrinterSDK] printTestPaper];
+    //     [[PrinterSDK defaultPrinterSDK] printText:text];
+    //     beep ? [[PrinterSDK defaultPrinterSDK] beep] : nil;
+    //     cut ? [[PrinterSDK defaultPrinterSDK] cutPaper] : nil;
+    // } @catch (NSException *exception) {
+    //     errorCallback(@[exception.reason]);
+    // }
+}
+
+RCT_EXPORT_METHOD(printHexAsync:(NSString *)text
+                  printerOptions:(NSDictionary *)options
+                  fail:(RCTResponseSenderBlock)errorCallback) {
+    
+    // dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    //     @try {
+    //         NSNumber* beepPtr = [options valueForKey:@"beep"];
+    //         NSNumber* cutPtr = [options valueForKey:@"cut"];
+
+    //         BOOL beep = (BOOL)[beepPtr intValue];
+    //         BOOL cut = (BOOL)[cutPtr intValue];
+
+    //         if (!connected_ip) {
+    //             dispatch_async(dispatch_get_main_queue(), ^{
+    //                 errorCallback(@[@"Can't connect to printer"]);
+    //             });
+    //             return;
+    //         }
+
+    //         [[PrinterSDK defaultPrinterSDK] sendHex:text];
+    //         if (beep) {
+    //             [[PrinterSDK defaultPrinterSDK] beep];
+    //         }
+    //         if (cut) {
+    //             [[PrinterSDK defaultPrinterSDK] cutPaper];
+    //         }
+
+    //         // dispatch_async(dispatch_get_main_queue(), ^{
+    //         //     successCallback(@[@"Printing completed successfully"]);
+    //         // });
+    //     } @catch (NSException *exception) {
+    //         dispatch_async(dispatch_get_main_queue(), ^{
+    //             errorCallback(@[exception.reason]);
+    //         });
+    //     }
+    // });
+
+    @try {
+        NSNumber* beepPtr = [options valueForKey:@"beep"];
+        NSNumber* cutPtr = [options valueForKey:@"cut"];
+
+        BOOL beep = (BOOL)[beepPtr intValue];
+        BOOL cut = (BOOL)[cutPtr intValue];
+
+        !connected_ip ? [NSException raise:@"Invalid connection" format:@"Can't connect to printer"] : nil;
+
+        // [[PrinterSDK defaultPrinterSDK] printTestPaper];
+        [[PrinterSDK defaultPrinterSDK] sendHex:text];
+        // [[PrinterSDK defaultPrinterSDK] printData:text];
+        beep ? [[PrinterSDK defaultPrinterSDK] beep] : nil;
+        cut ? [[PrinterSDK defaultPrinterSDK] cutPaper] : nil;
+    } @catch (NSException *exception) {
+        errorCallback(@[exception.reason]);
+    }
+}
+
 RCT_EXPORT_METHOD(printImageData:(NSString *)imgUrl
                   printerOptions:(NSDictionary *)options
                   fail:(RCTResponseSenderBlock)errorCallback) {
