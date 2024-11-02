@@ -345,23 +345,6 @@ public class NetPrinterAdapter implements PrinterAdapter {
 
     @Override
     public void printRawData(String rawBase64Data, Callback errorCallback) {
-        if (this.mSocket == null) {
-            errorCallback.invoke("bluetooth connection is not built, may be you forgot to connectPrinter");
-            return;
-        }
-        final String rawData = rawBase64Data;
-        final Socket socket = this.mSocket;
-        Log.v(LOG_TAG, "start to print raw data " + rawBase64Data);
-        try {
-            byte[] bytes = Base64.decode(rawData, Base64.DEFAULT);
-            OutputStream printerOutputStream = socket.getOutputStream();
-            printerOutputStream.write(bytes, 0, bytes.length);
-            printerOutputStream.flush();
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "failed to print data" + rawData);
-            e.printStackTrace();
-        }
-
         // if (this.mSocket == null) {
         //     errorCallback.invoke("bluetooth connection is not built, may be you forgot to connectPrinter");
         //     return;
@@ -369,20 +352,37 @@ public class NetPrinterAdapter implements PrinterAdapter {
         // final String rawData = rawBase64Data;
         // final Socket socket = this.mSocket;
         // Log.v(LOG_TAG, "start to print raw data " + rawBase64Data);
-        // new Thread(new Runnable() {
-        //     @Override
-        //     public void run() {
-        //         try {
-        //             byte[] bytes = Base64.decode(rawData, Base64.DEFAULT);
-        //             OutputStream printerOutputStream = socket.getOutputStream();
-        //             printerOutputStream.write(bytes, 0, bytes.length);
-        //             printerOutputStream.flush();
-        //         } catch (IOException e) {
-        //             Log.e(LOG_TAG, "failed to print data" + rawData);
-        //             e.printStackTrace();
-        //         }
-        //     }
-        // }).start();
+        // try {
+        //     byte[] bytes = Base64.decode(rawData, Base64.DEFAULT);
+        //     OutputStream printerOutputStream = socket.getOutputStream();
+        //     printerOutputStream.write(bytes, 0, bytes.length);
+        //     printerOutputStream.flush();
+        // } catch (IOException e) {
+        //     Log.e(LOG_TAG, "failed to print data" + rawData);
+        //     e.printStackTrace();
+        // }
+
+        if (this.mSocket == null) {
+            errorCallback.invoke("bluetooth connection is not built, may be you forgot to connectPrinter");
+            return;
+        }
+        final String rawData = rawBase64Data;
+        final Socket socket = this.mSocket;
+        Log.v(LOG_TAG, "start to print raw data " + rawBase64Data);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    byte[] bytes = Base64.decode(rawData, Base64.DEFAULT);
+                    OutputStream printerOutputStream = socket.getOutputStream();
+                    printerOutputStream.write(bytes, 0, bytes.length);
+                    printerOutputStream.flush();
+                } catch (IOException e) {
+                    Log.e(LOG_TAG, "failed to print data" + rawData);
+                    e.printStackTrace();
+                }
+            }
+        }).start();
 
     }
 
