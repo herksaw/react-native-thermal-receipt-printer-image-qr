@@ -441,7 +441,7 @@ var NetPrinter = {
             }
         }
         else {
-            RNNetPrinter.printRawData(textTo64Buffer(text, opts), function (error) {
+            RNNetPrinter.printRawDataAsync(textTo64Buffer(text, opts), function (error) {
                 return console.warn(error);
             });
         }

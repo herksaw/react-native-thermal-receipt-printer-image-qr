@@ -238,6 +238,22 @@ public class USBPrinterAdapter implements PrinterAdapter {
         boolean isConnected = openConnection();
         if (isConnected) {
             Log.v(LOG_TAG, "Connected to device");
+            byte[] bytes = Base64.decode(rawData, Base64.DEFAULT);
+            int b = mUsbDeviceConnection.bulkTransfer(mEndPoint, bytes, bytes.length, 100000);
+            Log.i(LOG_TAG, "Return Status: b-->" + b);
+        } else {
+            String msg = "failed to connected to device";
+            Log.v(LOG_TAG, msg);
+            errorCallback.invoke(msg);
+        }
+    }
+
+    public void printRawDataAsync(String data, Callback errorCallback) {
+        final String rawData = data;
+        Log.v(LOG_TAG, "start to print raw data " + data);
+        boolean isConnected = openConnection();
+        if (isConnected) {
+            Log.v(LOG_TAG, "Connected to device");
             new Thread(new Runnable() {
                 @Override
                 public void run() {

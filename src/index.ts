@@ -494,7 +494,7 @@ const NetPrinter = {
         // }
       }
     } else {
-      RNNetPrinter.printRawData(textTo64Buffer(text, opts), (error: Error) =>
+      RNNetPrinter.printRawDataAsync(textTo64Buffer(text, opts), (error: Error) =>
         console.warn(error)
       );
     }

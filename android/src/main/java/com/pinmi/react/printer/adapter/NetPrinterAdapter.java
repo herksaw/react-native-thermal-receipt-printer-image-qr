@@ -352,6 +352,49 @@ public class NetPrinterAdapter implements PrinterAdapter {
         final String rawData = rawBase64Data;
         final Socket socket = this.mSocket;
         Log.v(LOG_TAG, "start to print raw data " + rawBase64Data);
+        try {
+            byte[] bytes = Base64.decode(rawData, Base64.DEFAULT);
+            OutputStream printerOutputStream = socket.getOutputStream();
+            printerOutputStream.write(bytes, 0, bytes.length);
+            printerOutputStream.flush();
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "failed to print data" + rawData);
+            e.printStackTrace();
+        }
+
+        // if (this.mSocket == null) {
+        //     errorCallback.invoke("bluetooth connection is not built, may be you forgot to connectPrinter");
+        //     return;
+        // }
+        // final String rawData = rawBase64Data;
+        // final Socket socket = this.mSocket;
+        // Log.v(LOG_TAG, "start to print raw data " + rawBase64Data);
+        // new Thread(new Runnable() {
+        //     @Override
+        //     public void run() {
+        //         try {
+        //             byte[] bytes = Base64.decode(rawData, Base64.DEFAULT);
+        //             OutputStream printerOutputStream = socket.getOutputStream();
+        //             printerOutputStream.write(bytes, 0, bytes.length);
+        //             printerOutputStream.flush();
+        //         } catch (IOException e) {
+        //             Log.e(LOG_TAG, "failed to print data" + rawData);
+        //             e.printStackTrace();
+        //         }
+        //     }
+        // }).start();
+
+    }
+
+    @Override
+    public void printRawDataAsync(String rawBase64Data, Callback errorCallback) {
+        if (this.mSocket == null) {
+            errorCallback.invoke("bluetooth connection is not built, may be you forgot to connectPrinter");
+            return;
+        }
+        final String rawData = rawBase64Data;
+        final Socket socket = this.mSocket;
+        Log.v(LOG_TAG, "start to print raw data " + rawBase64Data);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -656,42 +699,69 @@ public class NetPrinterAdapter implements PrinterAdapter {
 
         final Socket socket = this.mSocket;
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    int[][] pixels = getPixelsSlow(bitmapImage);
+        int[][] pixels = getPixelsSlow(bitmapImage);
 
-                    OutputStream printerOutputStream = socket.getOutputStream();
+        OutputStream printerOutputStream = socket.getOutputStream();
 
-                    printerOutputStream.write(SET_LINE_SPACE_24);
-                    printerOutputStream.write(CENTER_ALIGN);
+        printerOutputStream.write(SET_LINE_SPACE_24);
+        printerOutputStream.write(CENTER_ALIGN);
 
-                    for (int y = 0; y < pixels.length; y += 24) {
-                        // Like I said before, when done sending data,
-                        // the printer will resume to normal text printing
-                        printerOutputStream.write(SELECT_BIT_IMAGE_MODE);
-                        // Set nL and nH based on the width of the image
-                        printerOutputStream.write(
-                                new byte[] { (byte) (0x00ff & pixels[y].length), (byte) ((0xff00 & pixels[y].length) >> 8) });
-                        for (int x = 0; x < pixels[y].length; x++) {
-                            // for each stripe, recollect 3 bytes (3 bytes = 24 bits)
-                            printerOutputStream.write(recollectSlice(y, x, pixels));
-                        }
-
-                        // Do a line feed, if not the printing will resume on the same line
-                        printerOutputStream.write(LINE_FEED);
-                    }
-                    printerOutputStream.write(SET_LINE_SPACE_32);
-                    printerOutputStream.write(LINE_FEED);
-
-                    printerOutputStream.flush();
-                } catch (IOException e) {
-                    Log.e(LOG_TAG, "failed to print data");
-                    e.printStackTrace();
-                }
+        for (int y = 0; y < pixels.length; y += 24) {
+            // Like I said before, when done sending data,
+            // the printer will resume to normal text printing
+            printerOutputStream.write(SELECT_BIT_IMAGE_MODE);
+            // Set nL and nH based on the width of the image
+            printerOutputStream.write(
+                    new byte[] { (byte) (0x00ff & pixels[y].length), (byte) ((0xff00 & pixels[y].length) >> 8) });
+            for (int x = 0; x < pixels[y].length; x++) {
+                // for each stripe, recollect 3 bytes (3 bytes = 24 bits)
+                printerOutputStream.write(recollectSlice(y, x, pixels));
             }
-        }).start();
+
+            // Do a line feed, if not the printing will resume on the same line
+            printerOutputStream.write(LINE_FEED);
+        }
+        printerOutputStream.write(SET_LINE_SPACE_32);
+        printerOutputStream.write(LINE_FEED);
+
+        printerOutputStream.flush();
+
+        // new Thread(new Runnable() {
+        //     @Override
+        //     public void run() {
+        //         try {
+        //             int[][] pixels = getPixelsSlow(bitmapImage);
+
+        //             OutputStream printerOutputStream = socket.getOutputStream();
+
+        //             printerOutputStream.write(SET_LINE_SPACE_24);
+        //             printerOutputStream.write(CENTER_ALIGN);
+
+        //             for (int y = 0; y < pixels.length; y += 24) {
+        //                 // Like I said before, when done sending data,
+        //                 // the printer will resume to normal text printing
+        //                 printerOutputStream.write(SELECT_BIT_IMAGE_MODE);
+        //                 // Set nL and nH based on the width of the image
+        //                 printerOutputStream.write(
+        //                         new byte[] { (byte) (0x00ff & pixels[y].length), (byte) ((0xff00 & pixels[y].length) >> 8) });
+        //                 for (int x = 0; x < pixels[y].length; x++) {
+        //                     // for each stripe, recollect 3 bytes (3 bytes = 24 bits)
+        //                     printerOutputStream.write(recollectSlice(y, x, pixels));
+        //                 }
+
+        //                 // Do a line feed, if not the printing will resume on the same line
+        //                 printerOutputStream.write(LINE_FEED);
+        //             }
+        //             printerOutputStream.write(SET_LINE_SPACE_32);
+        //             printerOutputStream.write(LINE_FEED);
+
+        //             printerOutputStream.flush();
+        //         } catch (IOException e) {
+        //             Log.e(LOG_TAG, "failed to print data");
+        //             e.printStackTrace();
+        //         }
+        //     }
+        // }).start();
     }
 
     private Bitmap TextToQrImageEncode(String Value) {
