@@ -6,15 +6,18 @@ export interface PrinterOptions {
     tailingLine?: boolean;
     encoding?: string;
 }
+export declare enum PrinterWidth {
+    "58mm" = 58,
+    "80mm" = 80
+}
 export interface PrinterImageOptions {
     beep?: boolean;
     cut?: boolean;
     tailingLine?: boolean;
     encoding?: string;
-    /**
-     * ios only
-     */
     imageWidth?: number;
+    imageHeight?: number;
+    printerWidthType?: PrinterWidth;
     paddingX?: number;
 }
 export interface IUSBPrinter {
@@ -30,7 +33,7 @@ export interface INetPrinter {
     host: string;
     port: number;
 }
-export declare enum ColumnAliment {
+export declare enum ColumnAlignment {
     LEFT = 0,
     CENTER = 1,
     RIGHT = 2
@@ -64,7 +67,7 @@ declare const USBPrinter: {
      * 80mm => 46 character
      * 58mm => 30 character
      */
-    printColumnsText: (texts: string[], columnWidth: number[], columnAliment: (ColumnAliment)[], columnStyle: string[], opts?: PrinterOptions) => void;
+    printColumnsText: (texts: string[], columnWidth: number[], columnAlignment: (ColumnAlignment)[], columnStyle: string[], opts?: PrinterOptions) => void;
 };
 declare const BLEPrinter: {
     init: () => Promise<void>;
@@ -95,7 +98,7 @@ declare const BLEPrinter: {
      * 80mm => 46 character
      * 58mm => 30 character
      */
-    printColumnsText: (texts: string[], columnWidth: number[], columnAliment: (ColumnAliment)[], columnStyle: string[], opts?: PrinterOptions) => void;
+    printColumnsText: (texts: string[], columnWidth: number[], columnAlignment: (ColumnAlignment)[], columnStyle: string[], opts?: PrinterOptions) => void;
 };
 declare const NetPrinter: {
     init: () => Promise<void>;
@@ -133,7 +136,7 @@ declare const NetPrinter: {
      * 80mm => 46 character
      * 58mm => 30 character
      */
-    printColumnsText: (texts: string[], columnWidth: number[], columnAliment: (ColumnAliment)[], columnStyle?: string[], opts?: PrinterOptions) => void;
+    printColumnsText: (texts: string[], columnWidth: number[], columnAlignment: (ColumnAlignment)[], columnStyle?: string[], opts?: PrinterOptions) => void;
 };
 declare const NetPrinterEventEmitter: NativeEventEmitter;
 export { COMMANDS, NetPrinter, BLEPrinter, USBPrinter, NetPrinterEventEmitter };

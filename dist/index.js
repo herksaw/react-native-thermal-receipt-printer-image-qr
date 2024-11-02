@@ -53,12 +53,17 @@ import { connectToHost } from './utils/net-connect';
 var RNUSBPrinter = NativeModules.RNUSBPrinter;
 var RNBLEPrinter = NativeModules.RNBLEPrinter;
 var RNNetPrinter = NativeModules.RNNetPrinter;
-export var ColumnAliment;
-(function (ColumnAliment) {
-    ColumnAliment[ColumnAliment["LEFT"] = 0] = "LEFT";
-    ColumnAliment[ColumnAliment["CENTER"] = 1] = "CENTER";
-    ColumnAliment[ColumnAliment["RIGHT"] = 2] = "RIGHT";
-})(ColumnAliment || (ColumnAliment = {}));
+export var PrinterWidth;
+(function (PrinterWidth) {
+    PrinterWidth[PrinterWidth["58mm"] = 58] = "58mm";
+    PrinterWidth[PrinterWidth["80mm"] = 80] = "80mm";
+})(PrinterWidth || (PrinterWidth = {}));
+export var ColumnAlignment;
+(function (ColumnAlignment) {
+    ColumnAlignment[ColumnAlignment["LEFT"] = 0] = "LEFT";
+    ColumnAlignment[ColumnAlignment["CENTER"] = 1] = "CENTER";
+    ColumnAlignment[ColumnAlignment["RIGHT"] = 2] = "RIGHT";
+})(ColumnAlignment || (ColumnAlignment = {}));
 var textTo64Buffer = function (text, opts) {
     var defaultOptions = {
         beep: false,
@@ -164,12 +169,15 @@ var USBPrinter = {
      * @param opts
      */
     printImage: function (imgUrl, opts) {
+        var _a, _b;
         if (opts === void 0) { opts = {}; }
         if (Platform.OS === "ios") {
-            RNUSBPrinter.printImageData(imgUrl, opts, function (error) { return console.warn(error); });
+            RNUSBPrinter.printImageData(imgUrl, opts, function (error) {
+                return console.warn(error);
+            });
         }
         else {
-            RNUSBPrinter.printImageData(imgUrl, function (error) { return console.warn(error); });
+            RNUSBPrinter.printImageData(imgUrl, (_a = opts === null || opts === void 0 ? void 0 : opts.imageWidth) !== null && _a !== void 0 ? _a : 0, (_b = opts === null || opts === void 0 ? void 0 : opts.imageHeight) !== null && _b !== void 0 ? _b : 0, function (error) { return console.warn(error); });
         }
     },
     /**
@@ -178,12 +186,15 @@ var USBPrinter = {
      * @param opts
      */
     printImageBase64: function (Base64, opts) {
+        var _a, _b;
         if (opts === void 0) { opts = {}; }
         if (Platform.OS === "ios") {
-            RNUSBPrinter.printImageBase64(Base64, opts, function (error) { return console.warn(error); });
+            RNUSBPrinter.printImageBase64(Base64, opts, function (error) {
+                return console.warn(error);
+            });
         }
         else {
-            RNUSBPrinter.printImageBase64(Base64, function (error) { return console.warn(error); });
+            RNUSBPrinter.printImageBase64(Base64, (_a = opts === null || opts === void 0 ? void 0 : opts.imageWidth) !== null && _a !== void 0 ? _a : 0, (_b = opts === null || opts === void 0 ? void 0 : opts.imageHeight) !== null && _b !== void 0 ? _b : 0, function (error) { return console.warn(error); });
         }
     },
     /**
@@ -194,9 +205,7 @@ var USBPrinter = {
         if (Platform.OS === "ios") {
         }
         else {
-            RNUSBPrinter.printRawData(text, function (error) {
-                return console.warn(error);
-            });
+            RNUSBPrinter.printRawData(text, function (error) { return console.warn(error); });
         }
     },
     /**
@@ -204,9 +213,9 @@ var USBPrinter = {
      * 80mm => 46 character
      * 58mm => 30 character
      */
-    printColumnsText: function (texts, columnWidth, columnAliment, columnStyle, opts) {
+    printColumnsText: function (texts, columnWidth, columnAlignment, columnStyle, opts) {
         if (opts === void 0) { opts = {}; }
-        var result = processColumnText(texts, columnWidth, columnAliment, columnStyle);
+        var result = processColumnText(texts, columnWidth, columnAlignment, columnStyle);
         RNUSBPrinter.printRawData(textTo64Buffer(result, opts), function (error) {
             return console.warn(error);
         });
@@ -265,6 +274,7 @@ var BLEPrinter = {
      * @param opts
      */
     printImage: function (imgUrl, opts) {
+        var _a, _b;
         if (opts === void 0) { opts = {}; }
         if (Platform.OS === "ios") {
             /**
@@ -273,7 +283,7 @@ var BLEPrinter = {
             RNBLEPrinter.printImageData(imgUrl, opts, function (error) { return console.warn(error); });
         }
         else {
-            RNBLEPrinter.printImageData(imgUrl, function (error) { return console.warn(error); });
+            RNBLEPrinter.printImageData(imgUrl, (_a = opts === null || opts === void 0 ? void 0 : opts.imageWidth) !== null && _a !== void 0 ? _a : 0, (_b = opts === null || opts === void 0 ? void 0 : opts.imageHeight) !== null && _b !== void 0 ? _b : 0, function (error) { return console.warn(error); });
         }
     },
     /**
@@ -282,6 +292,7 @@ var BLEPrinter = {
      * @param opts
      */
     printImageBase64: function (Base64, opts) {
+        var _a, _b;
         if (opts === void 0) { opts = {}; }
         if (Platform.OS === "ios") {
             /**
@@ -293,7 +304,7 @@ var BLEPrinter = {
             /**
              * just development
              */
-            RNBLEPrinter.printImageBase64(Base64, function (error) { return console.warn(error); });
+            RNBLEPrinter.printImageBase64(Base64, (_a = opts === null || opts === void 0 ? void 0 : opts.imageWidth) !== null && _a !== void 0 ? _a : 0, (_b = opts === null || opts === void 0 ? void 0 : opts.imageHeight) !== null && _b !== void 0 ? _b : 0, function (error) { return console.warn(error); });
         }
     },
     /**
@@ -302,6 +313,10 @@ var BLEPrinter = {
      */
     printRaw: function (text) {
         if (Platform.OS === "ios") {
+            var processedText = textPreprocessingIOS(text, false, false);
+            RNBLEPrinter.printRawData(processedText.text, processedText.opts, function (error) {
+                return console.warn(error);
+            });
         }
         else {
             RNBLEPrinter.printRawData(text, function (error) {
@@ -314,9 +329,9 @@ var BLEPrinter = {
      * 80mm => 46 character
      * 58mm => 30 character
      */
-    printColumnsText: function (texts, columnWidth, columnAliment, columnStyle, opts) {
+    printColumnsText: function (texts, columnWidth, columnAlignment, columnStyle, opts) {
         if (opts === void 0) { opts = {}; }
-        var result = processColumnText(texts, columnWidth, columnAliment, columnStyle);
+        var result = processColumnText(texts, columnWidth, columnAlignment, columnStyle);
         if (Platform.OS === "ios") {
             var processedText = textPreprocessingIOS(result, false, false);
             RNBLEPrinter.printRawData(processedText.text, processedText.opts, function (error) { return console.warn(error); });
@@ -465,12 +480,13 @@ var NetPrinter = {
      * @param opts
      */
     printImage: function (imgUrl, opts) {
+        var _a, _b;
         if (opts === void 0) { opts = {}; }
         if (Platform.OS === "ios") {
             RNNetPrinter.printImageData(imgUrl, opts, function (error) { return console.warn(error); });
         }
         else {
-            RNNetPrinter.printImageData(imgUrl, function (error) { return console.warn(error); });
+            RNNetPrinter.printImageData(imgUrl, (_a = opts === null || opts === void 0 ? void 0 : opts.imageWidth) !== null && _a !== void 0 ? _a : 0, (_b = opts === null || opts === void 0 ? void 0 : opts.imageHeight) !== null && _b !== void 0 ? _b : 0, function (error) { return console.warn(error); });
         }
     },
     /**
@@ -479,12 +495,13 @@ var NetPrinter = {
      * @param opts
      */
     printImageBase64: function (Base64, opts) {
+        var _a, _b;
         if (opts === void 0) { opts = {}; }
         if (Platform.OS === "ios") {
             RNNetPrinter.printImageBase64(Base64, opts, function (error) { return console.warn(error); });
         }
         else {
-            RNNetPrinter.printImageBase64(Base64, function (error) { return console.warn(error); });
+            RNNetPrinter.printImageBase64(Base64, (_a = opts === null || opts === void 0 ? void 0 : opts.imageWidth) !== null && _a !== void 0 ? _a : 0, (_b = opts === null || opts === void 0 ? void 0 : opts.imageHeight) !== null && _b !== void 0 ? _b : 0, function (error) { return console.warn(error); });
         }
     },
     /**
@@ -505,10 +522,10 @@ var NetPrinter = {
      * 80mm => 46 character
      * 58mm => 30 character
      */
-    printColumnsText: function (texts, columnWidth, columnAliment, columnStyle, opts) {
+    printColumnsText: function (texts, columnWidth, columnAlignment, columnStyle, opts) {
         if (columnStyle === void 0) { columnStyle = []; }
         if (opts === void 0) { opts = {}; }
-        var result = processColumnText(texts, columnWidth, columnAliment, columnStyle);
+        var result = processColumnText(texts, columnWidth, columnAlignment, columnStyle);
         if (Platform.OS === "ios") {
             var processedText = textPreprocessingIOS(result, false, false);
             RNNetPrinter.printRawData(processedText.text, processedText.opts, function (error) { return console.warn(error); });

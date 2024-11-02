@@ -46,7 +46,7 @@ var processNewLine = function (text, maxLength) {
         text_tail: (_a = newTextTail.trim()) !== null && _a !== void 0 ? _a : ''
     };
 };
-export var processColumnText = function (texts, columnWidth, columnAliment, columnStyle) {
+export var processColumnText = function (texts, columnWidth, columnAlignment, columnStyle) {
     if (columnStyle === void 0) { columnStyle = []; }
     var rest_texts = ['', '', ''];
     var result = '';
@@ -55,16 +55,16 @@ export var processColumnText = function (texts, columnWidth, columnAliment, colu
         var columnWidthAtRow = Math.round(columnWidth === null || columnWidth === void 0 ? void 0 : columnWidth[idx]);
         if (text.length >= columnWidth[idx]) {
             var processedText = processNewLine(text, columnWidthAtRow);
-            result += ((_a = columnStyle === null || columnStyle === void 0 ? void 0 : columnStyle[idx]) !== null && _a !== void 0 ? _a : '') + processAlignText(processedText.text, columnWidthAtRow - processedText.text.length, columnAliment[idx]) + (idx !== 2 ? " " : "");
+            result += ((_a = columnStyle === null || columnStyle === void 0 ? void 0 : columnStyle[idx]) !== null && _a !== void 0 ? _a : '') + processAlignText(processedText.text, columnWidthAtRow - processedText.text.length, columnAlignment[idx]) + (idx !== 2 ? " " : "");
             rest_texts[idx] = processedText.text_tail;
         }
         else {
-            result += ((_b = columnStyle === null || columnStyle === void 0 ? void 0 : columnStyle[idx]) !== null && _b !== void 0 ? _b : '') + processAlignText(text.trim(), columnWidthAtRow - text.length, columnAliment[idx]) + (idx !== 2 ? " " : "");
+            result += ((_b = columnStyle === null || columnStyle === void 0 ? void 0 : columnStyle[idx]) !== null && _b !== void 0 ? _b : '') + processAlignText(text.trim(), columnWidthAtRow - text.length, columnAlignment[idx]) + (idx !== 2 ? " " : "");
         }
     });
     var index_nonEmpty = rest_texts.findIndex(function (rest_text) { return rest_text != ''; });
     if (index_nonEmpty !== -1) {
-        result += "\n" + processColumnText(rest_texts, columnWidth, columnAliment, columnStyle);
+        result += "\n" + processColumnText(rest_texts, columnWidth, columnAlignment, columnStyle);
     }
     return result;
 };

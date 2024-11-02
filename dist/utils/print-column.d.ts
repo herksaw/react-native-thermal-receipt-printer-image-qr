@@ -1,2 +1,2 @@
-import { ColumnAliment } from "..";
-export declare const processColumnText: (texts: string[], columnWidth: number[], columnAliment: (ColumnAliment)[], columnStyle?: string[]) => string;
+import { ColumnAlignment } from "..";
+export declare const processColumnText: (texts: string[], columnWidth: number[], columnAlignment: (ColumnAlignment)[], columnStyle?: string[]) => string;
