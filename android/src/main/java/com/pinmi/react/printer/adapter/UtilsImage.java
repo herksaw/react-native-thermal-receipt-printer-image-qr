@@ -35,15 +35,18 @@ public class UtilsImage {
         if (Integer.toString(imageWidth) != null || Integer.toString(imageHeight) != null) {
             return getBitmapResized(image, 1, imageWidth, imageHeight);
         }
-        if (width > 200 || height > 200) {
-            float decreaseSizeBy;
-            if (width > height) {
-                decreaseSizeBy = (200.0f / width);
-            } else {
-                decreaseSizeBy = (200.0f / height);
-            }
-            return getBitmapResized(image, decreaseSizeBy, 0, 0);
-        }
+        
+        // 2024-11-02 - no need further reduce first
+        // if (width > 200 || height > 200) {
+        //     float decreaseSizeBy;
+        //     if (width > height) {
+        //         decreaseSizeBy = (200.0f / width);
+        //     } else {
+        //         decreaseSizeBy = (200.0f / height);
+        //     }
+        //     return getBitmapResized(image, decreaseSizeBy, 0, 0);
+        // }
+
         return image;
     }
 
