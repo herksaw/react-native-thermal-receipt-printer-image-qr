@@ -73,7 +73,7 @@ react-native link react-native-thermal-receipt-printer-image-qr
      * 80mm => 46 character
      * 58mm => 30 character
      */
-    printColumnsText: (texts: string[], columnWidth: number[], columnAliment: ColumnAliment[], columnStyle?: string[], opts?: PrinterOptions) => void;
+    printColumnsText: (texts: string[], columnWidth: number[], columnAlignment: ColumnAlignment[], columnStyle?: string[], opts?: PrinterOptions) => void;
 ```
 
 ## Styling
@@ -96,12 +96,12 @@ let orderList = [
   ["4. Retro Buttons Up Full Sleeve Loose", "x10", "200$"],
   ["5. Retro Buttons Up", "x10", "200$"],
 ];
-let columnAliment = [ColumnAliment.LEFT, ColumnAliment.CENTER, ColumnAliment.RIGHT];
+let columnAlignment = [ColumnAlignment.LEFT, ColumnAlignment.CENTER, ColumnAlignment.RIGHT];
 let columnWidth = [46 - (7 + 12), 7, 12]
 const header = ['Product list', 'Qty', 'Price']
-Printer.printColumnsText(header, columnWidth, columnAliment, [`${BOLD_ON}`, '', '']);
+Printer.printColumnsText(header, columnWidth, columnAlignment, [`${BOLD_ON}`, '', '']);
 for (let i in orderList) {
-  Printer.printColumnsText(orderList[i], columnWidth, columnAliment, [`${BOLD_OFF}`, '', '']);
+  Printer.printColumnsText(orderList[i], columnWidth, columnAlignment, [`${BOLD_OFF}`, '', '']);
 }
 Printer.printBill(`${CENTER}Thank you\n`);
 ```

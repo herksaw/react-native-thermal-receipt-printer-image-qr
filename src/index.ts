@@ -16,16 +16,21 @@ export interface PrinterOptions {
   encoding?: string;
 }
 
+export enum PrinterWidth {
+  "58mm" = 58,
+  "80mm" = 80,
+}
+
 export interface PrinterImageOptions {
   beep?: boolean;
   cut?: boolean;
   tailingLine?: boolean;
   encoding?: string;
-  /**
-   * ios only
-   */
-  imageWidth?: number,
-  paddingX?: number
+  imageWidth?: number;
+  imageHeight?: number;
+  printerWidthType?: PrinterWidth;
+  // only ios
+  paddingX?: number;
 }
 
 export interface IUSBPrinter {
@@ -44,7 +49,7 @@ export interface INetPrinter {
   port: number;
 }
 
-export enum ColumnAliment {
+export enum ColumnAlignment {
   LEFT,
   CENTER,
   RIGHT,
@@ -179,9 +184,16 @@ const USBPrinter = {
    */
   printImage: function (imgUrl: string, opts: PrinterImageOptions = {}) {
     if (Platform.OS === "ios") {
-      RNUSBPrinter.printImageData(imgUrl, opts, (error: Error) => console.warn(error));
+      RNUSBPrinter.printImageData(imgUrl, opts, (error: Error) =>
+        console.warn(error)
+      );
     } else {
-      RNUSBPrinter.printImageData(imgUrl, (error: Error) => console.warn(error));
+      RNUSBPrinter.printImageData(
+        imgUrl,
+        opts?.imageWidth ?? 0,
+        opts?.imageHeight ?? 0,
+        (error: Error) => console.warn(error)
+      );
     }
   },
   /**
@@ -191,9 +203,16 @@ const USBPrinter = {
    */
   printImageBase64: function (Base64: string, opts: PrinterImageOptions = {}) {
     if (Platform.OS === "ios") {
-      RNUSBPrinter.printImageBase64(Base64, opts, (error: Error) => console.warn(error));
+      RNUSBPrinter.printImageBase64(Base64, opts, (error: Error) =>
+        console.warn(error)
+      );
     } else {
-      RNUSBPrinter.printImageBase64(Base64, (error: Error) => console.warn(error));
+      RNUSBPrinter.printImageBase64(
+        Base64,
+        opts?.imageWidth ?? 0,
+        opts?.imageHeight ?? 0,
+        (error: Error) => console.warn(error)
+      );
     }
   },
   /**
@@ -203,9 +222,7 @@ const USBPrinter = {
   printRaw: (text: string): void => {
     if (Platform.OS === "ios") {
     } else {
-      RNUSBPrinter.printRawData(text, (error: Error) =>
-        console.warn(error)
-      );
+      RNUSBPrinter.printRawData(text, (error: Error) => console.warn(error));
     }
   },
   /**
@@ -213,8 +230,8 @@ const USBPrinter = {
    * 80mm => 46 character
    * 58mm => 30 character
    */
-  printColumnsText: (texts: string[], columnWidth: number[], columnAliment: (ColumnAliment)[], columnStyle: string[], opts: PrinterOptions = {}): void => {
-    const result = processColumnText(texts, columnWidth, columnAliment, columnStyle)
+  printColumnsText: (texts: string[], columnWidth: number[], columnAlignment: (ColumnAlignment)[], columnStyle: string[], opts: PrinterOptions = {}): void => {
+    const result = processColumnText(texts, columnWidth, columnAlignment, columnStyle)
     RNUSBPrinter.printRawData(textTo64Buffer(result, opts), (error: Error) =>
       console.warn(error)
     );
@@ -294,7 +311,12 @@ const BLEPrinter = {
        */
       RNBLEPrinter.printImageData(imgUrl, opts, (error: Error) => console.warn(error));
     } else {
-      RNBLEPrinter.printImageData(imgUrl, (error: Error) => console.warn(error));
+      RNBLEPrinter.printImageData(
+        imgUrl,
+        opts?.imageWidth ?? 0,
+        opts?.imageHeight ?? 0,
+        (error: Error) => console.warn(error)
+      );
     }
   },
   /**
@@ -312,7 +334,12 @@ const BLEPrinter = {
       /**
        * just development
        */
-      RNBLEPrinter.printImageBase64(Base64, (error: Error) => console.warn(error));
+      RNBLEPrinter.printImageBase64(
+        Base64,
+        opts?.imageWidth ?? 0,
+        opts?.imageHeight ?? 0,
+        (error: Error) => console.warn(error)
+      );
     }
   },
   /**
@@ -321,6 +348,15 @@ const BLEPrinter = {
    */
   printRaw: (text: string): void => {
     if (Platform.OS === "ios") {
+      var processedText = textPreprocessingIOS(text, false, false);
+
+      RNBLEPrinter.printRawData(
+        processedText.text,
+        processedText.opts,
+        function (error) {
+          return console.warn(error);
+        }
+      );
     } else {
       RNBLEPrinter.printRawData(text, (error: Error) =>
         console.warn(error)
@@ -332,8 +368,8 @@ const BLEPrinter = {
    * 80mm => 46 character
    * 58mm => 30 character
    */
-  printColumnsText: (texts: string[], columnWidth: number[], columnAliment: (ColumnAliment)[], columnStyle: string[], opts: PrinterOptions = {}): void => {
-    const result = processColumnText(texts, columnWidth, columnAliment, columnStyle)
+  printColumnsText: (texts: string[], columnWidth: number[], columnAlignment: (ColumnAlignment)[], columnStyle: string[], opts: PrinterOptions = {}): void => {
+    const result = processColumnText(texts, columnWidth, columnAlignment, columnStyle)
     if (Platform.OS === "ios") {
       const processedText = textPreprocessingIOS(result, false, false);
       RNBLEPrinter.printRawData(
@@ -523,7 +559,12 @@ const NetPrinter = {
     if (Platform.OS === "ios") {
       RNNetPrinter.printImageData(imgUrl, opts, (error: Error) => console.warn(error));
     } else {
-      RNNetPrinter.printImageData(imgUrl, (error: Error) => console.warn(error));
+      RNNetPrinter.printImageData(
+        imgUrl,
+        opts?.imageWidth ?? 0,
+        opts?.imageHeight ?? 0,
+        (error: Error) => console.warn(error)
+      );
     }
   },
   /**
@@ -535,7 +576,12 @@ const NetPrinter = {
     if (Platform.OS === "ios") {
       RNNetPrinter.printImageBase64(Base64, opts, (error: Error) => console.warn(error));
     } else {
-      RNNetPrinter.printImageBase64(Base64, (error: Error) => console.warn(error));
+      RNNetPrinter.printImageBase64(
+        Base64,
+        opts?.imageWidth ?? 0,
+        opts?.imageHeight ?? 0,
+        (error: Error) => console.warn(error)
+      );
     }
   },
 
@@ -557,8 +603,8 @@ const NetPrinter = {
    * 80mm => 46 character
    * 58mm => 30 character
    */
-  printColumnsText: (texts: string[], columnWidth: number[], columnAliment: (ColumnAliment)[], columnStyle: string[] = [], opts: PrinterOptions = {}): void => {
-    const result = processColumnText(texts, columnWidth, columnAliment, columnStyle)
+  printColumnsText: (texts: string[], columnWidth: number[], columnAlignment: (ColumnAlignment)[], columnStyle: string[] = [], opts: PrinterOptions = {}): void => {
+    const result = processColumnText(texts, columnWidth, columnAlignment, columnStyle)
     if (Platform.OS === "ios") {
       const processedText = textPreprocessingIOS(result, false, false);
       RNNetPrinter.printRawData(

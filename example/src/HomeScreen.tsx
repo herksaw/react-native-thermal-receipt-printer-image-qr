@@ -18,7 +18,7 @@ import {
   IUSBPrinter,
   IBLEPrinter,
   INetPrinter,
-  ColumnAliment,
+  ColumnAlignment,
   COMMANDS
 } from 'react-native-thermal-receipt-printer-image-qr';
 import Loading from '../Loading';
@@ -206,13 +206,13 @@ export const HomeScreen = ({route}: any) => {
             ["4. Retro Buttons Up Full Sleeve Loose", "x10", "200$"],
             ["5. Retro Buttons Up", "x10", "200$"],
           ];
-          let columnAliment = [ColumnAliment.LEFT, ColumnAliment.CENTER, ColumnAliment.RIGHT];
+          let columnAlignment = [ColumnAlignment.LEFT, ColumnAlignment.CENTER, ColumnAlignment.RIGHT];
           let columnWidth = [46 - (7 + 12), 7, 12]
           const header = ['Product list', 'Qty', 'Price']
-          Printer.printColumnsText(header, columnWidth, columnAliment, [`${BOLD_ON}`, '', '']);
+          Printer.printColumnsText(header, columnWidth, columnAlignment, [`${BOLD_ON}`, '', '']);
           Printer.printText(`${CENTER}${COMMANDS.HORIZONTAL_LINE.HR3_80MM}${CENTER}`);
           for (let i in orderList) {
-            Printer.printColumnsText(orderList[i], columnWidth, columnAliment, [`${BOLD_OFF}`, '', '']);
+            Printer.printColumnsText(orderList[i], columnWidth, columnAlignment, [`${BOLD_OFF}`, '', '']);
           }
           Printer.printText(`\n`);
           Printer.printImageBase64(qrProcessed, {

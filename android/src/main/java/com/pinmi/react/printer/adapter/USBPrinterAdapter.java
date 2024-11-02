@@ -1,5 +1,9 @@
 package com.pinmi.react.printer.adapter;
 
+import static com.pinmi.react.printer.adapter.UtilsImage.getPixelsSlow;
+import static com.pinmi.react.printer.adapter.UtilsImage.recollectSlice;
+
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -39,10 +43,11 @@ import java.util.List;
  */
 
 public class USBPrinterAdapter implements PrinterAdapter {
+    @SuppressLint("StaticFieldLeak")
     private static USBPrinterAdapter mInstance;
 
 
-    private String LOG_TAG = "RNUSBPrinter";
+    private final String LOG_TAG = "RNUSBPrinter";
     private Context mContext;
     private UsbManager mUSBManager;
     private PendingIntent mPermissionIndent;
@@ -54,11 +59,11 @@ public class USBPrinterAdapter implements PrinterAdapter {
     private static final String EVENT_USB_DEVICE_ATTACHED = "usbAttached";
 
     private final static char ESC_CHAR = 0x1B;
-    private static byte[] SELECT_BIT_IMAGE_MODE = { 0x1B, 0x2A, 33 };
-    private final static byte[] SET_LINE_SPACE_24 = new byte[] { ESC_CHAR, 0x33, 24 };
-    private final static byte[] SET_LINE_SPACE_32 = new byte[] { ESC_CHAR, 0x33, 32 };
-    private final static byte[] LINE_FEED = new byte[] { 0x0A };
-    private static byte[] CENTER_ALIGN = { 0x1B, 0X61, 0X31 };
+    private static final byte[] SELECT_BIT_IMAGE_MODE = {0x1B, 0x2A, 33};
+    private final static byte[] SET_LINE_SPACE_24 = new byte[]{ESC_CHAR, 0x33, 24};
+    private final static byte[] SET_LINE_SPACE_32 = new byte[]{ESC_CHAR, 0x33, 32};
+    private final static byte[] LINE_FEED = new byte[]{0x0A};
+    private static final byte[] CENTER_ALIGN = {0x1B, 0X61, 0X31};
 
     private USBPrinterAdapter() {
     }
@@ -100,11 +105,13 @@ public class USBPrinterAdapter implements PrinterAdapter {
         }
     };
 
-        public void init(ReactApplicationContext reactContext, Callback successCallback, Callback errorCallback) {
+    @SuppressLint("UnspecifiedImmutableFlag")
+    public void init(ReactApplicationContext reactContext, Callback successCallback, Callback errorCallback) {
         this.mContext = reactContext;
         this.mUSBManager = (UsbManager) this.mContext.getSystemService(Context.USB_SERVICE);
         // this.mPermissionIndent = PendingIntent.getBroadcast(mContext, 0, new Intent(ACTION_USB_PERMISSION), 0);
-        this.mPermissionIndent = PendingIntent.getBroadcast(mContext, 0, new Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_IMMUTABLE);
+        // this.mPermissionIndent = PendingIntent.getBroadcast(mContext, 0, new Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_IMMUTABLE);
+        this.mPermissionIndent = PendingIntent.getBroadcast(mContext, 0, new Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
         IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
         filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
         filter.addAction(UsbManager.ACTION_USB_ACCESSORY_ATTACHED);
@@ -113,12 +120,14 @@ public class USBPrinterAdapter implements PrinterAdapter {
         // Use Context.RECEIVER_NOT_EXPORTED since this is an internal receiver
         // mContext.registerReceiver(mUsbDeviceReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
         
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            mContext.registerReceiver(mUsbDeviceReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
-        } else {
-            // @SuppressWarnings({"UnspecifiedRegisterReceiverFlag", "deprecation"})
-            mContext.registerReceiver(mUsbDeviceReceiver, filter);
-        }
+        // if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+        //     mContext.registerReceiver(mUsbDeviceReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+        // } else {
+        //     // @SuppressWarnings({"UnspecifiedRegisterReceiverFlag", "deprecation"})
+        //     mContext.registerReceiver(mUsbDeviceReceiver, filter);
+        // }
+
+        mContext.registerReceiver(mUsbDeviceReceiver, filter);
 
         Log.v(LOG_TAG, "RNUSBPrinter initialized");
         successCallback.invoke();
@@ -290,7 +299,7 @@ public class USBPrinterAdapter implements PrinterAdapter {
 
 
     @Override
-    public void printImageData(final String imageUrl, Callback errorCallback) {
+    public void printImageData(final String imageUrl, int imageWidth, int imageHeight, Callback errorCallback) {
         final Bitmap bitmapImage = getBitmapFromURL(imageUrl);
 
         if(bitmapImage == null) {
@@ -302,7 +311,7 @@ public class USBPrinterAdapter implements PrinterAdapter {
         boolean isConnected = openConnection();
         if (isConnected) {
             Log.v(LOG_TAG, "Connected to device");
-            int[][] pixels = getPixelsSlow(bitmapImage);
+            int[][] pixels = getPixelsSlow(bitmapImage, imageWidth, imageHeight);
 
             int b = mUsbDeviceConnection.bulkTransfer(mEndPoint, SET_LINE_SPACE_24, SET_LINE_SPACE_24.length, 100000);
 
@@ -314,8 +323,8 @@ public class USBPrinterAdapter implements PrinterAdapter {
                 mUsbDeviceConnection.bulkTransfer(mEndPoint, SELECT_BIT_IMAGE_MODE, SELECT_BIT_IMAGE_MODE.length, 100000);
 
                 // Set nL and nH based on the width of the image
-                byte[] row = new byte[]{(byte)(0x00ff & pixels[y].length)
-                        , (byte)((0xff00 & pixels[y].length) >> 8)};
+                byte[] row = new byte[]{(byte) (0x00ff & pixels[y].length)
+                        , (byte) ((0xff00 & pixels[y].length) >> 8)};
 
                 mUsbDeviceConnection.bulkTransfer(mEndPoint, row, row.length, 100000);
 
@@ -340,7 +349,7 @@ public class USBPrinterAdapter implements PrinterAdapter {
     }
 
     @Override
-    public void printImageBase64(final Bitmap bitmapImage, Callback errorCallback) {
+    public void printImageBase64(final Bitmap bitmapImage, int imageWidth, int imageHeight, Callback errorCallback) {
         if(bitmapImage == null) {
             errorCallback.invoke("image not found");
             return;
@@ -350,7 +359,7 @@ public class USBPrinterAdapter implements PrinterAdapter {
         boolean isConnected = openConnection();
         if (isConnected) {
             Log.v(LOG_TAG, "Connected to device");
-            int[][] pixels = getPixelsSlow(bitmapImage);
+            int[][] pixels = getPixelsSlow(bitmapImage, imageWidth, imageHeight);
 
             int b = mUsbDeviceConnection.bulkTransfer(mEndPoint, SET_LINE_SPACE_24, SET_LINE_SPACE_24.length, 100000);
 
@@ -362,8 +371,8 @@ public class USBPrinterAdapter implements PrinterAdapter {
                 mUsbDeviceConnection.bulkTransfer(mEndPoint, SELECT_BIT_IMAGE_MODE, SELECT_BIT_IMAGE_MODE.length, 100000);
 
                 // Set nL and nH based on the width of the image
-                byte[] row = new byte[]{(byte)(0x00ff & pixels[y].length)
-                        , (byte)((0xff00 & pixels[y].length) >> 8)};
+                byte[] row = new byte[]{(byte) (0x00ff & pixels[y].length)
+                        , (byte) ((0xff00 & pixels[y].length) >> 8)};
 
                 mUsbDeviceConnection.bulkTransfer(mEndPoint, row, row.length, 100000);
 
@@ -387,89 +396,89 @@ public class USBPrinterAdapter implements PrinterAdapter {
 
     }
 
-    public static int[][] getPixelsSlow(Bitmap image2) {
+    // public static int[][] getPixelsSlow(Bitmap image2) {
 
-        Bitmap image = resizeTheImageForPrinting(image2);
+    //     Bitmap image = resizeTheImageForPrinting(image2);
 
-        int width = image.getWidth();
-        int height = image.getHeight();
-        int[][] result = new int[height][width];
-        for (int row = 0; row < height; row++) {
-            for (int col = 0; col < width; col++) {
-                result[row][col] = getRGB(image, col, row);
-            }
-        }
-        return result;
-    }
+    //     int width = image.getWidth();
+    //     int height = image.getHeight();
+    //     int[][] result = new int[height][width];
+    //     for (int row = 0; row < height; row++) {
+    //         for (int col = 0; col < width; col++) {
+    //             result[row][col] = getRGB(image, col, row);
+    //         }
+    //     }
+    //     return result;
+    // }
 
-    private byte[] recollectSlice(int y, int x, int[][] img) {
-        byte[] slices = new byte[] { 0, 0, 0 };
-        for (int yy = y, i = 0; yy < y + 24 && i < 3; yy += 8, i++) {
-            byte slice = 0;
-            for (int b = 0; b < 8; b++) {
-                int yyy = yy + b;
-                if (yyy >= img.length) {
-                    continue;
-                }
-                int col = img[yyy][x];
-                boolean v = shouldPrintColor(col);
-                slice |= (byte) ((v ? 1 : 0) << (7 - b));
-            }
-            slices[i] = slice;
-        }
-        return slices;
-    }
+    // private byte[] recollectSlice(int y, int x, int[][] img) {
+    //     byte[] slices = new byte[] { 0, 0, 0 };
+    //     for (int yy = y, i = 0; yy < y + 24 && i < 3; yy += 8, i++) {
+    //         byte slice = 0;
+    //         for (int b = 0; b < 8; b++) {
+    //             int yyy = yy + b;
+    //             if (yyy >= img.length) {
+    //                 continue;
+    //             }
+    //             int col = img[yyy][x];
+    //             boolean v = shouldPrintColor(col);
+    //             slice |= (byte) ((v ? 1 : 0) << (7 - b));
+    //         }
+    //         slices[i] = slice;
+    //     }
+    //     return slices;
+    // }
 
-    private boolean shouldPrintColor(int col) {
-        final int threshold = 127;
-        int a, r, g, b, luminance;
-        a = (col >> 24) & 0xff;
-        if (a != 0xff) {// Ignore transparencies
-            return false;
-        }
-        r = (col >> 16) & 0xff;
-        g = (col >> 8) & 0xff;
-        b = col & 0xff;
+    // private boolean shouldPrintColor(int col) {
+    //     final int threshold = 127;
+    //     int a, r, g, b, luminance;
+    //     a = (col >> 24) & 0xff;
+    //     if (a != 0xff) {// Ignore transparencies
+    //         return false;
+    //     }
+    //     r = (col >> 16) & 0xff;
+    //     g = (col >> 8) & 0xff;
+    //     b = col & 0xff;
 
-        luminance = (int) (0.299 * r + 0.587 * g + 0.114 * b);
+    //     luminance = (int) (0.299 * r + 0.587 * g + 0.114 * b);
 
-        return luminance < threshold;
-    }
+    //     return luminance < threshold;
+    // }
 
-    public static Bitmap resizeTheImageForPrinting(Bitmap image) {
-        // making logo size 150 or less pixels
-        int width = image.getWidth();
-        int height = image.getHeight();
-        if (width > 200 || height > 200) {
-            if (width > height) {
-                float decreaseSizeBy = (200.0f / width);
-                return getBitmapResized(image, decreaseSizeBy);
-            } else {
-                float decreaseSizeBy = (200.0f / height);
-                return getBitmapResized(image, decreaseSizeBy);
-            }
-        }
-        return image;
-    }
+    // public static Bitmap resizeTheImageForPrinting(Bitmap image) {
+    //     // making logo size 150 or less pixels
+    //     int width = image.getWidth();
+    //     int height = image.getHeight();
+    //     if (width > 200 || height > 200) {
+    //         if (width > height) {
+    //             float decreaseSizeBy = (200.0f / width);
+    //             return getBitmapResized(image, decreaseSizeBy);
+    //         } else {
+    //             float decreaseSizeBy = (200.0f / height);
+    //             return getBitmapResized(image, decreaseSizeBy);
+    //         }
+    //     }
+    //     return image;
+    // }
 
-    public static int getRGB(Bitmap bmpOriginal, int col, int row) {
-        // get one pixel color
-        int pixel = bmpOriginal.getPixel(col, row);
-        // retrieve color of all channels
-        int R = Color.red(pixel);
-        int G = Color.green(pixel);
-        int B = Color.blue(pixel);
-        return Color.rgb(R, G, B);
-    }
+    // public static int getRGB(Bitmap bmpOriginal, int col, int row) {
+    //     // get one pixel color
+    //     int pixel = bmpOriginal.getPixel(col, row);
+    //     // retrieve color of all channels
+    //     int R = Color.red(pixel);
+    //     int G = Color.green(pixel);
+    //     int B = Color.blue(pixel);
+    //     return Color.rgb(R, G, B);
+    // }
 
-    public static Bitmap getBitmapResized(Bitmap image, float decreaseSizeBy) {
-        Bitmap resized = Bitmap.createScaledBitmap(image, (int) (image.getWidth() * decreaseSizeBy),
-                (int) (image.getHeight() * decreaseSizeBy), true);
-        return resized;
-    }
+    // public static Bitmap getBitmapResized(Bitmap image, float decreaseSizeBy) {
+    //     Bitmap resized = Bitmap.createScaledBitmap(image, (int) (image.getWidth() * decreaseSizeBy),
+    //             (int) (image.getHeight() * decreaseSizeBy), true);
+    //     return resized;
+    // }
 
-    @Override
-    public void printQrCode(String qrCode, Callback errorCallback) {
+    // @Override
+    // public void printQrCode(String qrCode, Callback errorCallback) {
 
-    }
+    // }
 }

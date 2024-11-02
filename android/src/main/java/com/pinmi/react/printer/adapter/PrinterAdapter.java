@@ -31,9 +31,9 @@ public interface PrinterAdapter {
 
     public void printRawDataAsync(String rawBase64Data, Callback errorCallback);
 
-    public void printImageData(String imageUrl, Callback errorCallback);
+    public void printImageData(String imageUrl, int imageWidth, int imageHeight, Callback errorCallback);
 
-    public void printImageBase64(Bitmap imageUrl, Callback errorCallback);
+    public void printImageBase64(Bitmap imageUrl, int imageWidth, int imageHeight, Callback errorCallback);
 
-    public void printQrCode(String qrCode, Callback errorCallback);
+    // public void printQrCode(String qrCode, Callback errorCallback);
 }

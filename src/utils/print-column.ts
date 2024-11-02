@@ -1,4 +1,4 @@
-import {ColumnAliment} from "..";
+import {ColumnAlignment} from "..";
 
 /**
  * Using to add space for each row
@@ -6,7 +6,7 @@ import {ColumnAliment} from "..";
  * @param restLength
  * @param align
  */
-const processAlignText = (text: string, restLength: number, align: ColumnAliment): string => {
+const processAlignText = (text: string, restLength: number, align: ColumnAlignment): string => {
   if (align === 0) {
     return text + " ".repeat(restLength);
   } else if (align === 1) {
@@ -50,22 +50,22 @@ const processNewLine = (text: string, maxLength: number): {
   }
 };
 
-export const processColumnText = (texts: string[], columnWidth: number[], columnAliment: (ColumnAliment)[], columnStyle: string[] = []): string => {
+export const processColumnText = (texts: string[], columnWidth: number[], columnAlignment: (ColumnAlignment)[], columnStyle: string[] = []): string => {
   let rest_texts: [string, string, string] = ['', '', ''];
   let result = ''
   texts.map((text, idx) => {
     const columnWidthAtRow = Math.round(columnWidth?.[idx]);
     if (text.length >= columnWidth[idx]) {
       const processedText = processNewLine(text, columnWidthAtRow);
-      result += (columnStyle?.[idx] ?? '') + processAlignText(processedText.text, columnWidthAtRow - processedText.text.length, columnAliment[idx]) + (idx !== 2 ? " " : "");
+      result += (columnStyle?.[idx] ?? '') + processAlignText(processedText.text, columnWidthAtRow - processedText.text.length, columnAlignment[idx]) + (idx !== 2 ? " " : "");
       rest_texts[idx] = processedText.text_tail;
     } else {
-      result += (columnStyle?.[idx] ?? '') + processAlignText(text.trim(), columnWidthAtRow - text.length, columnAliment[idx]) + (idx !== 2 ? " " : "");
+      result += (columnStyle?.[idx] ?? '') + processAlignText(text.trim(), columnWidthAtRow - text.length, columnAlignment[idx]) + (idx !== 2 ? " " : "");
     }
   });
   const index_nonEmpty = rest_texts.findIndex((rest_text) => rest_text != '');
   if (index_nonEmpty !== -1) {
-    result += "\n" + processColumnText(rest_texts, columnWidth, columnAliment, columnStyle)
+    result += "\n" + processColumnText(rest_texts, columnWidth, columnAlignment, columnStyle)
   }
   return result
 };
