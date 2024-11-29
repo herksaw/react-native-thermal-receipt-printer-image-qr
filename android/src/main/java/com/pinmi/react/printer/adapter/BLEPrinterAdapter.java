@@ -92,18 +92,12 @@ public class BLEPrinterAdapter implements PrinterAdapter{
     public List<PrinterDevice> getDeviceList(Callback errorCallback) {
         BluetoothAdapter bluetoothAdapter = getBTAdapter();
         List<PrinterDevice> printerDevices = new ArrayList<>();
-        if(bluetoothAdapter == null) {
-            errorCallback.invoke("No bluetooth adapter available");
-            return printerDevices;
-        }
-        if (!bluetoothAdapter.isEnabled()) {
-            errorCallback.invoke("bluetooth is not enabled");
+        if(bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
             return printerDevices;
         }
         
         // Check for Bluetooth permission
         if (mContext.checkSelfPermission(android.Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED) {
-            errorCallback.invoke("Bluetooth permission is not granted");
             return printerDevices;
         }
 

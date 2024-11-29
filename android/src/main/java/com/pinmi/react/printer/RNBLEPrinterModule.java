@@ -1,5 +1,7 @@
 package com.pinmi.react.printer;
 
+import android.bluetooth.BluetoothAdapter;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
@@ -34,8 +36,6 @@ public class RNBLEPrinterModule extends ReactContextBaseJavaModule implements RN
         this.reactContext = reactContext;
     }
 
-
-
     @ReactMethod
     @Override
     public void init(Callback successCallback, Callback errorCallback) {
@@ -54,6 +54,24 @@ public class RNBLEPrinterModule extends ReactContextBaseJavaModule implements RN
     public void getDeviceList(Callback successCallback, Callback errorCallback)  {
         List<PrinterDevice> printerDevices = adapter.getDeviceList(errorCallback);
         WritableArray pairedDeviceList = Arguments.createArray();
+
+        // Check bluetooth state first
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if(bluetoothAdapter == null) {
+            errorCallback.invoke("No bluetooth adapter available");
+            return;
+        }
+        if (!bluetoothAdapter.isEnabled()) {
+            errorCallback.invoke("Bluetooth is not enabled");
+            return;
+        }
+
+        // Check permission
+        if (reactContext.checkSelfPermission(android.Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED) {
+            errorCallback.invoke("Bluetooth permission is not granted");
+            return;
+        }
+
         if(printerDevices.size() > 0) {
             for (PrinterDevice printerDevice : printerDevices) {
                 pairedDeviceList.pushMap(printerDevice.toRNWritableMap());
@@ -63,7 +81,6 @@ public class RNBLEPrinterModule extends ReactContextBaseJavaModule implements RN
             errorCallback.invoke("No Device Found");
         }
     }
-
 
     @ReactMethod
     @Override
