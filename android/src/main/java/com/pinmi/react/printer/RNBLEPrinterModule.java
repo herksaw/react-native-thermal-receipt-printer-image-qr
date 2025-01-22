@@ -67,10 +67,11 @@ public class RNBLEPrinterModule extends ReactContextBaseJavaModule implements RN
         }
 
         // Check permission
-        if (reactContext.checkSelfPermission(android.Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED) {
-            errorCallback.invoke("Bluetooth permission is not granted");
-            return;
-        }
+        // 2025-01-02 - hide first
+        // if (reactContext.checkSelfPermission(android.Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED) {
+        //     errorCallback.invoke("Bluetooth permission is not granted");
+        //     return;
+        // }
 
         if(printerDevices.size() > 0) {
             for (PrinterDevice printerDevice : printerDevices) {

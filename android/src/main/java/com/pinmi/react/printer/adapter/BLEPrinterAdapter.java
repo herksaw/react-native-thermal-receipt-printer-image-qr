@@ -121,10 +121,11 @@ public class BLEPrinterAdapter implements PrinterAdapter{
         }
 
         // Check for Bluetooth permission
-        if (mContext.checkSelfPermission(android.Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED) {
-            errorCallback.invoke("Bluetooth permission is not granted");
-            return;
-        }
+        // 2025-01-02 - hide first
+        // if (mContext.checkSelfPermission(android.Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED) {
+        //     errorCallback.invoke("Bluetooth permission is not granted");
+        //     return;
+        // }
 
         BLEPrinterDeviceId blePrinterDeviceId = (BLEPrinterDeviceId)printerDeviceId;
         if(this.mBluetoothDevice != null){
