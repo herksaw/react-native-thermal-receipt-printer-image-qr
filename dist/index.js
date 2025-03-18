@@ -379,6 +379,31 @@ var NetPrinter = {
             });
         }); });
     },
+    connectPrinterAsync: function (host, port, timeout, skipPreConnect) {
+        return new Promise(function (resolve, reject) { return __awaiter(void 0, void 0, void 0, function () {
+            var error_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 4, , 5]);
+                        if (!skipPreConnect) return [3 /*break*/, 1];
+                        return [3 /*break*/, 3];
+                    case 1: return [4 /*yield*/, connectToHost(host, timeout)];
+                    case 2:
+                        _a.sent();
+                        _a.label = 3;
+                    case 3:
+                        RNNetPrinter.connectPrinterAsync(host, port, function (printer) { return resolve(printer); }, function (error) { return reject(error); });
+                        return [3 /*break*/, 5];
+                    case 4:
+                        error_2 = _a.sent();
+                        reject((error_2 === null || error_2 === void 0 ? void 0 : error_2.message) || "Connect to ".concat(host, " fail"));
+                        return [3 /*break*/, 5];
+                    case 5: return [2 /*return*/];
+                }
+            });
+        }); });
+    },
     closeConn: function () {
         return new Promise(function (resolve) {
             RNNetPrinter.closeConn();

@@ -104,6 +104,7 @@ declare const NetPrinter: {
     init: () => Promise<void>;
     getDeviceList: () => Promise<INetPrinter[]>;
     connectPrinter: (host: string, port: number, timeout?: number | undefined, skipPreConnect?: false | undefined) => Promise<INetPrinter>;
+    connectPrinterAsync: (host: string, port: number, timeout?: number | undefined, skipPreConnect?: false | undefined) => Promise<INetPrinter>;
     closeConn: () => Promise<void>;
     printText: (text: string, opts?: {
         encoding: string;

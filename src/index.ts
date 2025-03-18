@@ -424,6 +424,28 @@ const NetPrinter = {
     }
     ),
 
+  connectPrinterAsync: (host: string, port: number, timeout?: number, skipPreConnect?: false): Promise<INetPrinter> =>
+    new Promise(async (resolve, reject) => {
+      try {
+        if (skipPreConnect) {
+          // do nothing here
+        }
+        else {
+          await connectToHost(host, timeout);
+        }
+
+        RNNetPrinter.connectPrinterAsync(
+          host,
+          port,
+          (printer: INetPrinter) => resolve(printer),
+          (error: Error) => reject(error)
+        );
+      } catch (error) {
+        reject(error?.message || `Connect to ${host} fail`)
+      }
+    }
+    ),
+
   closeConn: (): Promise<void> =>
     new Promise((resolve) => {
       RNNetPrinter.closeConn();
