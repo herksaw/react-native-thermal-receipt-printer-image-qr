@@ -27,6 +27,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import android.graphics.BitmapFactory;
+
+import android.os.Build;
+import android.Manifest;
+
 /**
  * Created by xiesubin on 2017/9/21.
  */
@@ -93,12 +97,35 @@ public class BLEPrinterAdapter implements PrinterAdapter{
         BluetoothAdapter bluetoothAdapter = getBTAdapter();
         List<PrinterDevice> printerDevices = new ArrayList<>();
         if(bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
+            errorCallback.invoke("adapater issue");
             return printerDevices;
         }
         
         // Check for Bluetooth permission
-        if (mContext.checkSelfPermission(android.Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED) {
-            return printerDevices;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            int connectPermission = mContext.checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT);
+            int scanPermission = mContext.checkSelfPermission(Manifest.permission.BLUETOOTH_SCAN);
+
+            Log.d("PrinterDebug", "Android 12+:");
+            Log.d("PrinterDebug", "BLUETOOTH_CONNECT permission: " + connectPermission);
+            Log.d("PrinterDebug", "BLUETOOTH_SCAN permission: " + scanPermission);
+
+            if (connectPermission != PackageManager.PERMISSION_GRANTED || scanPermission != PackageManager.PERMISSION_GRANTED) {
+                errorCallback.invoke("Permission issue (Android 12+): CONNECT=" + connectPermission + ", SCAN=" + scanPermission);
+                return printerDevices;
+            }
+        } else {
+            int btPermission = mContext.checkSelfPermission(Manifest.permission.BLUETOOTH);
+            int btAdminPermission = mContext.checkSelfPermission(Manifest.permission.BLUETOOTH_ADMIN);
+
+            Log.d("PrinterDebug", "Pre-Android 12:");
+            Log.d("PrinterDebug", "BLUETOOTH permission: " + btPermission);
+            Log.d("PrinterDebug", "BLUETOOTH_ADMIN permission: " + btAdminPermission);
+
+            if (btPermission != PackageManager.PERMISSION_GRANTED || btAdminPermission != PackageManager.PERMISSION_GRANTED) {
+                errorCallback.invoke("Permission issue (Pre-Android 12): BLUETOOTH=" + btPermission + ", ADMIN=" + btAdminPermission);
+                return printerDevices;
+            }
         }
 
         Set<BluetoothDevice> pairedDevices = getBTAdapter().getBondedDevices();

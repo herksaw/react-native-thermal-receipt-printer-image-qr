@@ -530,7 +530,7 @@ const NetPrinter = {
       else {
         // use original code
 
-        RNNetPrinter.printRawDatAsync(
+        RNNetPrinter.printRawDataAsync(
           processedText.text,
           processedText.opts,
           (error: Error) => console.warn(error)
