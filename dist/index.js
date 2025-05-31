@@ -463,7 +463,7 @@ var NetPrinter = {
             }
             else {
                 // use original code
-                RNNetPrinter.printRawDatAsync(processedText.text, processedText.opts, function (error) { return console.warn(error); });
+                RNNetPrinter.printRawDataAsync(processedText.text, processedText.opts, function (error) { return console.warn(error); });
                 // if (opts.noHex) {
                 //   RNNetPrinter.printRawData(
                 //     processedText.text,
