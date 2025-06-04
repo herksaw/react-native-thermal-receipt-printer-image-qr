@@ -53,6 +53,7 @@ import { connectToHost } from './utils/net-connect';
 var RNUSBPrinter = NativeModules.RNUSBPrinter;
 var RNBLEPrinter = NativeModules.RNBLEPrinter;
 var RNNetPrinter = NativeModules.RNNetPrinter;
+var RNNetLabelPrinter = NativeModules.RNNetLabelPrinter;
 export var PrinterWidth;
 (function (PrinterWidth) {
     PrinterWidth[PrinterWidth["58mm"] = 58] = "58mm";
@@ -562,8 +563,71 @@ var NetPrinter = {
         }
     },
 };
+var NetLabelPrinter = {
+    init: function () {
+        return new Promise(function (resolve, reject) {
+            return RNNetLabelPrinter.init(function () { return resolve(); }, function (error) { return reject(error); });
+        });
+    },
+    connectPrinter: function (host, port) {
+        return new Promise(function (resolve, reject) {
+            return RNNetLabelPrinter.openPort(host, port, function (printer) { return resolve(printer); }, function (error) { return reject(error); });
+        });
+    },
+    closeConn: function () {
+        return new Promise(function (resolve) {
+            RNNetLabelPrinter.closePort();
+            resolve();
+        });
+    },
+    setup: function (options) {
+        if (options === void 0) { options = {}; }
+        return new Promise(function (resolve, reject) {
+            var _a, _b, _c, _d, _e, _f, _g;
+            return RNNetLabelPrinter.setup((_a = options.width) !== null && _a !== void 0 ? _a : 105, (_b = options.height) !== null && _b !== void 0 ? _b : 80, (_c = options.speed) !== null && _c !== void 0 ? _c : 4, (_d = options.density) !== null && _d !== void 0 ? _d : 6, (_e = options.sensor) !== null && _e !== void 0 ? _e : 0, (_f = options.sensorDistance) !== null && _f !== void 0 ? _f : 3, (_g = options.sensorOffset) !== null && _g !== void 0 ? _g : 3, function () { return resolve(); }, function (error) { return reject(error); });
+        });
+    },
+    clearBuffer: function () {
+        return new Promise(function (resolve, reject) {
+            return RNNetLabelPrinter.clearBuffer(function () { return resolve(); }, function (error) { return reject(error); });
+        });
+    },
+    printBarcode: function (options) {
+        return new Promise(function (resolve, reject) {
+            return RNNetLabelPrinter.printBarcode(options.x, options.y, options.type, options.height, options.humanReadable, options.rotation, options.narrow, options.wide, options.content, function () { return resolve(); }, function (error) { return reject(error); });
+        });
+    },
+    printFont: function (options) {
+        return new Promise(function (resolve, reject) {
+            return RNNetLabelPrinter.printFont(options.x, options.y, options.fontName, options.rotation, options.xScale, options.yScale, options.content, function () { return resolve(); }, function (error) { return reject(error); });
+        });
+    },
+    printFontBlock: function (options) {
+        return new Promise(function (resolve, reject) {
+            return RNNetLabelPrinter.printFontBlock(options.x, options.y, options.width, options.height, options.fontName, options.rotation, options.xScale, options.yScale, options.space, options.align, options.content, function () { return resolve(); }, function (error) { return reject(error); });
+        });
+    },
+    printQRCode: function (options) {
+        return new Promise(function (resolve, reject) {
+            return RNNetLabelPrinter.printQRCode(options.x, options.y, options.eccLevel, options.cellWidth, options.rotation, options.content, function () { return resolve(); }, function (error) { return reject(error); });
+        });
+    },
+    printLabel: function (set, copy) {
+        if (set === void 0) { set = 1; }
+        if (copy === void 0) { copy = 1; }
+        return new Promise(function (resolve, reject) {
+            return RNNetLabelPrinter.printLabel(set, copy, function () { return resolve(); }, function (error) { return reject(error); });
+        });
+    },
+    getPrinterStatus: function () {
+        return new Promise(function (resolve, reject) {
+            return RNNetLabelPrinter.getPrinterStatus(function (status) { return resolve(status); }, function (error) { return reject(error); });
+        });
+    },
+};
 var NetPrinterEventEmitter = new NativeEventEmitter(RNNetPrinter);
-export { COMMANDS, NetPrinter, BLEPrinter, USBPrinter, NetPrinterEventEmitter };
+var NetLabelPrinterEventEmitter = new NativeEventEmitter(RNNetLabelPrinter);
+export { COMMANDS, NetPrinter, BLEPrinter, USBPrinter, NetLabelPrinter, NetPrinterEventEmitter, NetLabelPrinterEventEmitter };
 export var RN_THERMAL_RECEIPT_PRINTER_EVENTS;
 (function (RN_THERMAL_RECEIPT_PRINTER_EVENTS) {
     RN_THERMAL_RECEIPT_PRINTER_EVENTS["EVENT_NET_PRINTER_SCANNED_SUCCESS"] = "scannerResolved";

@@ -33,10 +33,64 @@ export interface INetPrinter {
     host: string;
     port: number;
 }
+export interface INetLabelPrinter {
+    host: string;
+    port: number;
+}
 export declare enum ColumnAlignment {
     LEFT = 0,
     CENTER = 1,
     RIGHT = 2
+}
+export interface LabelPrinterOptions {
+    width?: number;
+    height?: number;
+    speed?: number;
+    density?: number;
+    sensor?: number;
+    sensorDistance?: number;
+    sensorOffset?: number;
+}
+export interface LabelBarcodeOptions {
+    x: number;
+    y: number;
+    type: string;
+    height: number;
+    humanReadable: number;
+    rotation: number;
+    narrow: number;
+    wide: number;
+    content: string;
+}
+export interface LabelFontOptions {
+    x: number;
+    y: number;
+    fontName: string;
+    rotation: number;
+    xScale: number;
+    yScale: number;
+    content: string;
+}
+export interface LabelFontBlockOptions {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    fontName: string;
+    rotation: number;
+    xScale: number;
+    yScale: number;
+    space: number;
+    align: number;
+    content: string;
+}
+export interface LabelQRCodeOptions {
+    x: number;
+    y: number;
+    eccLevel: string;
+    cellWidth: number;
+    rotation: number;
+    content: string;
 }
 declare const USBPrinter: {
     init: () => Promise<void>;
@@ -139,8 +193,22 @@ declare const NetPrinter: {
      */
     printColumnsText: (texts: string[], columnWidth: number[], columnAlignment: (ColumnAlignment)[], columnStyle?: string[], opts?: PrinterOptions) => void;
 };
+declare const NetLabelPrinter: {
+    init: () => Promise<void>;
+    connectPrinter: (host: string, port: number) => Promise<INetLabelPrinter>;
+    closeConn: () => Promise<void>;
+    setup: (options?: LabelPrinterOptions) => Promise<void>;
+    clearBuffer: () => Promise<void>;
+    printBarcode: (options: LabelBarcodeOptions) => Promise<void>;
+    printFont: (options: LabelFontOptions) => Promise<void>;
+    printFontBlock: (options: LabelFontBlockOptions) => Promise<void>;
+    printQRCode: (options: LabelQRCodeOptions) => Promise<void>;
+    printLabel: (set?: number, copy?: number) => Promise<void>;
+    getPrinterStatus: () => Promise<string>;
+};
 declare const NetPrinterEventEmitter: NativeEventEmitter;
-export { COMMANDS, NetPrinter, BLEPrinter, USBPrinter, NetPrinterEventEmitter };
+declare const NetLabelPrinterEventEmitter: NativeEventEmitter;
+export { COMMANDS, NetPrinter, BLEPrinter, USBPrinter, NetLabelPrinter, NetPrinterEventEmitter, NetLabelPrinterEventEmitter };
 export declare enum RN_THERMAL_RECEIPT_PRINTER_EVENTS {
     EVENT_NET_PRINTER_SCANNED_SUCCESS = "scannerResolved",
     EVENT_NET_PRINTER_SCANNING = "scannerRunning",
