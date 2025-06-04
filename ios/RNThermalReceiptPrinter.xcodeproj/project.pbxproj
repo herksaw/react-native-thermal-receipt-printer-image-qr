@@ -35,8 +35,10 @@
 		22BC54C8229E811F006DE50F /* libPrinterSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPrinterSDK.a; path = PrinterSDK/libPrinterSDK.a; sourceTree = "<group>"; };
 		22F425A222AFB28F00673AFC /* RNNetPrinter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNNetPrinter.h; sourceTree = "<group>"; };
 		22F425A322AFB2A400673AFC /* RNNetPrinter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNNetPrinter.m; sourceTree = "<group>"; };
-		E7124A1A2DF086B800A5F82B /* RNNetLabelPrinter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RNNetLabelPrinter.swift; sourceTree = "<group>"; };
-		E7124A1B2DF086D200A5F82B /* RNNetLabelPrinter-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RNNetLabelPrinter-Bridging-Header.h"; sourceTree = "<group>"; };
+		E7124A1D2DF08B3F00A5F82B /* RNNetLabelPrinter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RNNetLabelPrinter.swift; sourceTree = "<group>"; };
+		E7124A1E2DF08B4000A5F82B /* RNNetLabelPrinter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNNetLabelPrinter.h; sourceTree = "<group>"; };
+		E7124A1F2DF08B4000A5F82B /* RNNetLabelPrinter-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RNNetLabelPrinter-Bridging-Header.h"; sourceTree = "<group>"; };
+		E7124A202DF08B4000A5F82B /* RNNetLabelPrinter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNNetLabelPrinter.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,8 +72,10 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
-				E7124A1B2DF086D200A5F82B /* RNNetLabelPrinter-Bridging-Header.h */,
-				E7124A1A2DF086B800A5F82B /* RNNetLabelPrinter.swift */,
+				E7124A1F2DF08B4000A5F82B /* RNNetLabelPrinter-Bridging-Header.h */,
+				E7124A1E2DF08B4000A5F82B /* RNNetLabelPrinter.h */,
+				E7124A202DF08B4000A5F82B /* RNNetLabelPrinter.m */,
+				E7124A1D2DF08B3F00A5F82B /* RNNetLabelPrinter.swift */,
 				225666E222B0ABE900EF323A /* RNUSBPrinter.h */,
 				225666E022B0ABD800EF323A /* RNUSBPrinter.m */,
 				22F425A322AFB2A400673AFC /* RNNetPrinter.m */,
