@@ -1,1 +1,0 @@
-../../../GSDK/GSDK/Classes/TscCommand.h

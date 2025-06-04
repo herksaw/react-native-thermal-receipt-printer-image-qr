@@ -1,1 +1,0 @@
-../../../GSDK/GSDK/Classes/BLEConnecter.h
