@@ -11,6 +11,7 @@
 		225666E122B0ABD800EF323A /* RNUSBPrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = 225666E022B0ABD800EF323A /* RNUSBPrinter.m */; };
 		22BC54C9229E811F006DE50F /* libPrinterSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 22BC54C8229E811F006DE50F /* libPrinterSDK.a */; };
 		22F425A422AFB2A400673AFC /* RNNetPrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = 22F425A322AFB2A400673AFC /* RNNetPrinter.m */; };
+		E7B35B7B2DF0B3AF0050C7E6 /* GSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7B35B7A2DF0B3AF0050C7E6 /* GSDK.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -39,6 +40,7 @@
 		E7124A1E2DF08B4000A5F82B /* RNNetLabelPrinter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNNetLabelPrinter.h; sourceTree = "<group>"; };
 		E7124A1F2DF08B4000A5F82B /* RNNetLabelPrinter-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RNNetLabelPrinter-Bridging-Header.h"; sourceTree = "<group>"; };
 		E7124A202DF08B4000A5F82B /* RNNetLabelPrinter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNNetLabelPrinter.m; sourceTree = "<group>"; };
+		E7B35B7A2DF0B3AF0050C7E6 /* GSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GSDK.framework; path = GPrinterLegacy/GSDK/GSDK.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +49,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				22BC54C9229E811F006DE50F /* libPrinterSDK.a in Frameworks */,
+				E7B35B7B2DF0B3AF0050C7E6 /* GSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -64,6 +67,7 @@
 		22BC54C7229E811F006DE50F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E7B35B7A2DF0B3AF0050C7E6 /* GSDK.framework */,
 				22BC54C8229E811F006DE50F /* libPrinterSDK.a */,
 			);
 			name = Frameworks;
@@ -238,12 +242,18 @@
 		58B511F01A9E6C8500147676 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/GPrinterLegacy/GSDK",
+					"$(SRCROOT)/ios/GPrinterLegacy/GSDK",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../../../React/**",
-					"$(SRCROOT)/../../react-native/React/**",
+					"$(SRCROOT)/../../react-native/React",
 					"$(PROJECT_DIR)/PrinterSDK",
+					"$(SRCROOT)/ios/GPrinterLegacy/GSDK/GSDK.framework/Headers",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -258,12 +268,18 @@
 		58B511F11A9E6C8500147676 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/GPrinterLegacy/GSDK",
+					"$(SRCROOT)/ios/GPrinterLegacy/GSDK",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../../../React/**",
-					"$(SRCROOT)/../../react-native/React/**",
+					"$(SRCROOT)/../../react-native/React",
 					"$(PROJECT_DIR)/PrinterSDK",
+					"$(SRCROOT)/ios/GPrinterLegacy/GSDK/GSDK.framework/Headers",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
