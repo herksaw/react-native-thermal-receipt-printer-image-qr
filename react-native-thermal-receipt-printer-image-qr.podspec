@@ -21,14 +21,21 @@ Pod::Spec.new do |s|
   s.requires_arc = true
   
   # Framework configuration
-  s.ios.vendored_frameworks = 'ios/Frameworks/IOS_SWIFT_WIFI_SDK.xcframework'
-  s.preserve_paths = 'ios/Frameworks/IOS_SWIFT_WIFI_SDK.xcframework'
+  s.ios.vendored_frameworks = '${PODS_ROOT}/../../../../ios/Frameworks/IOS_SWIFT_WIFI_SDK.xcframework'
+  s.preserve_paths = '${PODS_ROOT}/../../../../ios/Frameworks/IOS_SWIFT_WIFI_SDK.xcframework'
   
   # Other configurations
   s.ios.vendored_libraries = 'ios/PrinterSDK/libPrinterSDK.a'
   s.xcconfig = { 
-    'HEADER_SEARCH_PATHS' => '"${PROJECT_DIR}/PrinterSDK"/**',
-    'FRAMEWORK_SEARCH_PATHS' => '"${PODS_ROOT}/../ios/Frameworks"'
+    'HEADER_SEARCH_PATHS' => '"${PODS_ROOT}/../ios/PrinterSDK"/** "${PODS_ROOT}/../../../../ios/Frameworks/IOS_SWIFT_WIFI_SDK.xcframework/ios-arm64/Headers"',
+    'FRAMEWORK_SEARCH_PATHS' => '"${PODS_ROOT}/../../../../ios/Frameworks"'
+  }
+
+  # Add Swift version and module settings
+  s.swift_version = '5.0'
+  s.pod_target_xcconfig = {
+    'SWIFT_INCLUDE_PATHS' => '$(PODS_ROOT)/../../../../ios/Frameworks/IOS_SWIFT_WIFI_SDK.xcframework/ios-arm64/Headers',
+    'OTHER_LDFLAGS' => '-framework IOS_SWIFT_WIFI_SDK'
   }
 
   s.dependency 'React'
