@@ -3,9 +3,8 @@ import React
 import IOS_SWIFT_WIFI_SDK
 
 @objc(RNNetLabelPrinter)
-class RNNetLabelPrinter: RCTEventEmitter {
+class RNNetLabelPrinter: NSObject {
     private var gswifi: GTSPL_WIFI
-    private var hasListeners: Bool = false
     
     override init() {
         gswifi = GTSPL_WIFI()
@@ -13,32 +12,17 @@ class RNNetLabelPrinter: RCTEventEmitter {
     }
     
     @objc
-    override static func requiresMainQueueSetup() -> Bool {
+    static func requiresMainQueueSetup() -> Bool {
         return false
     }
     
     @objc
-    override func supportedEvents() -> [String] {
-        return ["printerStatus"]
-    }
-    
-    @objc
-    override func startObserving() {
-        hasListeners = true
-    }
-    
-    @objc
-    override func stopObserving() {
-        hasListeners = false
-    }
-    
-    @objc(init:reject:)
     func init(_ resolve: @escaping RCTPromiseResolveBlock,
               reject: @escaping RCTPromiseRejectBlock) {
         resolve(nil)
     }
     
-    @objc(openPort:port:resolve:reject:)
+    @objc
     func openPort(_ ip: String,
                   port: NSNumber,
                   resolve: @escaping RCTPromiseResolveBlock,
@@ -52,7 +36,7 @@ class RNNetLabelPrinter: RCTEventEmitter {
         }
     }
     
-    @objc(closePort:reject:)
+    @objc
     func closePort(_ resolve: @escaping RCTPromiseResolveBlock,
                    reject: @escaping RCTPromiseRejectBlock) {
         gswifi.closePort { msg in
@@ -60,7 +44,7 @@ class RNNetLabelPrinter: RCTEventEmitter {
         }
     }
     
-    @objc(setup:height:speed:density:sensor:sensorDistance:sensorOffset:resolve:reject:)
+    @objc
     func setup(_ width: NSNumber,
                height: NSNumber,
                speed: NSNumber,
@@ -85,14 +69,14 @@ class RNNetLabelPrinter: RCTEventEmitter {
         }
     }
     
-    @objc(clearBuffer:reject:)
+    @objc
     func clearBuffer(_ resolve: @escaping RCTPromiseResolveBlock,
                      reject: @escaping RCTPromiseRejectBlock) {
         gswifi.clearBuffer()
         resolve(nil)
     }
     
-    @objc(printBarcode:y:type:height:humanReadable:rotation:narrow:wide:content:resolve:reject:)
+    @objc
     func printBarcode(_ x: NSNumber,
                       y: NSNumber,
                       type: String,
@@ -117,7 +101,7 @@ class RNNetLabelPrinter: RCTEventEmitter {
         }
     }
     
-    @objc(printFont:y:fontName:rotation:xScale:yScale:content:resolve:reject:)
+    @objc
     func printFont(_ x: NSNumber,
                    y: NSNumber,
                    fontName: String,
@@ -138,7 +122,7 @@ class RNNetLabelPrinter: RCTEventEmitter {
         }
     }
     
-    @objc(printFontBlock:y:width:height:fontName:rotation:xScale:yScale:space:align:content:resolve:reject:)
+    @objc
     func printFontBlock(_ x: NSNumber,
                         y: NSNumber,
                         width: NSNumber,
@@ -167,7 +151,7 @@ class RNNetLabelPrinter: RCTEventEmitter {
         }
     }
     
-    @objc(printQRCode:y:eccLevel:cellWidth:rotation:content:resolve:reject:)
+    @objc
     func printQRCode(_ x: NSNumber,
                      y: NSNumber,
                      eccLevel: String,
@@ -186,7 +170,7 @@ class RNNetLabelPrinter: RCTEventEmitter {
         }
     }
     
-    @objc(printLabel:copy:resolve:reject:)
+    @objc
     func printLabel(_ set: NSNumber,
                     copy: NSNumber,
                     resolve: @escaping RCTPromiseResolveBlock,
@@ -195,7 +179,7 @@ class RNNetLabelPrinter: RCTEventEmitter {
         resolve(nil)
     }
     
-    @objc(getPrinterStatus:reject:)
+    @objc
     func getPrinterStatus(_ resolve: @escaping RCTPromiseResolveBlock,
                          reject: @escaping RCTPromiseRejectBlock) {
         gswifi.printerStatus { status in
@@ -203,7 +187,7 @@ class RNNetLabelPrinter: RCTEventEmitter {
         }
     }
     
-    @objc(sendCommand:resolve:reject:)
+    @objc
     func sendCommand(_ command: String,
                      resolve: @escaping RCTPromiseResolveBlock,
                      reject: @escaping RCTPromiseRejectBlock) {
@@ -216,7 +200,7 @@ class RNNetLabelPrinter: RCTEventEmitter {
         resolve(nil)
     }
     
-    @objc(sendByteCmd:resolve:reject:)
+    @objc
     func sendByteCmd(_ byteArray: [NSNumber],
                      resolve: @escaping RCTPromiseResolveBlock,
                      reject: @escaping RCTPromiseRejectBlock) {
