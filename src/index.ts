@@ -706,7 +706,7 @@ const NetPrinter = {
 const NetLabelPrinter = {
   init: (): Promise<void> =>
     new Promise((resolve, reject) =>
-      RNNetLabelPrinter.init(
+      RNNetLabelPrinter.initialize(
         () => resolve(),
         (error: Error) => reject(error)
       )

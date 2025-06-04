@@ -17,7 +17,7 @@ class RNNetLabelPrinter: NSObject {
     }
     
     @objc
-    func init(_ resolve: @escaping RCTPromiseResolveBlock,
+    func initialize(_ resolve: @escaping RCTPromiseResolveBlock,
               reject: @escaping RCTPromiseRejectBlock) {
         resolve(nil)
     }
