@@ -8,7 +8,8 @@ import { connectToHost } from './utils/net-connect';
 const RNUSBPrinter = NativeModules.RNUSBPrinter;
 const RNBLEPrinter = NativeModules.RNBLEPrinter;
 const RNNetPrinter = NativeModules.RNNetPrinter;
-const RNNetLabelPrinter = NativeModules.RNNetLabelPrinter;
+// const RNNetLabelPrinter = NativeModules.RNNetLabelPrinter;
+const RNGPrinterLegacy = NativeModules.RNGPrinterLegacy;
 
 export interface PrinterOptions {
   beep?: boolean;
@@ -114,6 +115,11 @@ export interface LabelQRCodeOptions {
   cellWidth: number;
   rotation: number;
   content: string;
+}
+
+export interface IGPrinterLegacy {
+  host: string;
+  port: number;
 }
 
 const textTo64Buffer = (text: string, opts: PrinterOptions) => {
@@ -703,151 +709,221 @@ const NetPrinter = {
   },
 };
 
-const NetLabelPrinter = {
+// const NetLabelPrinter = {
+//   init: (): Promise<void> =>
+//     new Promise((resolve, reject) =>
+//       RNNetLabelPrinter.initialize(
+//         () => resolve(),
+//         (error: Error) => reject(error)
+//       )
+//     ),
+
+//   connectPrinter: (host: string, port: number): Promise<INetLabelPrinter> =>
+//     new Promise((resolve, reject) =>
+//       RNNetLabelPrinter.openPort(
+//         host,
+//         port,
+//         (printer: INetLabelPrinter) => resolve(printer),
+//         (error: Error) => reject(error)
+//       )
+//     ),
+
+//   closeConn: (): Promise<void> =>
+//     new Promise((resolve) => {
+//       RNNetLabelPrinter.closePort();
+//       resolve();
+//     }),
+
+//   setup: (options: LabelPrinterOptions = {}): Promise<void> =>
+//     new Promise((resolve, reject) =>
+//       RNNetLabelPrinter.setup(
+//         options.width ?? 105,
+//         options.height ?? 80,
+//         options.speed ?? 4,
+//         options.density ?? 6,
+//         options.sensor ?? 0,
+//         options.sensorDistance ?? 3,
+//         options.sensorOffset ?? 3,
+//         () => resolve(),
+//         (error: Error) => reject(error)
+//       )
+//     ),
+
+//   clearBuffer: (): Promise<void> =>
+//     new Promise((resolve, reject) =>
+//       RNNetLabelPrinter.clearBuffer(
+//         () => resolve(),
+//         (error: Error) => reject(error)
+//       )
+//     ),
+
+//   printBarcode: (options: LabelBarcodeOptions): Promise<void> =>
+//     new Promise((resolve, reject) =>
+//       RNNetLabelPrinter.printBarcode(
+//         options.x,
+//         options.y,
+//         options.type,
+//         options.height,
+//         options.humanReadable,
+//         options.rotation,
+//         options.narrow,
+//         options.wide,
+//         options.content,
+//         () => resolve(),
+//         (error: Error) => reject(error)
+//       )
+//     ),
+
+//   printFont: (options: LabelFontOptions): Promise<void> =>
+//     new Promise((resolve, reject) =>
+//       RNNetLabelPrinter.printFont(
+//         options.x,
+//         options.y,
+//         options.fontName,
+//         options.rotation,
+//         options.xScale,
+//         options.yScale,
+//         options.content,
+//         () => resolve(),
+//         (error: Error) => reject(error)
+//       )
+//     ),
+
+//   printFontBlock: (options: LabelFontBlockOptions): Promise<void> =>
+//     new Promise((resolve, reject) =>
+//       RNNetLabelPrinter.printFontBlock(
+//         options.x,
+//         options.y,
+//         options.width,
+//         options.height,
+//         options.fontName,
+//         options.rotation,
+//         options.xScale,
+//         options.yScale,
+//         options.space,
+//         options.align,
+//         options.content,
+//         () => resolve(),
+//         (error: Error) => reject(error)
+//       )
+//     ),
+
+//   printQRCode: (options: LabelQRCodeOptions): Promise<void> =>
+//     new Promise((resolve, reject) =>
+//       RNNetLabelPrinter.printQRCode(
+//         options.x,
+//         options.y,
+//         options.eccLevel,
+//         options.cellWidth,
+//         options.rotation,
+//         options.content,
+//         () => resolve(),
+//         (error: Error) => reject(error)
+//       )
+//     ),
+
+//   printLabel: (set: number = 1, copy: number = 1): Promise<void> =>
+//     new Promise((resolve, reject) =>
+//       RNNetLabelPrinter.printLabel(
+//         set,
+//         copy,
+//         () => resolve(),
+//         (error: Error) => reject(error)
+//       )
+//     ),
+
+//   getPrinterStatus: (): Promise<string> =>
+//     new Promise((resolve, reject) =>
+//       RNNetLabelPrinter.getPrinterStatus(
+//         (status: string) => resolve(status),
+//         (error: Error) => reject(error)
+//       )
+//     ),
+
+//   // New methods
+//   sendCommand: (command: string): Promise<void> =>
+//     new Promise((resolve, reject) =>
+//       RNNetLabelPrinter.sendCommand(
+//         command,
+//         () => resolve(),
+//         (error: Error) => reject(error)
+//       )
+//     ),
+
+//   sendByteCmd: (byteArray: number[]): Promise<void> =>
+//     new Promise((resolve, reject) =>
+//       RNNetLabelPrinter.sendByteCmd(
+//         byteArray,
+//         () => resolve(),
+//         (error: Error) => reject(error)
+//       )
+//     ),
+// };
+
+const GPrinterLegacy = {
   init: (): Promise<void> =>
     new Promise((resolve, reject) =>
-      RNNetLabelPrinter.initialize(
+      RNGPrinterLegacy.init(
         () => resolve(),
         (error: Error) => reject(error)
       )
     ),
 
-  connectPrinter: (host: string, port: number): Promise<INetLabelPrinter> =>
+  connectPrinter: (host: string, port: number): Promise<IGPrinterLegacy> =>
     new Promise((resolve, reject) =>
-      RNNetLabelPrinter.openPort(
+      RNGPrinterLegacy.connectIP(
         host,
         port,
-        (printer: INetLabelPrinter) => resolve(printer),
+        (printer: IGPrinterLegacy) => resolve(printer),
         (error: Error) => reject(error)
       )
     ),
 
   closeConn: (): Promise<void> =>
     new Promise((resolve) => {
-      RNNetLabelPrinter.closePort();
+      RNGPrinterLegacy.closeConn();
       resolve();
     }),
 
-  setup: (options: LabelPrinterOptions = {}): Promise<void> =>
+  addStrToCommand: (str: string): Promise<void> =>
     new Promise((resolve, reject) =>
-      RNNetLabelPrinter.setup(
-        options.width ?? 105,
-        options.height ?? 80,
-        options.speed ?? 4,
-        options.density ?? 6,
-        options.sensor ?? 0,
-        options.sensorDistance ?? 3,
-        options.sensorOffset ?? 3,
+      RNGPrinterLegacy.addStrToCommand(
+        str,
         () => resolve(),
         (error: Error) => reject(error)
       )
     ),
 
-  clearBuffer: (): Promise<void> =>
+  addNSDataToCommand: (base64Data: string): Promise<void> =>
     new Promise((resolve, reject) =>
-      RNNetLabelPrinter.clearBuffer(
+      RNGPrinterLegacy.addNSDataToCommand(
+        base64Data,
         () => resolve(),
         (error: Error) => reject(error)
       )
     ),
 
-  printBarcode: (options: LabelBarcodeOptions): Promise<void> =>
+  addPrint: (m: number, n: number): Promise<void> =>
     new Promise((resolve, reject) =>
-      RNNetLabelPrinter.printBarcode(
-        options.x,
-        options.y,
-        options.type,
-        options.height,
-        options.humanReadable,
-        options.rotation,
-        options.narrow,
-        options.wide,
-        options.content,
+      RNGPrinterLegacy.addPrint(
+        m,
+        n,
         () => resolve(),
         (error: Error) => reject(error)
       )
     ),
 
-  printFont: (options: LabelFontOptions): Promise<void> =>
+  addCls: (): Promise<void> =>
     new Promise((resolve, reject) =>
-      RNNetLabelPrinter.printFont(
-        options.x,
-        options.y,
-        options.fontName,
-        options.rotation,
-        options.xScale,
-        options.yScale,
-        options.content,
+      RNGPrinterLegacy.addCls(
         () => resolve(),
         (error: Error) => reject(error)
       )
     ),
 
-  printFontBlock: (options: LabelFontBlockOptions): Promise<void> =>
+  close: (): Promise<void> =>
     new Promise((resolve, reject) =>
-      RNNetLabelPrinter.printFontBlock(
-        options.x,
-        options.y,
-        options.width,
-        options.height,
-        options.fontName,
-        options.rotation,
-        options.xScale,
-        options.yScale,
-        options.space,
-        options.align,
-        options.content,
-        () => resolve(),
-        (error: Error) => reject(error)
-      )
-    ),
-
-  printQRCode: (options: LabelQRCodeOptions): Promise<void> =>
-    new Promise((resolve, reject) =>
-      RNNetLabelPrinter.printQRCode(
-        options.x,
-        options.y,
-        options.eccLevel,
-        options.cellWidth,
-        options.rotation,
-        options.content,
-        () => resolve(),
-        (error: Error) => reject(error)
-      )
-    ),
-
-  printLabel: (set: number = 1, copy: number = 1): Promise<void> =>
-    new Promise((resolve, reject) =>
-      RNNetLabelPrinter.printLabel(
-        set,
-        copy,
-        () => resolve(),
-        (error: Error) => reject(error)
-      )
-    ),
-
-  getPrinterStatus: (): Promise<string> =>
-    new Promise((resolve, reject) =>
-      RNNetLabelPrinter.getPrinterStatus(
-        (status: string) => resolve(status),
-        (error: Error) => reject(error)
-      )
-    ),
-
-  // New methods
-  sendCommand: (command: string): Promise<void> =>
-    new Promise((resolve, reject) =>
-      RNNetLabelPrinter.sendCommand(
-        command,
-        () => resolve(),
-        (error: Error) => reject(error)
-      )
-    ),
-
-  sendByteCmd: (byteArray: number[]): Promise<void> =>
-    new Promise((resolve, reject) =>
-      RNNetLabelPrinter.sendByteCmd(
-        byteArray,
+      RNGPrinterLegacy.close(
         () => resolve(),
         (error: Error) => reject(error)
       )
@@ -855,16 +931,17 @@ const NetLabelPrinter = {
 };
 
 const NetPrinterEventEmitter = new NativeEventEmitter(RNNetPrinter);
-const NetLabelPrinterEventEmitter = new NativeEventEmitter(RNNetLabelPrinter);
+// const NetLabelPrinterEventEmitter = new NativeEventEmitter(RNNetLabelPrinter);
 
 export {
   COMMANDS,
   NetPrinter,
   BLEPrinter,
   USBPrinter,
-  NetLabelPrinter,
+  // NetLabelPrinter,
+  GPrinterLegacy,
   NetPrinterEventEmitter,
-  NetLabelPrinterEventEmitter
+  // NetLabelPrinterEventEmitter
 };
 
 export enum RN_THERMAL_RECEIPT_PRINTER_EVENTS {

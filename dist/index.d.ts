@@ -92,6 +92,10 @@ export interface LabelQRCodeOptions {
     rotation: number;
     content: string;
 }
+export interface IGPrinterLegacy {
+    host: string;
+    port: number;
+}
 declare const USBPrinter: {
     init: () => Promise<void>;
     getDeviceList: () => Promise<IUSBPrinter[]>;
@@ -193,24 +197,18 @@ declare const NetPrinter: {
      */
     printColumnsText: (texts: string[], columnWidth: number[], columnAlignment: (ColumnAlignment)[], columnStyle?: string[], opts?: PrinterOptions) => void;
 };
-declare const NetLabelPrinter: {
+declare const GPrinterLegacy: {
     init: () => Promise<void>;
-    connectPrinter: (host: string, port: number) => Promise<INetLabelPrinter>;
+    connectPrinter: (host: string, port: number) => Promise<IGPrinterLegacy>;
     closeConn: () => Promise<void>;
-    setup: (options?: LabelPrinterOptions) => Promise<void>;
-    clearBuffer: () => Promise<void>;
-    printBarcode: (options: LabelBarcodeOptions) => Promise<void>;
-    printFont: (options: LabelFontOptions) => Promise<void>;
-    printFontBlock: (options: LabelFontBlockOptions) => Promise<void>;
-    printQRCode: (options: LabelQRCodeOptions) => Promise<void>;
-    printLabel: (set?: number, copy?: number) => Promise<void>;
-    getPrinterStatus: () => Promise<string>;
-    sendCommand: (command: string) => Promise<void>;
-    sendByteCmd: (byteArray: number[]) => Promise<void>;
+    addStrToCommand: (str: string) => Promise<void>;
+    addNSDataToCommand: (base64Data: string) => Promise<void>;
+    addPrint: (m: number, n: number) => Promise<void>;
+    addCls: () => Promise<void>;
+    close: () => Promise<void>;
 };
 declare const NetPrinterEventEmitter: NativeEventEmitter;
-declare const NetLabelPrinterEventEmitter: NativeEventEmitter;
-export { COMMANDS, NetPrinter, BLEPrinter, USBPrinter, NetLabelPrinter, NetPrinterEventEmitter, NetLabelPrinterEventEmitter };
+export { COMMANDS, NetPrinter, BLEPrinter, USBPrinter, GPrinterLegacy, NetPrinterEventEmitter, };
 export declare enum RN_THERMAL_RECEIPT_PRINTER_EVENTS {
     EVENT_NET_PRINTER_SCANNED_SUCCESS = "scannerResolved",
     EVENT_NET_PRINTER_SCANNING = "scannerRunning",

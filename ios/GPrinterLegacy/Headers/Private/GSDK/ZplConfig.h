@@ -1,0 +1,1 @@
+../../../GSDK/GSDK/Classes/ZplConfig.h

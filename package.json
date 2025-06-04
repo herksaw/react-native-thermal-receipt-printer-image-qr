@@ -1,6 +1,6 @@
 {
   "name": "@conodene/react-native-thermal-receipt-printer-image-qr",
-  "version": "0.1.62",
+  "version": "0.1.63",
   "description": "Fork of react-native-thermal-receipt-printer. A React Native Library to support USB/BLE/Net printer (RN 0.74 support)",
   "main": "dist/index.js",
   "source": "dist/index.js",

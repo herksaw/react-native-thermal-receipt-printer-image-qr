@@ -1,0 +1,6 @@
+framework module Pods_GPSDKDemoTests {
+  umbrella header "Pods-GPSDKDemoTests-umbrella.h"
+
+  export *
+  module * { export * }
+}

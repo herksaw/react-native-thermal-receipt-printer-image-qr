@@ -1,0 +1,811 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0709C79324C9309800DBE20A /* ConnecterManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0709C79224C9309800DBE20A /* ConnecterManager.m */; };
+		0709C79B24D107C200DBE20A /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0709C79A24D107C200DBE20A /* NetworkExtension.framework */; };
+		0752EB8E25C13CA900E935CB /* CPCLViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0752EB8D25C13CA800E935CB /* CPCLViewController.m */; };
+		07995AFB25F213F300BB3131 /* ZPLListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07995AFA25F213F200BB3131 /* ZPLListViewController.m */; };
+		07CB61E624C8189100476D33 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 07CB61E524C8189100476D33 /* AppDelegate.m */; };
+		07CB61EC24C8189100476D33 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07CB61EB24C8189100476D33 /* ViewController.m */; };
+		07CB61EF24C8189100476D33 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 07CB61ED24C8189100476D33 /* Main.storyboard */; };
+		07CB61F224C8189200476D33 /* GPSDKDemo.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 07CB61F024C8189200476D33 /* GPSDKDemo.xcdatamodeld */; };
+		07CB61F424C818AA00476D33 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07CB61F324C818AA00476D33 /* Assets.xcassets */; };
+		07CB61F724C818AA00476D33 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 07CB61F524C818AA00476D33 /* LaunchScreen.storyboard */; };
+		07CB61FA24C818AA00476D33 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 07CB61F924C818AA00476D33 /* main.m */; };
+		07CB620424C818AB00476D33 /* GPSDKDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 07CB620324C818AB00476D33 /* GPSDKDemoTests.m */; };
+		07CB620F24C818AB00476D33 /* GPSDKDemoUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 07CB620E24C818AB00476D33 /* GPSDKDemoUITests.m */; };
+		07CB621E24C8278D00476D33 /* ConnectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07CB621D24C8278D00476D33 /* ConnectViewController.m */; };
+		07CB623424C8287200476D33 /* SVRadialGradientLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 07CB622A24C8287200476D33 /* SVRadialGradientLayer.m */; };
+		07CB623524C8287200476D33 /* SVProgressAnimatedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 07CB622D24C8287200476D33 /* SVProgressAnimatedView.m */; };
+		07CB623624C8287200476D33 /* SVProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 07CB623024C8287200476D33 /* SVProgressHUD.m */; };
+		07CB623724C8287200476D33 /* SVIndefiniteAnimatedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 07CB623124C8287200476D33 /* SVIndefiniteAnimatedView.m */; };
+		07CB623824C8287200476D33 /* SVProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 07CB623224C8287200476D33 /* SVProgressHUD.bundle */; };
+		07CB623B24C8287800476D33 /* gprinter.png in Resources */ = {isa = PBXBuildFile; fileRef = 07CB623924C8287800476D33 /* gprinter.png */; };
+		74A93B1871049283B254DEB7 /* Pods_GPSDKDemoTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78BE93B6D6782FD2586CC571 /* Pods_GPSDKDemoTests.framework */; };
+		88B47E39BEB0D410FBFB02CB /* Pods_GPSDKDemo_GPSDKDemoUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6115E58D02D9BC36947BF617 /* Pods_GPSDKDemo_GPSDKDemoUITests.framework */; };
+		BCDB3EDCAB73CB21D13772AC /* Pods_GPSDKDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B503EA2C163972739DA9872 /* Pods_GPSDKDemo.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		07CB620024C818AB00476D33 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 07CB61D924C8189100476D33 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 07CB61E024C8189100476D33;
+			remoteInfo = GPSDKDemo;
+		};
+		07CB620B24C818AB00476D33 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 07CB61D924C8189100476D33 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 07CB61E024C8189100476D33;
+			remoteInfo = GPSDKDemo;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		05618022EA3D82331F03F4BB /* Pods-GPSDKDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GPSDKDemo.debug.xcconfig"; path = "Target Support Files/Pods-GPSDKDemo/Pods-GPSDKDemo.debug.xcconfig"; sourceTree = "<group>"; };
+		0709C79124C9309700DBE20A /* ConnecterManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConnecterManager.h; sourceTree = "<group>"; };
+		0709C79224C9309800DBE20A /* ConnecterManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConnecterManager.m; sourceTree = "<group>"; };
+		0709C79824D107BC00DBE20A /* GPSDKDemo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GPSDKDemo.entitlements; sourceTree = "<group>"; };
+		0709C79A24D107C200DBE20A /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
+		0752EB8C25C13CA800E935CB /* CPCLViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPCLViewController.h; sourceTree = "<group>"; };
+		0752EB8D25C13CA800E935CB /* CPCLViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPCLViewController.m; sourceTree = "<group>"; };
+		07995AF925F213EE00BB3131 /* ZPLListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZPLListViewController.h; sourceTree = "<group>"; };
+		07995AFA25F213F200BB3131 /* ZPLListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZPLListViewController.m; sourceTree = "<group>"; };
+		07CB61E124C8189100476D33 /* GPSDKDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GPSDKDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		07CB61E424C8189100476D33 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		07CB61E524C8189100476D33 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		07CB61EA24C8189100476D33 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		07CB61EB24C8189100476D33 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		07CB61EE24C8189100476D33 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		07CB61F124C8189200476D33 /* GPSDKDemo.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = GPSDKDemo.xcdatamodel; sourceTree = "<group>"; };
+		07CB61F324C818AA00476D33 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		07CB61F624C818AA00476D33 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		07CB61F824C818AA00476D33 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		07CB61F924C818AA00476D33 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		07CB61FF24C818AB00476D33 /* GPSDKDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GPSDKDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		07CB620324C818AB00476D33 /* GPSDKDemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GPSDKDemoTests.m; sourceTree = "<group>"; };
+		07CB620524C818AB00476D33 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		07CB620A24C818AB00476D33 /* GPSDKDemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GPSDKDemoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		07CB620E24C818AB00476D33 /* GPSDKDemoUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GPSDKDemoUITests.m; sourceTree = "<group>"; };
+		07CB621024C818AB00476D33 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		07CB621C24C8278D00476D33 /* ConnectViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConnectViewController.h; sourceTree = "<group>"; };
+		07CB621D24C8278D00476D33 /* ConnectViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ConnectViewController.m; sourceTree = "<group>"; };
+		07CB622A24C8287200476D33 /* SVRadialGradientLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVRadialGradientLayer.m; sourceTree = "<group>"; };
+		07CB622B24C8287200476D33 /* SVIndefiniteAnimatedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVIndefiniteAnimatedView.h; sourceTree = "<group>"; };
+		07CB622C24C8287200476D33 /* SVProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVProgressHUD.h; sourceTree = "<group>"; };
+		07CB622D24C8287200476D33 /* SVProgressAnimatedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVProgressAnimatedView.m; sourceTree = "<group>"; };
+		07CB622E24C8287200476D33 /* SVProgressHUD-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SVProgressHUD-Prefix.pch"; sourceTree = "<group>"; };
+		07CB622F24C8287200476D33 /* SVRadialGradientLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVRadialGradientLayer.h; sourceTree = "<group>"; };
+		07CB623024C8287200476D33 /* SVProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVProgressHUD.m; sourceTree = "<group>"; };
+		07CB623124C8287200476D33 /* SVIndefiniteAnimatedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVIndefiniteAnimatedView.m; sourceTree = "<group>"; };
+		07CB623224C8287200476D33 /* SVProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SVProgressHUD.bundle; sourceTree = "<group>"; };
+		07CB623324C8287200476D33 /* SVProgressAnimatedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVProgressAnimatedView.h; sourceTree = "<group>"; };
+		07CB623924C8287800476D33 /* gprinter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gprinter.png; sourceTree = "<group>"; };
+		4B503EA2C163972739DA9872 /* Pods_GPSDKDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GPSDKDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6115E58D02D9BC36947BF617 /* Pods_GPSDKDemo_GPSDKDemoUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GPSDKDemo_GPSDKDemoUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		659C051DF2A9FACC5B81513E /* Pods-GPSDKDemo-GPSDKDemoUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GPSDKDemo-GPSDKDemoUITests.release.xcconfig"; path = "Target Support Files/Pods-GPSDKDemo-GPSDKDemoUITests/Pods-GPSDKDemo-GPSDKDemoUITests.release.xcconfig"; sourceTree = "<group>"; };
+		78BE93B6D6782FD2586CC571 /* Pods_GPSDKDemoTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GPSDKDemoTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8CF77B5B7339CBA44F7816A0 /* Pods-GPSDKDemoTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GPSDKDemoTests.debug.xcconfig"; path = "Target Support Files/Pods-GPSDKDemoTests/Pods-GPSDKDemoTests.debug.xcconfig"; sourceTree = "<group>"; };
+		A1A4301B306005A938AE0F6A /* Pods-GPSDKDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GPSDKDemo.release.xcconfig"; path = "Target Support Files/Pods-GPSDKDemo/Pods-GPSDKDemo.release.xcconfig"; sourceTree = "<group>"; };
+		AA62ED6B7C8545E9EA61785E /* Pods-GPSDKDemo-GPSDKDemoUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GPSDKDemo-GPSDKDemoUITests.debug.xcconfig"; path = "Target Support Files/Pods-GPSDKDemo-GPSDKDemoUITests/Pods-GPSDKDemo-GPSDKDemoUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		FC444FC566FE494321291099 /* Pods-GPSDKDemoTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GPSDKDemoTests.release.xcconfig"; path = "Target Support Files/Pods-GPSDKDemoTests/Pods-GPSDKDemoTests.release.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		07CB61DE24C8189100476D33 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0709C79B24D107C200DBE20A /* NetworkExtension.framework in Frameworks */,
+				BCDB3EDCAB73CB21D13772AC /* Pods_GPSDKDemo.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		07CB61FC24C818AB00476D33 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				74A93B1871049283B254DEB7 /* Pods_GPSDKDemoTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		07CB620724C818AB00476D33 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				88B47E39BEB0D410FBFB02CB /* Pods_GPSDKDemo_GPSDKDemoUITests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0709C79924D107C200DBE20A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0709C79A24D107C200DBE20A /* NetworkExtension.framework */,
+				4B503EA2C163972739DA9872 /* Pods_GPSDKDemo.framework */,
+				6115E58D02D9BC36947BF617 /* Pods_GPSDKDemo_GPSDKDemoUITests.framework */,
+				78BE93B6D6782FD2586CC571 /* Pods_GPSDKDemoTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		07CB61D824C8189100476D33 = {
+			isa = PBXGroup;
+			children = (
+				07CB61E324C8189100476D33 /* GPSDKDemo */,
+				07CB620224C818AB00476D33 /* GPSDKDemoTests */,
+				07CB620D24C818AB00476D33 /* GPSDKDemoUITests */,
+				07CB61E224C8189100476D33 /* Products */,
+				0709C79924D107C200DBE20A /* Frameworks */,
+				AB81849C98690A06B1774B11 /* Pods */,
+			);
+			sourceTree = "<group>";
+		};
+		07CB61E224C8189100476D33 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				07CB61E124C8189100476D33 /* GPSDKDemo.app */,
+				07CB61FF24C818AB00476D33 /* GPSDKDemoTests.xctest */,
+				07CB620A24C818AB00476D33 /* GPSDKDemoUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		07CB61E324C8189100476D33 /* GPSDKDemo */ = {
+			isa = PBXGroup;
+			children = (
+				0709C79824D107BC00DBE20A /* GPSDKDemo.entitlements */,
+				0709C79124C9309700DBE20A /* ConnecterManager.h */,
+				0709C79224C9309800DBE20A /* ConnecterManager.m */,
+				07CB622924C8287200476D33 /* SVProgressHUD */,
+				07CB61E424C8189100476D33 /* AppDelegate.h */,
+				07CB61E524C8189100476D33 /* AppDelegate.m */,
+				07CB61EA24C8189100476D33 /* ViewController.h */,
+				07CB61EB24C8189100476D33 /* ViewController.m */,
+				07CB61ED24C8189100476D33 /* Main.storyboard */,
+				07CB61F324C818AA00476D33 /* Assets.xcassets */,
+				07CB61F524C818AA00476D33 /* LaunchScreen.storyboard */,
+				07CB61F824C818AA00476D33 /* Info.plist */,
+				07CB61F924C818AA00476D33 /* main.m */,
+				07CB61F024C8189200476D33 /* GPSDKDemo.xcdatamodeld */,
+				07CB621C24C8278D00476D33 /* ConnectViewController.h */,
+				07CB621D24C8278D00476D33 /* ConnectViewController.m */,
+				07CB623924C8287800476D33 /* gprinter.png */,
+				0752EB8C25C13CA800E935CB /* CPCLViewController.h */,
+				0752EB8D25C13CA800E935CB /* CPCLViewController.m */,
+				07995AF925F213EE00BB3131 /* ZPLListViewController.h */,
+				07995AFA25F213F200BB3131 /* ZPLListViewController.m */,
+			);
+			path = GPSDKDemo;
+			sourceTree = "<group>";
+		};
+		07CB620224C818AB00476D33 /* GPSDKDemoTests */ = {
+			isa = PBXGroup;
+			children = (
+				07CB620324C818AB00476D33 /* GPSDKDemoTests.m */,
+				07CB620524C818AB00476D33 /* Info.plist */,
+			);
+			path = GPSDKDemoTests;
+			sourceTree = "<group>";
+		};
+		07CB620D24C818AB00476D33 /* GPSDKDemoUITests */ = {
+			isa = PBXGroup;
+			children = (
+				07CB620E24C818AB00476D33 /* GPSDKDemoUITests.m */,
+				07CB621024C818AB00476D33 /* Info.plist */,
+			);
+			path = GPSDKDemoUITests;
+			sourceTree = "<group>";
+		};
+		07CB622924C8287200476D33 /* SVProgressHUD */ = {
+			isa = PBXGroup;
+			children = (
+				07CB622A24C8287200476D33 /* SVRadialGradientLayer.m */,
+				07CB622B24C8287200476D33 /* SVIndefiniteAnimatedView.h */,
+				07CB622C24C8287200476D33 /* SVProgressHUD.h */,
+				07CB622D24C8287200476D33 /* SVProgressAnimatedView.m */,
+				07CB622E24C8287200476D33 /* SVProgressHUD-Prefix.pch */,
+				07CB622F24C8287200476D33 /* SVRadialGradientLayer.h */,
+				07CB623024C8287200476D33 /* SVProgressHUD.m */,
+				07CB623124C8287200476D33 /* SVIndefiniteAnimatedView.m */,
+				07CB623224C8287200476D33 /* SVProgressHUD.bundle */,
+				07CB623324C8287200476D33 /* SVProgressAnimatedView.h */,
+			);
+			path = SVProgressHUD;
+			sourceTree = "<group>";
+		};
+		AB81849C98690A06B1774B11 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				05618022EA3D82331F03F4BB /* Pods-GPSDKDemo.debug.xcconfig */,
+				A1A4301B306005A938AE0F6A /* Pods-GPSDKDemo.release.xcconfig */,
+				AA62ED6B7C8545E9EA61785E /* Pods-GPSDKDemo-GPSDKDemoUITests.debug.xcconfig */,
+				659C051DF2A9FACC5B81513E /* Pods-GPSDKDemo-GPSDKDemoUITests.release.xcconfig */,
+				8CF77B5B7339CBA44F7816A0 /* Pods-GPSDKDemoTests.debug.xcconfig */,
+				FC444FC566FE494321291099 /* Pods-GPSDKDemoTests.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		07CB61E024C8189100476D33 /* GPSDKDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 07CB621324C818AB00476D33 /* Build configuration list for PBXNativeTarget "GPSDKDemo" */;
+			buildPhases = (
+				E692FFC33D13865773FBE61B /* [CP] Check Pods Manifest.lock */,
+				07CB61DD24C8189100476D33 /* Sources */,
+				07CB61DE24C8189100476D33 /* Frameworks */,
+				07CB61DF24C8189100476D33 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GPSDKDemo;
+			productName = GPSDKDemo;
+			productReference = 07CB61E124C8189100476D33 /* GPSDKDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
+		07CB61FE24C818AB00476D33 /* GPSDKDemoTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 07CB621624C818AB00476D33 /* Build configuration list for PBXNativeTarget "GPSDKDemoTests" */;
+			buildPhases = (
+				046685A8CC078D0D5B702ADC /* [CP] Check Pods Manifest.lock */,
+				07CB61FB24C818AB00476D33 /* Sources */,
+				07CB61FC24C818AB00476D33 /* Frameworks */,
+				07CB61FD24C818AB00476D33 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				07CB620124C818AB00476D33 /* PBXTargetDependency */,
+			);
+			name = GPSDKDemoTests;
+			productName = GPSDKDemoTests;
+			productReference = 07CB61FF24C818AB00476D33 /* GPSDKDemoTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		07CB620924C818AB00476D33 /* GPSDKDemoUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 07CB621924C818AB00476D33 /* Build configuration list for PBXNativeTarget "GPSDKDemoUITests" */;
+			buildPhases = (
+				329D86B797768BB342E71ABD /* [CP] Check Pods Manifest.lock */,
+				07CB620624C818AB00476D33 /* Sources */,
+				07CB620724C818AB00476D33 /* Frameworks */,
+				07CB620824C818AB00476D33 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				07CB620C24C818AB00476D33 /* PBXTargetDependency */,
+			);
+			name = GPSDKDemoUITests;
+			productName = GPSDKDemoUITests;
+			productReference = 07CB620A24C818AB00476D33 /* GPSDKDemoUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		07CB61D924C8189100476D33 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1130;
+				ORGANIZATIONNAME = max;
+				TargetAttributes = {
+					07CB61E024C8189100476D33 = {
+						CreatedOnToolsVersion = 11.3;
+					};
+					07CB61FE24C818AB00476D33 = {
+						CreatedOnToolsVersion = 11.3;
+						TestTargetID = 07CB61E024C8189100476D33;
+					};
+					07CB620924C818AB00476D33 = {
+						CreatedOnToolsVersion = 11.3;
+						TestTargetID = 07CB61E024C8189100476D33;
+					};
+				};
+			};
+			buildConfigurationList = 07CB61DC24C8189100476D33 /* Build configuration list for PBXProject "GPSDKDemo" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 07CB61D824C8189100476D33;
+			productRefGroup = 07CB61E224C8189100476D33 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				07CB61E024C8189100476D33 /* GPSDKDemo */,
+				07CB61FE24C818AB00476D33 /* GPSDKDemoTests */,
+				07CB620924C818AB00476D33 /* GPSDKDemoUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		07CB61DF24C8189100476D33 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07CB61F724C818AA00476D33 /* LaunchScreen.storyboard in Resources */,
+				07CB61F424C818AA00476D33 /* Assets.xcassets in Resources */,
+				07CB61EF24C8189100476D33 /* Main.storyboard in Resources */,
+				07CB623B24C8287800476D33 /* gprinter.png in Resources */,
+				07CB623824C8287200476D33 /* SVProgressHUD.bundle in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		07CB61FD24C818AB00476D33 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		07CB620824C818AB00476D33 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		046685A8CC078D0D5B702ADC /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-GPSDKDemoTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		329D86B797768BB342E71ABD /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-GPSDKDemo-GPSDKDemoUITests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E692FFC33D13865773FBE61B /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-GPSDKDemo-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		07CB61DD24C8189100476D33 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07CB61FA24C818AA00476D33 /* main.m in Sources */,
+				0709C79324C9309800DBE20A /* ConnecterManager.m in Sources */,
+				07CB623624C8287200476D33 /* SVProgressHUD.m in Sources */,
+				07CB623724C8287200476D33 /* SVIndefiniteAnimatedView.m in Sources */,
+				07CB623424C8287200476D33 /* SVRadialGradientLayer.m in Sources */,
+				07995AFB25F213F300BB3131 /* ZPLListViewController.m in Sources */,
+				07CB621E24C8278D00476D33 /* ConnectViewController.m in Sources */,
+				07CB623524C8287200476D33 /* SVProgressAnimatedView.m in Sources */,
+				0752EB8E25C13CA900E935CB /* CPCLViewController.m in Sources */,
+				07CB61F224C8189200476D33 /* GPSDKDemo.xcdatamodeld in Sources */,
+				07CB61EC24C8189100476D33 /* ViewController.m in Sources */,
+				07CB61E624C8189100476D33 /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		07CB61FB24C818AB00476D33 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07CB620424C818AB00476D33 /* GPSDKDemoTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		07CB620624C818AB00476D33 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07CB620F24C818AB00476D33 /* GPSDKDemoUITests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		07CB620124C818AB00476D33 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 07CB61E024C8189100476D33 /* GPSDKDemo */;
+			targetProxy = 07CB620024C818AB00476D33 /* PBXContainerItemProxy */;
+		};
+		07CB620C24C818AB00476D33 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 07CB61E024C8189100476D33 /* GPSDKDemo */;
+			targetProxy = 07CB620B24C818AB00476D33 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		07CB61ED24C8189100476D33 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				07CB61EE24C8189100476D33 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		07CB61F524C818AA00476D33 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				07CB61F624C818AA00476D33 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		07CB621124C818AB00476D33 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		07CB621224C818AB00476D33 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		07CB621424C818AB00476D33 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 05618022EA3D82331F03F4BB /* Pods-GPSDKDemo.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = GPSDKDemo/GPSDKDemo.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 14;
+				DEVELOPMENT_TEAM = 64L435W5BU;
+				INFOPLIST_FILE = GPSDKDemo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/GPSDKDemo",
+				);
+				OTHER_LDFLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.max.GPSDKDemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		07CB621524C818AB00476D33 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A1A4301B306005A938AE0F6A /* Pods-GPSDKDemo.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = GPSDKDemo/GPSDKDemo.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 14;
+				DEVELOPMENT_TEAM = 64L435W5BU;
+				INFOPLIST_FILE = GPSDKDemo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/GPSDKDemo",
+				);
+				OTHER_LDFLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.max.GPSDKDemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		07CB621724C818AB00476D33 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8CF77B5B7339CBA44F7816A0 /* Pods-GPSDKDemoTests.debug.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 64L435W5BU;
+				INFOPLIST_FILE = GPSDKDemoTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.max.GPSDKDemoTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GPSDKDemo.app/GPSDKDemo";
+			};
+			name = Debug;
+		};
+		07CB621824C818AB00476D33 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = FC444FC566FE494321291099 /* Pods-GPSDKDemoTests.release.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 64L435W5BU;
+				INFOPLIST_FILE = GPSDKDemoTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.max.GPSDKDemoTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GPSDKDemo.app/GPSDKDemo";
+			};
+			name = Release;
+		};
+		07CB621A24C818AB00476D33 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = AA62ED6B7C8545E9EA61785E /* Pods-GPSDKDemo-GPSDKDemoUITests.debug.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 64L435W5BU;
+				INFOPLIST_FILE = GPSDKDemoUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.max.GPSDKDemoUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = GPSDKDemo;
+			};
+			name = Debug;
+		};
+		07CB621B24C818AB00476D33 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 659C051DF2A9FACC5B81513E /* Pods-GPSDKDemo-GPSDKDemoUITests.release.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 64L435W5BU;
+				INFOPLIST_FILE = GPSDKDemoUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.max.GPSDKDemoUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = GPSDKDemo;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		07CB61DC24C8189100476D33 /* Build configuration list for PBXProject "GPSDKDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				07CB621124C818AB00476D33 /* Debug */,
+				07CB621224C818AB00476D33 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		07CB621324C818AB00476D33 /* Build configuration list for PBXNativeTarget "GPSDKDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				07CB621424C818AB00476D33 /* Debug */,
+				07CB621524C818AB00476D33 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		07CB621624C818AB00476D33 /* Build configuration list for PBXNativeTarget "GPSDKDemoTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				07CB621724C818AB00476D33 /* Debug */,
+				07CB621824C818AB00476D33 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		07CB621924C818AB00476D33 /* Build configuration list for PBXNativeTarget "GPSDKDemoUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				07CB621A24C818AB00476D33 /* Debug */,
+				07CB621B24C818AB00476D33 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		07CB61F024C8189200476D33 /* GPSDKDemo.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				07CB61F124C8189200476D33 /* GPSDKDemo.xcdatamodel */,
+			);
+			currentVersion = 07CB61F124C8189200476D33 /* GPSDKDemo.xcdatamodel */;
+			path = GPSDKDemo.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 07CB61D924C8189100476D33 /* Project object */;
+}
