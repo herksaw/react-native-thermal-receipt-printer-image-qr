@@ -205,6 +205,8 @@ declare const NetLabelPrinter: {
     printQRCode: (options: LabelQRCodeOptions) => Promise<void>;
     printLabel: (set?: number, copy?: number) => Promise<void>;
     getPrinterStatus: () => Promise<string>;
+    sendCommand: (command: string) => Promise<void>;
+    sendByteCmd: (byteArray: number[]) => Promise<void>;
 };
 declare const NetPrinterEventEmitter: NativeEventEmitter;
 declare const NetLabelPrinterEventEmitter: NativeEventEmitter;

@@ -624,6 +624,17 @@ var NetLabelPrinter = {
             return RNNetLabelPrinter.getPrinterStatus(function (status) { return resolve(status); }, function (error) { return reject(error); });
         });
     },
+    // New methods
+    sendCommand: function (command) {
+        return new Promise(function (resolve, reject) {
+            return RNNetLabelPrinter.sendCommand(command, function () { return resolve(); }, function (error) { return reject(error); });
+        });
+    },
+    sendByteCmd: function (byteArray) {
+        return new Promise(function (resolve, reject) {
+            return RNNetLabelPrinter.sendByteCmd(byteArray, function () { return resolve(); }, function (error) { return reject(error); });
+        });
+    },
 };
 var NetPrinterEventEmitter = new NativeEventEmitter(RNNetPrinter);
 var NetLabelPrinterEventEmitter = new NativeEventEmitter(RNNetLabelPrinter);

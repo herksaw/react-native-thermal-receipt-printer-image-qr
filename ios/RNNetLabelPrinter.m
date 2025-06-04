@@ -38,7 +38,7 @@ RCT_EXPORT_METHOD(openPort:(NSString *)ip
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     [gswifi openportWithIP:ip Port:port completion:^(NSString *msg) {
-        if ([msg isEqualToString:@"Success"]) {
+        if ([msg isEqualToString:@"connected"]) {
             resolve(nil);
         } else {
             reject(@"error", msg, nil);
@@ -52,6 +52,7 @@ RCT_EXPORT_METHOD(closePort:(RCTPromiseResolveBlock)resolve
     resolve(nil);
 }
 
+// Updated setup with callback handling
 RCT_EXPORT_METHOD(setup:(NSInteger)width
                   height:(NSInteger)height
                   speed:(NSInteger)speed
@@ -61,8 +62,26 @@ RCT_EXPORT_METHOD(setup:(NSInteger)width
                   sensorOffset:(NSInteger)sensorOffset
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-    [gswifi setupWithWidth:width height:height speed:speed density:density sensor:sensor sensorDistance:sensorDistance sensorOffset:sensorOffset];
-    resolve(nil);
+    // // Optional parameter validation
+    // if (speed < 1 || speed > 15) {
+    //     reject(@"invalid_speed", @"Print speed must be between 1 and 15", nil);
+    //     return;
+    // }
+    
+    [gswifi setupWithWidth:width 
+                   height:height 
+                    speed:speed 
+                 density:density 
+                  sensor:sensor 
+          sensorDistance:sensorDistance 
+            sensorOffset:sensorOffset 
+              completion:^(NSString *msg) {
+        if ([msg isEqualToString:@"Connection doesn't exist."]) {
+            reject(@"connection_error", msg, nil);
+        } else {
+            resolve(nil);
+        }
+    }];
 }
 
 RCT_EXPORT_METHOD(clearBuffer:(RCTPromiseResolveBlock)resolve
@@ -140,6 +159,52 @@ RCT_EXPORT_METHOD(getPrinterStatus:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     NSString *status = [gswifi printerStatus];
     resolve(status);
+}
+
+RCT_EXPORT_METHOD(sendCommand:(NSString *)command
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    if (!command || command.length == 0) {
+        reject(@"invalid_command", @"Command string cannot be empty", nil);
+        return;
+    }
+
+    [gswifi sendCommandWithCommand:command];
+    resolve(nil);
+    
+    // [gswifi sendCommandWithCommand:command completion:^(NSString *msg) {
+    //     if ([msg isEqualToString:@"Connection doesn't exist."]) {
+    //         reject(@"connection_error", msg, nil);
+    //     } else {
+    //         resolve(nil);
+    //     }
+};
+
+RCT_EXPORT_METHOD(sendByteCmd:(NSArray<NSNumber *> *)byteArray
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    if (!byteArray || byteArray.count == 0) {
+        reject(@"invalid_data", @"Byte array cannot be empty", nil);
+        return;
+    }
+    
+    // Convert NSNumber array to NSData
+    NSMutableData *data = [NSMutableData data];
+    for (NSNumber *byte in byteArray) {
+        uint8_t byteValue = byte.unsignedCharValue;
+        [data appendBytes:&byteValue length:1];
+    }
+
+    [gswifi sendByteCmdWithCmdData:data]
+    resolve(nil);
+    
+    // [gswifi sendByteCmdWithCmdData:data completion:^(NSString *msg) {
+    //     if ([msg isEqualToString:@"Connection doesn't exist."]) {
+    //         reject(@"connection_error", msg, nil);
+    //     } else {
+    //         resolve(nil);
+    //     }
+    // }];
 }
 
 @end 

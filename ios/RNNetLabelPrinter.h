@@ -80,4 +80,12 @@ sensorDistance:(NSInteger)sensorDistance
 - (void)getPrinterStatus:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject;
 
+- (void)sendCommand:(NSString *)command
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject;
+
+- (void)sendByteCmd:(NSArray<NSNumber *> *)byteArray
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject;                  
+
 @end 

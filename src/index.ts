@@ -833,6 +833,25 @@ const NetLabelPrinter = {
         (error: Error) => reject(error)
       )
     ),
+
+  // New methods
+  sendCommand: (command: string): Promise<void> =>
+    new Promise((resolve, reject) =>
+      RNNetLabelPrinter.sendCommand(
+        command,
+        () => resolve(),
+        (error: Error) => reject(error)
+      )
+    ),
+
+  sendByteCmd: (byteArray: number[]): Promise<void> =>
+    new Promise((resolve, reject) =>
+      RNNetLabelPrinter.sendByteCmd(
+        byteArray,
+        () => resolve(),
+        (error: Error) => reject(error)
+      )
+    ),
 };
 
 const NetPrinterEventEmitter = new NativeEventEmitter(RNNetPrinter);
