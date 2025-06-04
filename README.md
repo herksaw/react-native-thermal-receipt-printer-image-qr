@@ -20,23 +20,117 @@
 </div>
 
 ## Installation
-```
-npm i react-native-thermal-receipt-printer-image-qr
-npm i react-native-ping
-```
-or
-```
-yarn add react-native-thermal-receipt-printer-image-qr
-yarn add react-native-ping
-```
-next step
-```
-# RN >= 0.60
-cd ios && pod install
 
-# RN < 0.60
-react-native link react-native-thermal-receipt-printer-image-qr
+```sh
+npm install react-native-thermal-receipt-printer-image-qr
 ```
+
+## Setup for iOS
+
+### 1. Install the IOS_SWIFT_WIFI_SDK Framework
+
+1. Download the `IOS_SWIFT_WIFI_SDK.xcframework` from your provider
+2. Place the framework in the `ios/Frameworks` directory of your project
+3. The framework will be automatically linked through CocoaPods
+
+### 2. Update your Podfile
+
+Make sure your Podfile includes:
+
+```ruby
+pod 'react-native-thermal-receipt-printer-image-qr', :path => '../node_modules/react-native-thermal-receipt-printer-image-qr'
+```
+
+### 3. Install pods
+
+```sh
+cd ios
+pod install
+```
+
+### 4. Update Info.plist
+
+Add the following to your Info.plist:
+
+```xml
+<key>NSLocalNetworkUsageDescription</key>
+<string>This app needs access to network to connect to the printer</string>
+<key>NSBonjourServices</key>
+<array>
+    <string>_printer._tcp</string>
+</array>
+```
+
+## Usage
+
+```javascript
+import { NetLabelPrinter } from 'react-native-thermal-receipt-printer-image-qr';
+
+// Initialize the printer
+await NetLabelPrinter.init();
+
+// Connect to the printer
+await NetLabelPrinter.connectPrinter('192.168.1.100', 9100);
+
+// Setup printer parameters
+await NetLabelPrinter.setup({
+  width: 105,
+  height: 80,
+  speed: 4,
+  density: 6,
+  sensor: 0,
+  sensorDistance: 3,
+  sensorOffset: 3
+});
+
+// Print a barcode
+await NetLabelPrinter.printBarcode({
+  x: 30,
+  y: 30,
+  type: '128',
+  height: 100,
+  humanReadable: 1,
+  rotation: 0,
+  narrow: 2,
+  wide: 2,
+  content: 'barcode987654321'
+});
+
+// Print text
+await NetLabelPrinter.printFont({
+  x: 100,
+  y: 180,
+  fontName: '3',
+  rotation: 0,
+  xScale: 3,
+  yScale: 3,
+  content: '12345678 print test'
+});
+
+// Print QR code
+await NetLabelPrinter.printQRCode({
+  x: 50,
+  y: 50,
+  eccLevel: 'H',
+  cellWidth: 4,
+  rotation: 0,
+  content: 'QRcode987654321'
+});
+
+// Print the label
+await NetLabelPrinter.printLabel(1, 1);
+
+// Close connection when done
+await NetLabelPrinter.closeConn();
+```
+
+## Contributing
+
+See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
+
+## License
+
+MIT
 
 ## API Reference
 ```tsx

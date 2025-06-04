@@ -1,0 +1,61 @@
+import { NetLabelPrinter } from 'react-native-thermal-receipt-printer-image-qr';
+
+// Initialize the printer
+await NetLabelPrinter.init();
+
+// Connect to the printer
+await NetLabelPrinter.connectPrinter('192.168.1.100', 9100);
+
+// Setup printer parameters
+await NetLabelPrinter.setup({
+  width: 105,
+  height: 80,
+  speed: 4,
+  density: 6,
+  sensor: 0,
+  sensorDistance: 3,
+  sensorOffset: 3
+});
+
+// Clear buffer before printing
+await NetLabelPrinter.clearBuffer();
+
+// Print a barcode
+await NetLabelPrinter.printBarcode({
+  x: 30,
+  y: 30,
+  type: '128',
+  height: 100,
+  humanReadable: 1,
+  rotation: 0,
+  narrow: 2,
+  wide: 2,
+  content: 'barcode987654321'
+});
+
+// Print text
+await NetLabelPrinter.printFont({
+  x: 100,
+  y: 180,
+  fontName: '3',
+  rotation: 0,
+  xScale: 3,
+  yScale: 3,
+  content: '12345678 print test'
+});
+
+// Print QR code
+await NetLabelPrinter.printQRCode({
+  x: 50,
+  y: 50,
+  eccLevel: 'H',
+  cellWidth: 4,
+  rotation: 0,
+  content: 'QRcode987654321'
+});
+
+// Print the label
+await NetLabelPrinter.printLabel(1, 1);
+
+// Close connection when done
+await NetLabelPrinter.closeConn();
