@@ -1,0 +1,216 @@
+Swfit WIFI SDK Example Description 44
+1.Import GTSPL_SDK:
+import IOS_SWIFT_WIFI_SDK
+2.Example:
+// Initialize SDK
+let gswifi = GTSPL_WIFI()
+//Connect WIFI device
+let ip = IPText.text
+let port: Int? = Int(PortText.text!)
+gswifi.openport(IP: ip!, Port: port!){(msg) in
+print(msg)
+}
+// Disconnect WIFI device
+gswifi.closePort()
+//Set printer
+gswifi.setup(width: 105, height: 80, speed: 4, density: 6, sensor: 0,
+sensorDistance: 3, sensorOffset: 3)
+//Print barcode, text, bitmap
+// Clear data first, then print Specified items
+gswifi.clearBuffer()
+//barcode
+gswifi.printBarcode(x: 30, y: 30, type: "128", height: 100, human_readable:
+1, rotation: 0, narrow: 2, wide: 2, content: "barcode987654321")
+45
+//text
+gswifi.printFont( x: 100, y: 180, fontname: "3", rotation: 0, xScale: 3, yScale:
+3, content: "12345678 print test")
+//fomtblock
+let paragraph="We stand behind our products with one of the most comprehensive
+support programs in the Auto-ID industry."
+gswifi.printFontBlock(x: 15,y: 15,width: 790,height: 90,fontname: "1",rotation:
+0,xScale: 8,yScale: 8,space: 20,align: 0,content: paragraph)
+// Specifies the file of the bitmap url
+let url = Bundle.main.url(forResource: "CIRCLE", withExtension: "bmp")!
+// Send the bitmap file to the printer
+gswifi.downloadBMP(filePath: url, fileName: "CIRCLE.bmp")
+// Command of print bitmap
+gswifi.sendCommand("PUTBMP 30,30,\"CIRCLE.bmp\"\r\n")
+// Execute print action
+gswifi.printLabel(set: 1, copy: 1)
+//Print QRcode
+// Clear data first
+gswifi.clearBuffer()
+// formed a QRCode
+gswifi.printQRCode(x: 50, y: 50, eccLevel: "H", cellWidth: 4, rotation: 0, 46
+content: "QRcode987654321")
+gswifi.printLabel(set: 1, copy: 1)
+// Print simplified Chinese
+String stString="默认简体中文测试";
+gswifi.clearBuffer()
+gswifi.printFont(x: 200, y: 200, fontName: "TSS24.BF2", rotation: 0, x_scale:
+1, y_scale: 1, content: cn)
+gswifi.printLabel(set: 1, copy: 1)
+// Print traditional Chinese
+cn: String = "預設繁體中文測試"
+gswifi.clearBuffer()
+gswifi.printFont(x: 200, y: 200, fontName: "TST24.BF2", rotation: 0, x_scale:
+1, y_scale: 1, content: cn)
+gswifi.printLabel(set: 1, copy: 1)
+//Get sdk version
+let version = gswifi.getSdkVersion()
+//Get printer status
+let status = gswifi.printerStatus()
+var statusStr = ""
+switch status{
+case "00":
+statusStr = "Normal"
+case "01": 47
+statusStr = "Head opened"
+case "02":
+statusStr = "Paper Jam"
+case "03":
+statusStr = "Paper Jam and head opened"
+case "04":
+statusStr = "Out of paper"
+case "05":
+statusStr = "Out of paper and head opened"
+case "08":
+statusStr = "Out of ribbon"
+case "09":
+statusStr = "Out of ribbon and head opened"
+case "0A":
+statusStr = "Out of ribbon and paper jam"
+case "0B":
+statusStr = "Out of ribbon, paper jam and head opened"
+case "0C":
+statusStr = "Out of ribbon and out of paper"
+case "0D":
+statusStr = "Out of ribbon, out of paper and head opened"
+case "10":
+statusStr = "Pause" 48
+case "20":
+statusStr = "Printing"
+case "80":
+statusStr = "Other error"
+default:
+break
+}
+// Set direction and mirror.
+gswifi.setDirectionAndMirror(direction: 0, mirror: 0)
+// Set the vertical displacement distance, example: 36 dots
+gswifi.setShift(shiftY: 36)
+// Reverse the designated area.
+gswifi.printReverse(x_start: 0, y_start: 0, x_width: 100, y_height: 100)
+// Set feed offset, example: 9.9mm
+gswifi.setOffset(offset: 9.9)
+// Set cut mode and cut number, example: cut forwar + 3 pieces
+gswifi.setCutMode(mode: 1, piece: 3)
+// Set action after prin, example: Tear Mode 49
+gswifi.setAfterPrintAction(mode: 1)
+// Initialize the general setting value
+gswifi.genericDefault()
+// Initialize the sensor setting value
+gswifi.sensorDefault()
+// switch wifi frequency 2.4G/5G/Both，example: 2.4G
+gswifi.switchWifiFrequency(frequency: “2.4G”) { msg in
+print(“Error message: \(msg)”)
+}
+// convert image to black and white bitmap file and printing.
+// example: mode 1, modifies width and height to 200 dots and 100 dots
+gswifi.printBitmap(imageData: Data, x: 0, y: 0, width: 200, height: 100, mode: 1) { msg in
+print(“Error message: \(msg)”)
+}
+// RFID Setting，example: read position 10 dots
+gswifi.setRFIDProcedure(tagType: 8, rw_position: 10, void_printout: 10, tryEncode_times: 3,
+error_handle: “E”, speed: 2, retry_times: 6) { msg in
+print(“Error message: \(msg)”)
+}
+// RFID Setting，example: read position 10 mm 50
+gswifi.setRFIDProcedure(tagType: 8, rw_position: 10, void_printout: 10, tryEncode_times: 3,
+error_handle: “E”, speed: 2, retry_times: 6, dpi: “203”) { msg in
+print(“Error code: \(msg)”)
+}
+// Auto calibration for RFID label
+gswifi.rfid_calibration() { msg in
+print(“Error message” \(msg)” )
+}
+// Initialize the RFID setting value
+gswifi.rfidSetupDefault()
+//UHF GEN2 EPC lock data use L, unlock use U
+gswifi.EPCPWD_Action(action: "L", password: "12345678")
+//UHF GEN2 TID lock data use L, unlock use U
+gswifi.TIDPWD_Action(action: "L", password: "12345678")
+//UHF GEN2 USER lock data use L, unlock use U
+gswifi.USERPWD_Action(action: "L", password: "12345678")
+//UHF GEN2 access password lock data use L, unlock use U
+gswifi.accessPWD_Action(action: "L", password: "12345678")
+//UHF GEN2 kill password lock data use L, unlock use U
+gswifi.killPWD_Action(action: "L", password: "12345678")
+51
+//UHF GEN2 set access password
+gswifi.accessPWD_Action(action: "S", password: "12345678")
+//UHF GEN2 set kill password
+gswifi.killPWD_Action(action: "S", password: "12345678")
+//UHF GEN2 write data
+gswifi.clearBuffer()
+gswifi.writeUHF(dataFormat: "H", startBlockNo: 2, byteSize: 12,
+Gen2MemoryBank: "E", dataString: "414142424343444445454646") { msg in
+self.textView.text = msg // Indicates that the printer isn’t connected
+}
+gswifi.printLabel(set: 1, copy: 1)
+// UHF GEN2 read data
+gswifi.readUHF(dataFormat: "H", startBlockNo: 0, byteSize: 12,
+Gen2MemoryBank: "E") { msg in
+if msg == "Connection doesn't exist." {} // Indicates that the printer isn’t connected
+if msg == “time_out” {} // time out
+else { }// Other return, Indicates read data
+// UHF GJB set password
+// Use write password, set new read password
+gswifi.set_GJB_Pwd_Action(passwordArea: "R", newPassword: "87654321",
+writePassword: "12345678")
+// Use write password, set new write password
+gswifi.set_GJB_Pwd_Action(passwordArea: "W", newPassword: "87654321",
+writePassword: "12345678") 52
+// Use write password, set new kill password
+gswifi.set_GJB_Pwd_Action(passwordArea: "K", newPassword: "87654321",
+writePassword: "12345678")
+// Use write password, set new status password
+gswifi.set_GJB_Pwd_Action(passwordArea: "S", newPassword: "87654321",
+writePassword: "12345678")
+// UHF GJB use status password, set status
+gswifi.statusGJB_UHF(GJBMemoryBank: "E", action: "C", statusPassword:
+"11112222")
+// UHF GJB use write password, write data
+gswifi.clearBuffer()
+gswifi.writeGJB_UHF(dataFormat: "H", startBlockNo: 1, byteSize: 12,
+Gen2MemoryBank: "E", dataString: "404041414242434344444545", writePassword:
+"12345678") { msg in
+self.textView.text = msg {} // Indicates that the printer isn’t connected
+}
+gswifi.printLabel(set: 1, copy: 1)
+// UHF GJB use read password, read data
+gswifi.readGJB_UHF(dataFormat: "H", startBlockNo: 0, byteSize: 12,
+Gen2MemoryBank: "E", readPassword: "33334444") { msg in
+if msg == "Connection doesn't exist." {} // Indicates that the printer isn’t connected
+if msg == “time_out” {} // time out
+else { } // Other return, Indicates read data
+// UHF GJB use kill password, delete tag
+gswifi.killGJB_Tag_UHF(killPassword: "11224455")
+// Open real-time
+gswifi.setRealTimeStatus("1")
+isRealTimeOn = true // Set true in real-time
+timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true, block: { _ in // Start
+counting, read every 0.5 seconds
+if let statusNumber = self.gsble.getStatusNumber() {
+var statusStr = ""
+switch statusNumber {
+case 0: statusStr = "Normal"
+// omitted…… get status code, Check the table to get the current status.
+self.realTimeShowLabel.text = statusStr // Displayed on the UILabel screen
+// Close real-time
+gswifi.setRealTimeStatus("0")
+isRealTimeOn = false // Set false in real-time
+timer.invalidate() // Close timer
+// Read error codes list
+let errorCode = gswifi.getRFIDErrorCode()
