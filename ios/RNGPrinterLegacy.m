@@ -3,8 +3,8 @@
 // #import "TscCommand.h"
 // #import "ConnecterManager.h"
 #import <React/RCTLog.h>
-#import "GPrinterLegacy/GSDK/GSDK.framework/Headers/EthernetConnecter.h"
-#import "GPrinterLegacy/GSDK/GSDK.framework/Headers/TscCommand.h"
+#import "EthernetConnecter.h"
+#import "TscCommand.h"
 
 @implementation RNGPrinterLegacy
 
