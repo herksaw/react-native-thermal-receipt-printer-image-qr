@@ -11,6 +11,7 @@
 		225666E122B0ABD800EF323A /* RNUSBPrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = 225666E022B0ABD800EF323A /* RNUSBPrinter.m */; };
 		22BC54C9229E811F006DE50F /* libPrinterSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 22BC54C8229E811F006DE50F /* libPrinterSDK.a */; };
 		22F425A422AFB2A400673AFC /* RNNetPrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = 22F425A322AFB2A400673AFC /* RNNetPrinter.m */; };
+		E70F2F882DF2685F00B781D3 /* GSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E70F2F872DF2685F00B781D3 /* GSDK.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -35,6 +36,7 @@
 		22BC54C8229E811F006DE50F /* libPrinterSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPrinterSDK.a; path = PrinterSDK/libPrinterSDK.a; sourceTree = "<group>"; };
 		22F425A222AFB28F00673AFC /* RNNetPrinter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNNetPrinter.h; sourceTree = "<group>"; };
 		22F425A322AFB2A400673AFC /* RNNetPrinter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNNetPrinter.m; sourceTree = "<group>"; };
+		E70F2F872DF2685F00B781D3 /* GSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GSDK.framework; path = GPrinterLegacy/GSDK/GSDK.framework; sourceTree = "<group>"; };
 		E7124A1D2DF08B3F00A5F82B /* RNNetLabelPrinter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RNNetLabelPrinter.swift; sourceTree = "<group>"; };
 		E7124A1E2DF08B4000A5F82B /* RNNetLabelPrinter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNNetLabelPrinter.h; sourceTree = "<group>"; };
 		E7124A1F2DF08B4000A5F82B /* RNNetLabelPrinter-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RNNetLabelPrinter-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -47,6 +49,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				22BC54C9229E811F006DE50F /* libPrinterSDK.a in Frameworks */,
+				E70F2F882DF2685F00B781D3 /* GSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -64,6 +67,7 @@
 		22BC54C7229E811F006DE50F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E70F2F872DF2685F00B781D3 /* GSDK.framework */,
 				22BC54C8229E811F006DE50F /* libPrinterSDK.a */,
 			);
 			name = Frameworks;
@@ -255,7 +259,10 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/PrinterSDK",
 				);
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"\"-framework GSDK\"",
+				);
 				PRODUCT_NAME = RNThermalReceiptPrinter;
 				SKIP_INSTALL = YES;
 			};
@@ -281,7 +288,10 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/PrinterSDK",
 				);
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"\"-framework GSDK\"",
+				);
 				PRODUCT_NAME = RNThermalReceiptPrinter;
 				SKIP_INSTALL = YES;
 			};
