@@ -1,7 +1,7 @@
 #import <React/RCTBridgeModule.h>
 #import <React/RCTEventEmitter.h>
-#import <GSDK/EthernetConnecter.h>
-#import <GSDK/TscCommand.h>
+#import "EthernetConnecter.h"
+#import "TscCommand.h"
 
 @interface RNGPrinterLegacy : RCTEventEmitter <RCTBridgeModule> {
     NSString *connected_ip;
