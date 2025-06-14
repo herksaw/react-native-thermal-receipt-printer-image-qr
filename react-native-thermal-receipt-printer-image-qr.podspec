@@ -22,6 +22,7 @@ Pod::Spec.new do |s|
 
   s.resources    = ["ios/GPrinterLegacy/GSDK/GSDK.framework"]
   s.vendored_frameworks = "ios/GPrinterLegacy/GSDK/GSDK.framework"
+  s.preserve_paths = "ios/GPrinterLegacy/GSDK/GSDK.framework"
   
   # # Framework configuration
   # s.ios.vendored_frameworks = '${PODS_ROOT}/../../../../ios/Frameworks/IOS_SWIFT_WIFI_SDK.xcframework'
