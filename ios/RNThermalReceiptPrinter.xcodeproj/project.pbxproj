@@ -264,7 +264,7 @@
 					"\"-framework GSDK\"",
 				);
 				PRODUCT_NAME = RNThermalReceiptPrinter;
-				SKIP_INSTALL = YES;
+				SKIP_INSTALL = NO;
 			};
 			name = Debug;
 		};
@@ -293,7 +293,7 @@
 					"\"-framework GSDK\"",
 				);
 				PRODUCT_NAME = RNThermalReceiptPrinter;
-				SKIP_INSTALL = YES;
+				SKIP_INSTALL = NO;
 			};
 			name = Release;
 		};
